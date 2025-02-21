@@ -192,6 +192,18 @@ h2 {
 .clear {
   clear: both; }
 
+.icon-btn {
+  background-color: transparent;
+  border: none;
+  color: white;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background-color: lightblue;
+}
+
 body {
   font-size: 13px;
   line-height: 1.8;
