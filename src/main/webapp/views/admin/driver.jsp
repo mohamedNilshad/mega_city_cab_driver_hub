@@ -5,14 +5,14 @@
     <head>
         <jsp:include page="includes/admin_header.jsp" />
     </head>
-    <body id="page-top"  style="padding-top: 110px;">
-        <!-- Navigation-->
-        <jsp:include page="nav.jsp" />
+    <body id="page-top"  style="padding-top: 5px;">
 
+        <a href="manage_vehicle.jsp" class="btn btn-dark" style="margin-left: 5px;"><i class="zmdi zmdi-arrow-left"></i></a>
 
         <div style="padding-bottom: 5px; padding-right: 10px; float: right;">
-            <a href="driver.jsp" class="btn btn-primary">Driver</a>
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#vehicleFrom">Add New Vehicle</button>
+        </div>
+        <div style="padding-bottom: 5px; padding-right: 10px; float: right;">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#driverForm">Add New Driver</button>
         </div>
         <table class="table">
             <thead class="thead-dark">
@@ -20,18 +20,26 @@
                     <th scope="col" style="width: 3%">#</th>
                     <th scope="col" style="width: 15%">Registration Number</th>
                     <th scope="col">Full Name</th>
-                    <th scope="col">Vehicle</th>
-                    <th scope="col">Vehicle Number</th>
+                    <th scope="col">NIC Number</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">License Type</th>
+                    <th scope="col">License Expire Date</th>
                     <th scope="col" style="width: 10%">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <th scope="row">1</th>
-                    <td>3258</td>
-                    <td>David</td>
-                    <td>Toyota Car</td>
-                    <td>CFG 2548</td>
+                    <td>2587</td>
+                    <td>David John</td>
+                    <td>12354785 V</td>
+                    <td>Colombo</td>
+                    <td>d@gmail.com</td>
+                    <td>0112457215</td>
+                    <td>Light</td>
+                    <td>03-June-2028</td>
                     <td>
                         <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
                         <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
@@ -41,8 +49,12 @@
                     <th scope="row">2</th>
                     <td>3257</td>
                     <td>David</td>
-                    <td>Toyota Car</td>
-                    <td>CFG 2548</td>
+                    <td>12354785 V</td>
+                    <td>Colombo</td>
+                    <td>d@gmail.com</td>
+                    <td>0112457215</td>
+                    <td>Light</td>
+                    <td>03-June-2028</td>
                     <td>
                         <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
                         <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
@@ -52,8 +64,12 @@
                     <th scope="row">3</th>
                     <td>3256</td>
                     <td>David</td>
-                    <td>Toyota Van</td>
-                    <td>CFG 8448</td>
+                    <td>12354785 V</td>
+                    <td>Colombo</td>
+                    <td>d@gmail.com</td>
+                    <td>0112457215</td>
+                    <td>Light</td>
+                    <td>03-June-2028</td>
                     <td>
                         <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
                         <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
@@ -63,8 +79,12 @@
                     <th scope="row">4</th>
                     <td>3258</td>
                     <td>David</td>
-                    <td>Suzuky Car</td>
-                    <td>CFG 5248</td>
+                    <td>12354785 V</td>
+                    <td>Colombo</td>
+                    <td>d@gmail.com</td>
+                    <td>0112457215</td>
+                    <td>Light</td>
+                    <td>03-June-2028</td>
                     <td>
                         <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
                         <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
@@ -97,7 +117,7 @@
                                 <label for="phone" class="form-label">Phone</label>
                                 <input type="text" class="form-control" id="phone" placeholder="Enter your phone number">
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="email" placeholder="Enter your email">
@@ -108,48 +128,24 @@
                                 <input type="text" class="form-control" id="address" address="address" placeholder="Enter your Address">
                             </div>
                             
-                            <button type="submit" class="btn btn-success">Submit</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!--Vehicle From-->
-        <div class="modal fade" id="vehicleFrom" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="popupFormLabel">New Vehicle</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
                             <div class="mb-3">
-                                <label for="v_type" class="form-label">Vehicle Type</label>
-                                <input type="text" class="form-control" id="v_type" name="v_type" placeholder="Enter Vehicle Type">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="v_number" class="form-label">Vehicle Number</label>
-                                <input type="text" class="form-control" id="v_number" name="v_number" placeholder="Vehicle Number">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="seat_count" class="form-label">Seat Count</label>
-                                <input type="number" min="2" max="100" class="form-control" id="seat_count" name="seat_count" placeholder="Enter Seat Count">
-                            </div>
-                            
-                           <div class="mb-3">
-                                <label for="driver" class="form-label">Select an Driver</label>
-                                <select class="form-select" id="driver" name="driver">
+                                <label for="license_type" class="form-label">Select License Type</label>
+                                <select class="form-select" id="license_type" name="license_type">
                                     <option value="" selected disabled>Choose an option</option>
                                     <option value="option1">Option 1</option>
                                     <option value="option2">Option 2</option>
                                     <option value="option3">Option 3</option>
                                 </select>
                             </div>
+
+
+                            <div class="mb-3">
+                                <label for="license_expire" class="form-label">License Expire Date</label>
+                                <input type="date" class="form-control" id="license_expire" name="license_expire" >
+                            </div>
                             
+
+
                             <button type="submit" class="btn btn-success">Submit</button>
                         </form>
                     </div>
@@ -158,7 +154,22 @@
         </div>
 
 
+
         <jsp:include page="../../WEB-INF/includes/footer.jsp" />
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                let today = new Date().toISOString().split("T")[0]; // Get today's date in 'YYYY-MM-DD' format
+
+                let dateInput = document.getElementById("license_expire");
+                dateInput.min = today; // Restrict past dates
+
+                dateInput.addEventListener("change", function () {
+                    if (this.value < today) {
+                        this.value = today; // Reset to today's date if past date is selected
+                    }
+                });
+            });
+        </script>
 
     </body>
 </html>

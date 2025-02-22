@@ -1,0 +1,57 @@
+#datetimepicker {
+    padding: 0.375rem 0.75rem;  /* Matching Bootstrap 4 input padding */
+    font-size: 1rem;  /* Matching Bootstrap 4 font size */
+    line-height: 1.5;  /* Matching Bootstrap 4 line height */
+    border-radius: 0.25rem;  /* Matching Bootstrap 4 border-radius */
+    border: 1px solid #ced4da; /* Matching Bootstrap 4 border */
+}
+
+/* If you want to change the background color */
+#datetimepicker:focus {
+    border-color: #80bdff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+}
+
+
+
+.icon-btn {
+    background-color: transparent;
+    border: none;
+    color: black;
+    cursor: pointer;
+}
+
+.icon-btn:hover {
+    background-color: lightblue;
+}
+
+.status {
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Specific background colors */
+
+
+td.status.status-completed {
+    background-color: #23ca65;
+}
+
+td.status.status-scheduled {
+    background-color: #2379ca;
+}
+
+td.status.status-canceled {
+    background-color: #ca2323;
+}
+
+td.status.status-ongoing {
+    background-color: #da811c;
+}
+
+ctable th, ctable td {
+     vertical-align: middle;
+}

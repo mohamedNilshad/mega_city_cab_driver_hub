@@ -126,6 +126,43 @@ a:focus, a:active {
   -o-transition: all 300ms ease 0s;
   -ms-transition: all 300ms ease 0s; }
 
+
+.icon-btn {
+    background-color: transparent;
+    border: none;
+    color: black;
+    cursor: pointer;
+}
+
+.icon-btn:hover {
+    background-color: lightblue;
+}
+
+.status {
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Specific background colors */
+
+td.status.status-completed {
+    background-color: #23ca65;
+}
+
+td.status.status-scheduled {
+    background-color: #2379ca;
+}
+
+td.status.status-canceled {
+    background-color: #ca2323;
+}
+
+td.status.status-ongoing {
+    background-color: #da811c;
+}
+
 input, select, textarea {
   outline: none;
   appearance: unset !important;
@@ -192,25 +229,14 @@ h2 {
 .clear {
   clear: both; }
 
-.icon-btn {
-  background-color: transparent;
-  border: none;
-  color: white;
-  padding: 2px;
-  cursor: pointer;
-}
-
-.icon-btn:hover {
-  background-color: lightblue;
-}
-
 body {
   font-size: 13px;
   line-height: 1.8;
   color: #222;
   background: #f8f8f8;
   font-weight: 400;
-  font-family: Poppins; }
+  font-family: Poppins; 
+}
 
 .container {
   width: 900px;
