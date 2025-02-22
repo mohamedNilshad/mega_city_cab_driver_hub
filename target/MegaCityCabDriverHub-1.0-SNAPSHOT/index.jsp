@@ -1,4 +1,4 @@
-<%@ page import="com.driverhub.utils.ConstantImage" %>
+<%@ page import="com.drivehub.util.constant.ConstantImage" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -20,7 +20,11 @@
                                 account</a>
                         </div>
 
+
                         <div class="signin-form">
+                         <form action="login" method="post">
+                             <button type="submit">Print Data</button>
+                         </form>
                             <h2 class="form-title">Sign up</h2>
                             <form method="post" action="" class="register-form"
                                   id="login-form">
@@ -46,7 +50,7 @@
                                            class="form-submit" value="Log in" />
                                 </div>-->
                                 <div class="form-group form-button">
-                                    <a href="views/admin/home.jsp" class="form-submit">Log in</a>
+                                    <a href="views/user/home.jsp" class="form-submit">Log in</a>
                                 </div>
                             </form>
                        

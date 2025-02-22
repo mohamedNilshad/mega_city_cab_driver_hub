@@ -1,4 +1,4 @@
-<%@ page import="com.driverhub.utils.ConstantImage" %>
+<%@ page import="com.drivehub.util.constant.ConstantImage" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -7,6 +7,10 @@
     <body>
 
         <div class="main">
+        <div class="alert" id="error_message" style="display: none;">
+          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+          <div id="error"></div>
+        </div>
 
             <!-- Sing in  Form -->
             <section class="sign-in">
@@ -20,10 +24,11 @@
                                 account</a>
                         </div>
 
+
                         <div class="signin-form">
                             <h2 class="form-title">Sign up</h2>
-                            <form method="post" action="" class="register-form"
-                                  id="login-form">
+                            <form method="post" action="user" class="register-form" id="loginForm">
+                                  <input type="hidden" name="action" value="login">
                                 <div class="form-group">
                                     <label for="username"><i
                                             class="zmdi zmdi-account material-icons-name"></i></label> <input
@@ -46,7 +51,8 @@
                                            class="form-submit" value="Log in" />
                                 </div>-->
                                 <div class="form-group form-button">
-                                    <a href="views/admin/home.jsp" class="form-submit">Log in</a>
+                                    <%-- <a href="views/user/home.jsp" class="form-submit">Log in</a>--%>
+                                    <button type="submit" class="form-submit">Log in</button>
                                 </div>
                             </form>
                        
@@ -59,5 +65,32 @@
 
         <!-- JS -->
         <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+         <script>
+                $(document).ready(function() {
+                    $("#loginForm").submit(function(event) {
+                        event.preventDefault();
+
+                        $.ajax({
+                            type: "POST",
+                            url: "user", // Servlet URL
+                            data: $(this).serialize(), // Serialize form data
+                            dataType: "json",
+                            success: function(response) {
+                            if(response.status === "error"){
+                                $('#error_message').css('display', 'block');
+                                $('#summary').html(response.message);
+                                $("#error").html("Error connecting to server").css("color", "red");
+                            }
+
+                            },
+                            error: function() {
+                                $('#error_message').css('display', 'block');
+                                $("#error").html("Error connecting to server").css("color", "red");
+                            }
+                        });
+                    });
+                });
+            </script>
     </body>
 </html>

@@ -1,4 +1,2 @@
 com\example\driverhub\resources\JakartaEE8Resource.class
 com\example\driverhub\JakartaRestConfiguration.class
-com\driverhub\utils\ConstantImage.class
-com\driverhub\utils\ConstantStrings.class

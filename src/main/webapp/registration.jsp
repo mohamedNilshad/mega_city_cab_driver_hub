@@ -1,4 +1,4 @@
-<%@ page import="com.driverhub.utils.ConstantImage" %>
+<% page import="com.drivehub.util.constant.ConstantImage" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -15,8 +15,9 @@
                         <div class="signup-form">
                             <h2 class="form-title">Sign up</h2>
 
-                            <form method="" action="" class="register-form"
+                            <form method="post" action="user" class="register-form"
                                   id="register-form">
+                                  <input type="hidden" name="action" value="register">
                                 <div class="form-group">
                                     <label for="name"><i
                                             class="zmdi zmdi-account material-icons-name"></i></label> <input

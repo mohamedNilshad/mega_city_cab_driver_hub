@@ -1,5 +1,5 @@
-<%@ page import="com.driverhub.utils.ConstantStrings" %>
-<%@ page import="com.driverhub.utils.ConstantImage" %>
+<%@ page import="com.drivehub.util.constant.ConstantStrings" %>
+<%@ page import="com.drivehub.util.constant.ConstantImage" %>
 
 <!-- Navigatsion-->
 <nav

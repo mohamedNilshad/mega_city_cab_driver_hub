@@ -1,5 +1,4 @@
-<%@ page import="com.driverhub.utils.ConstantStrings" %>
-<%@ page import="com.driverhub.utils.ConstantImage" %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>

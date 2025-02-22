@@ -1,4 +1,4 @@
-<%@ page import="com.driverhub.utils.ConstantStrings" %>
+<%@ page import="com.drivehub.util.constant.ConstantStrings" %>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
