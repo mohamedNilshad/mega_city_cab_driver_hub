@@ -8,9 +8,10 @@ public class UserDAO {
 
     public User login(String uname, String uPassword) {
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE userName = ? AND userPassword = ?");
-             ) {
+        try  {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE userName = ? AND userPassword = ?");
+
             stmt.setString(1, uname);
             stmt.setString(2, HashUtil.toMD5(uPassword));
             ResultSet rs = stmt.executeQuery();
@@ -18,32 +19,14 @@ public class UserDAO {
             User user = new User();
             if (rs.next()) {
                 user.setId(rs.getInt("id"));
-                user.setUserType(rs.getInt("id"));
-                user.setUserName(rs.getInt("id"));
-                user.setAddress(rs.getInt("id"));
-                user.setName(rs.getInt("id"));
-                user.setEmail(rs.getInt("id"));
-                user.setNic(rs.getInt("id"));
-                user.setPhone(rs.getInt("id"));
-                user.setPassword(rs.getInt("id"));
-
+                user.setUserType(rs.getInt("userType"));
                 return user;
-            } else {
-                // If user is not found, return null or throw an exception
-                throw new Exception("Invalid username or password");
             }
-//            if (rs.next()) {
-//                // User found, login successful
-//                response.sendRedirect("dashboard.jsp?user=" + URLEncoder.encode(username, "UTF-8"));
-//            } else {
-//                // Login failed
-//                response.sendRedirect("login.jsp?error=invalid");
-//            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return user;
+        return null;
     }
 
     public Boolean register(User newUser) {

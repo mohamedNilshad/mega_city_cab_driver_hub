@@ -15,8 +15,7 @@
                         <div class="signup-form">
                             <h2 class="form-title">Sign up</h2>
 
-                            <form method="post" action="user" class="register-form"
-                                  id="register-form">
+                            <form class="register-form" id="registerForm">
                                   <input type="hidden" name="action" value="register">
                                 <div class="form-group">
                                     <label for="name"><i
@@ -76,6 +75,41 @@
         <!-- JS -->
         <script src="vendor/jquery/jquery.min.js"></script>
         <script src="js/main.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+         <script>
+                        $(document).ready(function() {
+                            $("#registerForm").submit(function(event) {
+                                event.preventDefault();
+
+                                $.ajax({
+                                    type: "POST",
+                                    url: "user",
+                                    data: $(this).serialize(),
+                                    dataType: "json",
+                                    success: function(response) {
+                                    if (response.status === "success") {
+
+                                    }else {
+                                        $('#error_message').css('display', 'block');
+                                        $("#error").html(response.message);
+                                    }
+
+                                    },
+                                    error: function(xhr) {
+                                            // Try to parse JSON error message
+                                            let responseText = xhr.responseText;
+                                            try {
+                                                let errorResponse = JSON.parse(responseText);
+                                                $("#error").html(errorResponse.message);
+                                            } catch (e) {
+                                                $("#error").html("Unexpected error occurred");
+                                            }
+                                            $('#error_message').css('display', 'block');
+                                        }
+                                });
+                            });
+                        });
+                    </script>
 
 
 

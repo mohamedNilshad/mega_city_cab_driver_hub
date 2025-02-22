@@ -33,7 +33,8 @@
             <artifactId>json</artifactId>
             <version>20231013</version>
         </dependency>
-<!--        <dependency>-->
+
+        <!--        <dependency>-->
 <!--            <groupId>jakarta.platform</groupId>-->
 <!--            <artifactId>jakarta.jakartaee-api</artifactId>-->
 <!--            <version>${jakartaee}</version>-->

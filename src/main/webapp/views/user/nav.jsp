@@ -1,4 +1,5 @@
 <%@ page import="com.drivehub.util.constant.ConstantStrings" %>
+
 <!-- Navigatsion-->
 <nav
     class="navbar navbar-expand-lg bg-info text-uppercase fixed-top"
@@ -20,8 +21,8 @@
                         class="nav-link py-3 px-0 px-lg-3 rounded" href="help.jsp">Help</a></li>
                 <li class="nav-item mx-0 mx-lg-1"><a
                         class="nav-link py-3 px-0 px-lg-3 rounded" href="profile.jsp">Profile</a></li>
-                <li class="nav-item mx-0 mx-lg-1"><a
-                        class="nav-link py-3 px-0 px-lg-3 rounded" href="../../index.jsp">Logout</a></li>
+                <li class="nav-item mx-0 mx-lg-1">
+                    <a class="nav-link py-3 px-0 px-lg-3 rounded" href=<%= request.getContextPath() %>/user?action=logout>Logout</a></li>
 
             </ul>
         </div>

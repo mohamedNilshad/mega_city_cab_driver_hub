@@ -7,7 +7,7 @@
     <body>
 
         <div class="main">
-        <div class="alert" id="error_message" style="display: none;">
+        <div class="alert" id="error_message" style="display: none; color:white; width:50%; margin: auto; margin-bottom:5px;">
           <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
           <div id="error"></div>
         </div>
@@ -66,7 +66,7 @@
         <!-- JS -->
         <script src="vendor/jquery/jquery.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-         <script>
+        <script>
                 $(document).ready(function() {
                     $("#loginForm").submit(function(event) {
                         event.preventDefault();
@@ -77,17 +77,29 @@
                             data: $(this).serialize(), // Serialize form data
                             dataType: "json",
                             success: function(response) {
-                            if(response.status === "error"){
+                            if (response.status === "success") {
+                                if (response.userType == 1) {
+                                    window.location.href = "views/admin/home.jsp?user=" + encodeURIComponent(response.userId);
+                                } else {
+                                     window.location.href = "views/user/home.jsp?user=" + encodeURIComponent(response.userId);
+                                }
+                            }else {
                                 $('#error_message').css('display', 'block');
-                                $('#summary').html(response.message);
-                                $("#error").html("Error connecting to server").css("color", "red");
+                                $("#error").html(response.message);
                             }
 
                             },
-                            error: function() {
-                                $('#error_message').css('display', 'block');
-                                $("#error").html("Error connecting to server").css("color", "red");
-                            }
+                            error: function(xhr) {
+                                    // Try to parse JSON error message
+                                    let responseText = xhr.responseText;
+                                    try {
+                                        let errorResponse = JSON.parse(responseText);
+                                        $("#error").html(errorResponse.message);
+                                    } catch (e) {
+                                        $("#error").html("Unexpected error occurred");
+                                    }
+                                    $('#error_message').css('display', 'block');
+                                }
                         });
                     });
                 });

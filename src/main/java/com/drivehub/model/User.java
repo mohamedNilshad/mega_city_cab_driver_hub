@@ -1,5 +1,8 @@
 package com.drivehub.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class User {
 
     private int id;
@@ -41,6 +44,8 @@ public class User {
 
 
     //Getters
+    public int getId() {return id;}
+
     public int getUserType() {return userType;}
 
     public String getEmail() {return email;}
@@ -75,4 +80,34 @@ public class User {
     public void setUserName(String userName) {this.userName = userName;}
 
     public void setPassword(String password) {this.password = password;}
+
+
+    // ✅ Convert User object to a JSON-like format
+    public Map<String, Object> toJson() {
+        Map<String, Object> jsonMap = new HashMap<>();
+        jsonMap.put("id", id);
+        jsonMap.put("userType", userType);
+        jsonMap.put("userName", userName);
+        jsonMap.put("address", address);
+        jsonMap.put("name", name);
+        jsonMap.put("email", email);
+        jsonMap.put("nic", nic);
+        jsonMap.put("phone", phone);
+        return jsonMap; // Excludes password for security
+    }
+
+    // ✅ Override toString for debugging
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", userType=" + userType +
+                ", userName='" + userName + '\'' +
+                ", address='" + address + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", nic='" + nic + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
+    }
 }
