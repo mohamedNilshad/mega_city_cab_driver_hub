@@ -1,3 +1,4 @@
+<%@ page import="com.drivehub.util.constant.ConstantImage" %>
 <%@  page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@  page import="java.util.*" %>
 
@@ -20,102 +21,195 @@
         <jsp:include page="includes/user_header.jsp" />
 
     </head>
-    <body id="page-top" style="padding-top: 110px; padding-bottom: 10px;">
+    <body id="page-top" style="padding: 10px; padding-top: 110px; ">
         <!-- Navigation-->
         <jsp:include page="nav.jsp" />
-        <div style="padding-bottom: 5px; padding-right: 10px; float: right;">
+        <div style="padding-bottom: 5px; padding-right: 10px; float: right; display:none;">
             <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookingForm">Schedule Booking</a>
             <a href="instant_ride.jsp" class="btn btn-secondary">Instant Ride</a>
         </div>
 
-        <table class="table" style="text-align: center;">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col" style="width: 3%; vertical-align: middle;">#</th>
-                    <th scope="col" style="vertical-align: middle;">Booking Number</th>
-                    <th scope="col" style="vertical-align: middle;">Booking Type</th>
-                    <th scope="col" style="vertical-align: middle;">Customer Name</th>
-                    <th scope="col" style="vertical-align: middle;">Vehicle Number</th>
-                    <th scope="col" style="vertical-align: middle;">From</th>
-                    <th scope="col" style="vertical-align: middle;">To</th>
-                    <th scope="col" style="vertical-align: middle;">Start Date</th>
-                    <th scope="col" style="vertical-align: middle;">End Date</th>
-                    <th scope="col" style="vertical-align: middle;">Total Amount (LKR)</th>
-                    <th scope="col" style="width: 15%; vertical-align: middle;">Status</th>
-                    <th scope="col" style="width: 5%; vertical-align: middle;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td style="vertical-align: middle;">45875</td>
-                    <td style="vertical-align: middle;">Instant Ride</td>
-                    <td style="vertical-align: middle;">Mark</td>
-                    <td style="vertical-align: middle;">GEF 4581</td>
-                    <td style="vertical-align: middle;">Kandy</td>
-                    <td style="vertical-align: middle;">Colombo</td>
-                    <td style="vertical-align: middle;">02-March-2025 08:00 AM</td>
-                    <td style="vertical-align: middle;">03-March-2025 08:00 AM</td>
-                    <td style="vertical-align: middle;">2500.00</td>
-                    <td class="status status-completed" style="vertical-align: middle;">Completed</td>
-                    <td style="vertical-align: middle;">
-                        <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
-                        <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>45876</td>
-                    <td>Instant Ride</td>
-                    <td>Mark</td>
-                    <td>GEF 4581</td>
-                    <td>Kandy</td>
-                    <td>Colombo</td>
-                    <td>02-March-2025 08:00 AM</td>
-                    <td>03-March-2025 08:00 AM</td>
-                    <td>2500.00</td>
-                    <td class="status status-scheduled">03-March-2025 08:00 AM</td>
-                    <td>
-                        <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
-                        <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>45877</td>
-                    <td>Scheduled Ride</td>
-                    <td>Mark</td>
-                    <td>GEF 4581</td>
-                    <td>Kandy</td>
-                    <td>Colombo</td>
-                    <td>02-March-2025 08:00 AM</td>
-                    <td>03-March-2025 08:00 AM</td>
-                    <td>2500.00</td>
-                    <td class="status status-canceled">Canceled</td>
-                    <td>
-                        <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
-                        <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">4</th>
-                    <td>45877</td>
-                    <td>Scheduled Ride</td>
-                    <td>Mark</td>
-                    <td>GEF 4581</td>
-                    <td>Kandy</td>
-                    <td>Colombo</td>
-                    <td>02-March-2025 08:00 AM</td>
-                    <td>03-March-2025 08:00 AM</td>
-                    <td>2500.00</td>
-                    <td class="status status-ongoing">On Going</td>
-                    <td>
-                        <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
-                        <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="navbar navbar-light" style="background-color: #e3f2fd; margin-bottom: 5px;">
+            <div class="navbar-brand">Cars</div>
+            <a href="#" class="stretched-link" style="float:right;">See All</a>
+        </div>
+        <div class="row g-4">
+            <div style="width:25%;">
+                <div class="card">
+                    <img class="card-img-top" src="${pageContext.request.contextPath}/assets/images/cab_1.jpg" alt="cab image">
+                    <div class="card-body">
+                        <h5 class="card-title">Ford F-150</h5>
+                        <h6 class="card-title">Ford</h6>
+                        <p class="card-text">6 Seats</p>
+                        <a href="#" class="btn btn-primary">Schedule</a>
+                        <a href="#" class="btn btn-success">Get Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="width:25%;">
+                <div class="card">
+                    <img class="card-img-top" src="${pageContext.request.contextPath}/assets/images/cab_1.jpg" alt="cab image">
+                    <div class="card-body">
+                        <h5 class="card-title">Chevrolet Silverado</h5>
+                        <h6 class="card-title">Chevrolet</h6>
+                        <p class="card-text">5 Seats</p>
+                        <a href="#" class="btn btn-primary">Schedule</a>
+                        <a href="#" class="btn btn-success">Get Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="width:25%;">
+                <div class="card">
+                    <img class="card-img-top" src="${pageContext.request.contextPath}/assets/images/cab_1.jpg" alt="cab image">
+                    <div class="card-body">
+                        <h5 class="card-title">Toyota Tacoma</h5>
+                        <h6 class="card-title">Toyota</h6>
+                        <p class="card-text">6 Seats</p>
+                        <a href="#" class="btn btn-primary">Schedule</a>
+                        <a href="#" class="btn btn-success">Get Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="width:25%;">
+                <div class="card">
+                    <img class="card-img-top" src="${pageContext.request.contextPath}/assets/images/cab_1.jpg" alt="cab image">
+                    <div class="card-body">
+                        <h5 class="card-title">RAM 1500</h5>
+                        <h6 class="card-title">RAM</h6>
+                        <p class="card-text">4 Seats</p>
+                        <a href="#" class="btn btn-primary">Schedule</a>
+                        <a href="#" class="btn btn-success">Get Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <dive style="margin:10px;"></div>
+
+        <div class="navbar navbar-light" style="background-color: #e3f2fd; margin-bottom: 5px;">
+            <div class="navbar-brand">Cabs</div>
+                <a href="#" class="stretched-link" style="float:right;">See All</a>
+            </div>
+            <div class="row g-4">
+                <div style="width:25%;">
+                    <div class="card">
+                        <img class="card-img-top" src="${pageContext.request.contextPath}/assets/images/cab_1.jpg" alt="cab image">
+                        <div class="card-body">
+                            <h5 class="card-title">Ford F-150</h5>
+                            <h6 class="card-title">Ford</h6>
+                            <p class="card-text">6 Seats</p>
+                            <a href="#" class="btn btn-primary">Schedule</a>
+                            <a href="#" class="btn btn-success">Get Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="width:25%;">
+                    <div class="card">
+                        <img class="card-img-top" src="${pageContext.request.contextPath}/assets/images/cab_1.jpg" alt="cab image">
+                        <div class="card-body">
+                            <h5 class="card-title">Chevrolet Silverado</h5>
+                            <h6 class="card-title">Chevrolet</h6>
+                            <p class="card-text">5 Seats</p>
+                            <a href="#" class="btn btn-primary">Schedule</a>
+                            <a href="#" class="btn btn-success">Get Now</a>
+                        </div>
+                    </div>
+                 </div>
+
+                <div style="width:25%;">
+                    <div class="card">
+                        <img class="card-img-top" src="${pageContext.request.contextPath}/assets/images/cab_1.jpg" alt="cab image">
+                        <div class="card-body">
+                            <h5 class="card-title">Toyota Tacoma</h5>
+                            <h6 class="card-title">Toyota</h6>
+                            <p class="card-text">6 Seats</p>
+                            <a href="#" class="btn btn-primary">Schedule</a>
+                            <a href="#" class="btn btn-success">Get Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="width:25%;">
+                    <div class="card">
+                        <img class="card-img-top" src="${pageContext.request.contextPath}/assets/images/cab_1.jpg" alt="cab image">
+                        <div class="card-body">
+                            <h5 class="card-title">RAM 1500</h5>
+                            <h6 class="card-title">RAM</h6>
+                            <p class="card-text">4 Seats</p>
+                            <a href="#" class="btn btn-primary">Schedule</a>
+                            <a href="#" class="btn btn-success">Get Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <dive style="margin:10px;"></div>
+
+        <div class="navbar navbar-light" style="background-color: #e3f2fd; margin-bottom: 5px;">
+            <div class="navbar-brand">Vans</div>
+                <a href="#" class="stretched-link" style="float:right;">See All</a>
+            </div>
+            <div class="row g-4">
+                <div style="width:25%;">
+                    <div class="card">
+                        <img class="card-img-top" src="${pageContext.request.contextPath}/assets/images/cab_1.jpg" alt="cab image">
+                        <div class="card-body">
+                            <h5 class="card-title">Ford F-150</h5>
+                            <h6 class="card-title">Ford</h6>
+                            <p class="card-text">6 Seats</p>
+                            <a href="#" class="btn btn-primary">Schedule</a>
+                            <a href="#" class="btn btn-success">Get Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="width:25%;">
+                    <div class="card">
+                        <img class="card-img-top" src="${pageContext.request.contextPath}/assets/images/cab_1.jpg" alt="cab image">
+                        <div class="card-body">
+                            <h5 class="card-title">Chevrolet Silverado</h5>
+                            <h6 class="card-title">Chevrolet</h6>
+                            <p class="card-text">5 Seats</p>
+                            <a href="#" class="btn btn-primary">Schedule</a>
+                            <a href="#" class="btn btn-success">Get Now</a>
+                        </div>
+                    </div>
+                 </div>
+
+                <div style="width:25%;">
+                    <div class="card">
+                        <img class="card-img-top" src="${pageContext.request.contextPath}/assets/images/cab_1.jpg" alt="cab image">
+                        <div class="card-body">
+                            <h5 class="card-title">Toyota Tacoma</h5>
+                            <h6 class="card-title">Toyota</h6>
+                            <p class="card-text">6 Seats</p>
+                            <a href="#" class="btn btn-primary">Schedule</a>
+                            <a href="#" class="btn btn-success">Get Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="width:25%;">
+                    <div class="card">
+                        <img class="card-img-top" src="${pageContext.request.contextPath}/assets/images/cab_1.jpg" alt="cab image">
+                        <div class="card-body">
+                            <h5 class="card-title">RAM 1500</h5>
+                            <h6 class="card-title">RAM</h6>
+                            <p class="card-text">4 Seats</p>
+                            <a href="#" class="btn btn-primary">Schedule</a>
+                            <a href="#" class="btn btn-success">Get Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <dive style="margin:10px;"></div>
+
 
         <!--New Booking form-->
         <div class="modal fade" id="bookingForm" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">

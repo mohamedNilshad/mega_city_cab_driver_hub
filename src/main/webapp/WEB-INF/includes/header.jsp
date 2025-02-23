@@ -6,9 +6,8 @@
 <title><%= ConstantStrings.BRAND_NAME%></title>
 
 <!-- Font Icon -->
-<link rel="stylesheet"
-      href="fonts/material-icon/css/material-design-iconic-font.min.css">
-
+<link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <!-- Main css -->
 <link rel="stylesheet" href="css/style.css">
 
@@ -17,6 +16,13 @@
       padding: 20px;
       background-color: #f44336;
       color: white;
+    }
+
+    .success {
+      padding: 20px;
+      background-color: #32a852; /* Green */
+      color: white;
+      margin-bottom: 15px;
     }
 
     .closebtn {
@@ -32,5 +38,10 @@
 
     .closebtn:hover {
       color: black;
+    }
+    .fa {
+      margin-left: -12px;
+      margin-right: 8px;
+      visibility:hidden;
     }
 </style>

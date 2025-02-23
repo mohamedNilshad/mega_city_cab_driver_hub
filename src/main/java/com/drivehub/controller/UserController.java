@@ -61,7 +61,7 @@ public class UserController extends HttpServlet {
         if (isRegistered) {
 
             jsonResponse.put("status", "success");
-            jsonResponse.put("userId", "Registration Successful!");
+            jsonResponse.put("message", "Registration Successful!");
 
         } else {
             jsonResponse.put("status", "error");

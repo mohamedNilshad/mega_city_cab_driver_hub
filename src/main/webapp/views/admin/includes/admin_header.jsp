@@ -22,7 +22,7 @@ crossorigin="anonymous"></script>
 <link href="../../css/index-styles.css" rel="stylesheet" />
 <link href="../../css/style_2.css" rel="stylesheet" />
 <link rel="stylesheet" href="../../fonts/material-icon/css/material-design-iconic-font.min.css">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <!-- Bootstrap 4 CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
 
@@ -38,3 +38,25 @@ crossorigin="anonymous"></script>
 <!-- Bootstrap Datepicker CSS & JS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+<style>
+    .custom-alert {
+        position: fixed;
+        bottom: 20px;
+        right: -50px;
+        transform: translateX(-50%);
+        width: 300px;
+        padding: 40px 0;
+        font-weight: bold;
+        text-align: center;
+        z-index: 1050;
+        display:none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow */
+    }
+    .fa {
+      margin-left: -12px;
+      margin-right: 8px;
+/*       visibility: hidden; */
+
+    }
+</style>
