@@ -2,7 +2,6 @@ package com.drivehub.controller;
 
 import com.drivehub.model.Driver;
 import com.drivehub.model.LicenseTypes;
-import com.drivehub.model.User;
 import com.drivehub.service.DriverService;
 import com.drivehub.util.Formats;
 import org.json.JSONArray;
@@ -13,7 +12,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
@@ -28,12 +26,14 @@ public class DriverController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String action = request.getParameter("action");
         if ("license_types".equals(action)) {
-            getLicenseTypes(request, response);
+            getLicenseTypes(response);
         }else if ("driver_list".equals(action)) {
-            getDriverList(request, response);
+            getDriverList(response);
+        }else if ("available_driver_list".equals(action)) {
+            getAvailableDriverList(response);
         }
     }
-    private void getLicenseTypes(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    private void getLicenseTypes(HttpServletResponse response) throws IOException{
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -69,7 +69,7 @@ public class DriverController extends HttpServlet {
         out.flush();
     }
 
-    private void getDriverList(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    private void getDriverList(HttpServletResponse response) throws IOException{
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -105,13 +105,49 @@ public class DriverController extends HttpServlet {
         out.flush();
     }
 
+    private void getAvailableDriverList(HttpServletResponse response) throws IOException{
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
+        JSONObject jsonResponse = new JSONObject();
+        try {
+            List<Driver> drivers = driverService.getAvailableDrivers();
+
+            if(drivers != null){
+
+                JSONArray driversArray = new JSONArray();
+
+                for (Driver d : drivers) {
+                    driversArray.put(d.toJson());
+                }
+
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "Successfully Fetched All Available Drivers");
+                jsonResponse.put("data", driversArray);
+            }else{
+                jsonResponse.put("status", "error");
+                jsonResponse.put("message", "Drivers Fetched Failed!");
+            }
+        } catch (JSONException e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+
+            throw new RuntimeException(e);
+        }
+
+        out.print(jsonResponse);
+        out.flush();
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
         String action = request.getParameter("action");
         try {
             if ("driver_new".equals(action)) {
                 addNewDriver(request, response);
             } else if ("driver_update".equals(action)) {
-//                loginUser(request, response);
+                updateDriver(request, response);
             }
         } catch (ParseException e) {
             throw new RuntimeException(e);
@@ -145,13 +181,54 @@ public class DriverController extends HttpServlet {
                 jsonResponse.put("status", "error");
                 jsonResponse.put("message", "Registration Failed!");
             }
-            out.print(jsonResponse);
-            out.flush();
+
         } catch (Exception e) {
             jsonResponse.put("status", "error");
             jsonResponse.put("message", e);
             throw new RuntimeException(e);
         }
+        out.print(jsonResponse);
+        out.flush();
+    }
+
+    private void updateDriver(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject jsonResponse = new JSONObject();
+
+        try{
+
+            Driver driver = new Driver(
+                    Integer.parseInt(request.getParameter("driver_id")),
+                    request.getParameter("reg_num"),
+                    request.getParameter("update_name"),
+                    request.getParameter("update_driver_nic"),
+                    request.getParameter("update_phone"),
+                    request.getParameter("update_email"),
+                    request.getParameter("update_address"),
+                    Integer.parseInt(request.getParameter("update_license_type_id")),
+                    Formats.dateFormat(request.getParameter("update_license_expire"))
+            );
+
+            boolean isRegistered = driverService.updateDriver(driver);
+
+            if (isRegistered) {
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "Driver Updated Successful!");
+
+            } else {
+                jsonResponse.put("status", "error");
+                jsonResponse.put("message", "Updated Failed!");
+            }
+        } catch (Exception e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+
+            throw new RuntimeException(e);
+        }
+        out.print(jsonResponse);
+        out.flush();
     }
 
 }

@@ -10,4 +10,10 @@ public class Formats {
         java.util.Date utilDate = formatter.parse(input);
         return new Date(utilDate.getTime());
     }
+
+    public static String regNumberFormat(String oldNumber, String userType, int digit) {
+        String pattern = "%0"+digit+"d";
+        int num = Integer.parseInt(oldNumber.replaceFirst(userType, "")) + 1;
+        return  userType+String.format(pattern, num);
+    }
 }

@@ -13,11 +13,19 @@ public class DriverService {
         return driverDAO.registerDriver(newDriver);
     }
 
+    public Boolean updateDriver(Driver driver) {
+        return driverDAO.updateDriver(driver);
+    }
+
     public List<LicenseTypes> getLicenseTypes() {
         return driverDAO.getLicenseTypes();
     }
 
     public List<Driver> getDrivers() {
         return driverDAO.getDrivers();
+    }
+
+    public List<Driver> getAvailableDrivers() {
+        return driverDAO.getAvailableDrivers();
     }
 }

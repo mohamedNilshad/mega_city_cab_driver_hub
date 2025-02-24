@@ -7,6 +7,7 @@ import java.util.Map;
 public class Driver {
 
     private int id;
+    private String regNumber;
     private String name;
     private String nic;
     private String phone;
@@ -17,8 +18,9 @@ public class Driver {
     private Date licenseExpireDate;
     private int isAllocate;
 
-    public Driver(int id,String name, String nic, String phone, String email, String address, int licenseTypeId, String licenseType, Date licenseExpireDate, int isAllocate) {
+    public Driver(int id,String regNumber, String name, String nic, String phone, String email, String address, int licenseTypeId, String licenseType, Date licenseExpireDate, int isAllocate) {
         this.id = id;
+        this.regNumber = regNumber;
         this.name = name;
         this.nic = nic;
         this.phone = phone;
@@ -28,6 +30,23 @@ public class Driver {
         this.licenseType = licenseType;
         this.licenseExpireDate = licenseExpireDate;
         this.isAllocate = isAllocate;
+    }
+
+    public Driver(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Driver(int id,String regNumber, String name, String nic, String phone, String email, String address, int licenseTypeId, Date licenseExpireDate) {
+        this.id = id;
+        this.regNumber = regNumber;
+        this.name = name;
+        this.nic = nic;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.licenseTypeId = licenseTypeId;
+        this.licenseExpireDate = licenseExpireDate;
     }
     public Driver(String name, String nic, String phone, String email, String address, int licenseTypeId, Date licenseExpireDate) {
         this.name = name;
@@ -44,6 +63,8 @@ public class Driver {
 
     //Getters
     public int getId() {return id;}
+
+    public String getRegNumber() {return regNumber;}
 
     public String getEmail() {return email;}
 
@@ -66,6 +87,8 @@ public class Driver {
 
     //Setters
     public void setId(int id) {this.id = id;}
+
+    public void setRegNumber(String regNumber) {this.regNumber = regNumber;}
 
     public void setEmail(String email) {this.email = email;}
 
@@ -90,6 +113,7 @@ public class Driver {
     public Map<String, Object> toJson() {
         Map<String, Object> jsonMap = new HashMap<>();
         jsonMap.put("id", id);
+        jsonMap.put("regNumber", regNumber);
         jsonMap.put("address", address);
         jsonMap.put("name", name);
         jsonMap.put("email", email);
@@ -106,6 +130,7 @@ public class Driver {
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", regNumber='" + regNumber + '\'' +
                 ", address='" + address + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
