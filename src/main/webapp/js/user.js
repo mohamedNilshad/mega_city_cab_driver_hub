@@ -143,20 +143,20 @@
 
             },
             error: function(xhr) {
-                    let responseText = xhr.responseText;
-                    let errorMsg = '';
-                    try {
-                        let errorResponse = JSON.parse(responseText);
-                        errorMsg = errorResponse.message;
-                    } catch (e) {
-                        errorMsg = "Unexpected error occurred "+e;
-                    }
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred "+e;
+                }
 
-                    $("#success_alert").hide();
-                        $('#error_alert').html(errorMsg);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
             },
             complete: function(){
                 document.getElementById("formOverlay").classList.add("d-none");

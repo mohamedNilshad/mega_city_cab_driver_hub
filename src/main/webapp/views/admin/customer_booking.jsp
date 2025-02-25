@@ -1,4 +1,18 @@
+<%@  page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@  page import="java.util.*" %>
 
+<%
+    HttpSession sessionObj = request.getSession(false);
+    Integer userId = -1;
+    if (sessionObj != null) {
+        userId = (Integer) sessionObj.getAttribute("adminId");
+        if(userId == null){
+            response.sendRedirect("../../index.jsp");
+        }
+    } else {
+        response.sendRedirect("../../index.jsp");
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -20,95 +34,25 @@
         <div style="padding-bottom: 5px; padding-right: 10px; float: right;">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customerForm">Add New Customer</button>
         </div>
-        <table class="table">
+
+        <div class="alert alert-success custom-alert" role="alert" id="success_alert"></div>
+        <div class="alert alert-danger custom-alert" role="alert" id="error_alert"></div>
+
+        <table  id="customersTable" class="table">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col" style="width: 3%">#</th>
-                    <th scope="col" style="width: 15%">Registration Number</th>
                     <th scope="col">Name</th>
                     <th scope="col">Address</th>
                     <th scope="col">NIC</th>
                     <th scope="col">Email</th>
                     <th scope="col">Phone</th>
                     <th scope="col">Username</th>
-                    <th scope="col">Password</th>
                     <th scope="col" style="width: 5%">Actions</th>
                     <th scope="col"> Book </th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>45875</td>
-                    <td>Mark</td>
-                    <td>Kandy</td>
-                    <td>1234567890 V</td>
-                    <td>mark@gmail.com</td>
-                    <td>0771234567</td>
-                    <td>mark123</td>
-                    <td>1234</td>
-                    <td>
-                        <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
-                        <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
-                    </td>
-                    <td>
-                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#bookingForm">Book</button>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>45876</td>
-                    <td>Mark</td>
-                    <td>Kandy</td>
-                    <td>1234567890 V</td>
-                    <td>mark@gmail.com</td>
-                    <td>0771234567</td>
-                    <td>mark123</td>
-                    <td>1234</td>
-                    <td>
-                        <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
-                        <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
-                    </td>
-                    <td>
-                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#bookingForm">Book</button>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>45877</td>
-                    <td>Mark</td>
-                    <td>Kandy</td>
-                    <td>1234567890 V</td>
-                    <td>mark@gmail.com</td>
-                    <td>0771234567</td>
-                    <td>mark123</td>
-                    <td>1234</td>
-                    <td>
-                        <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
-                        <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
-                    </td>
-                    <td>
-                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#bookingForm">Book</button>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">4</th>
-                    <td>45877</td>
-                    <td>Mark</td>
-                    <td>Kandy</td>
-                    <td>1234567890 V</td>
-                    <td>mark@gmail.com</td>
-                    <td>0771234567</td>
-                    <td>mark123</td>
-                    <td>1234</td>
-                    <td>
-                        <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
-                        <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
-                    </td>
-                    <td>
-                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#bookingForm">Book</button>
-                    </td>
-                </tr>
             </tbody>
         </table>
 
@@ -117,7 +61,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="popupFormLabel">New Booking</h5>
+                        <h5 class="modal-title" id="popupFormLabel1">New Booking</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -189,14 +133,15 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form>
+                        <form id="newCustomerForm">
+                            <input type="hidden" name="action" value="customer_new" required>
                             <div class="mb-3">
-                                <label for="name" class="form-label">Customer Name</label>
+                                <label for="new_customer_name" class="form-label">Customer Name</label>
                                 <input type="text" class="form-control" id="new_customer_name" name="new_customer_name" placeholder="Enter your name">
                             </div>
 
                             <div class="mb-3">
-                                <label for="nic" class="form-label">NIC  Number</label>
+                                <label for="new_customer_nic" class="form-label">NIC  Number</label>
                                 <input type="text" class="form-control" id="new_customer_nic" name="new_customer_nic" placeholder="Enter your NIC">
                             </div>
 
@@ -207,25 +152,83 @@
 
                             <div class="mb-3">
                                 <label for="address" class="form-label">Address</label>
-                                <input type="text" class="form-control" id="new_address" address="new_address" placeholder="Enter your Address" value="Kandy">
+                                <input type="text" class="form-control" id="new_address" name="new_address" placeholder="Enter your Address">
                             </div>
 
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="new_email" address="new_email" placeholder="Enter your Email">
+                                <label for="new_email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="new_email" name="new_email" placeholder="Enter your Email">
                             </div>
 
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" address="username" placeholder="Enter your Username">
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your Username">
                             </div>
 
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" address="password" placeholder="Enter your Password">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your Password">
                             </div>
 
-                            <button type="submit" class="btn btn-success">Submit</button>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-spinner fa-spin" id="submit_loading" style="display: none;"></i> Submit
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Edit Customer Form-->
+        <div class="modal fade" id="editCustomerModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="popupFormLabel2">Update Customer</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editCustomerForm">
+                            <input type="hidden" name="action" value="customer_update" required>
+                            <input type="hidden" name="customer_id" id="customer_id" required>
+                            <div class="mb-3">
+                                <label for="new_customer_name" class="form-label">Customer Name</label>
+                                <input type="text" class="form-control" id="update_customer_name" name="update_customer_name" placeholder="Enter your name">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="new_customer_nic" class="form-label">NIC  Number</label>
+                                <input type="text" class="form-control" id="update_customer_nic" name="update_customer_nic" placeholder="Enter your NIC">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="text" class="form-control" id="update_phone" name="update_phone" placeholder="Enter your phone number">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="update_address" name="update_address" placeholder="Enter your Address">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="new_email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="update_email" name="update_email" placeholder="Enter your Email">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="update_username" name="update_username" placeholder="Enter your Username" readonly>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="update_password" name="update_password" placeholder="Enter your Password">
+                            </div>
+
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-spinner fa-spin" id="uc_btn_loading" style="display: none;"></i> Update
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -233,9 +236,9 @@
         </div>
 
 
-
         <jsp:include page="../../WEB-INF/includes/footer.jsp" />
-
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <jsp:include page="../../js/customer.js" />
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {

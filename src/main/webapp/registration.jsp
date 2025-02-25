@@ -110,61 +110,60 @@
         <script src="vendor/jquery/jquery.min.js"></script>
         <script src="js/main.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-         <script>
-                        $(document).ready(function() {
-                            $("#registerForm").submit(function(event) {
-                                event.preventDefault();
-                                $('#btn_loading').css('visibility', 'visible');
-                                $(":submit").attr("disabled", true);
+        <script>
+            $(document).ready(function() {
+                $("#registerForm").submit(function(event) {
+                    event.preventDefault();
+                    $('#btn_loading').css('visibility', 'visible');
+                    $(":submit").attr("disabled", true);
 
-                                $.ajax({
-                                    type: "POST",
-                                    url: "user",
-                                    data: $(this).serialize(),
-                                    dataType: "json",
-                                    success: function(response) {
-                                        if (response.status === "success") {
-                                            $('#success_message').css('display', 'block');
-                                            $("#success").html(response.message);
-                                            emptyFields();
-                                        }else {
-                                            $('#error_message').css('display', 'block');
-                                            $("#error").html(response.message);
-                                        }
+                    $.ajax({
+                        type: "POST",
+                        url: "user",
+                        data: $(this).serialize(),
+                        dataType: "json",
+                        success: function(response) {
+                            if (response.status === "success") {
+                                $('#success_message').css('display', 'block');
+                                $("#success").html(response.message);
+                                emptyFields();
+                            }else {
+                                $('#error_message').css('display', 'block');
+                                $("#error").html(response.message);
+                            }
 
-                                    },
-                                    error: function(xhr) {
-                                        // Try to parse JSON error message
-                                        let responseText = xhr.responseText;
-                                        try {
-                                            let errorResponse = JSON.parse(responseText);
-                                            $("#error").html(errorResponse.message);
-                                        } catch (e) {
-                                            $("#error").html("Unexpected error occurred");
-                                        }
-                                        $('#error_message').css('display', 'block');
-                                    },
-                                    complete: function(){
-                                        $(":submit").removeAttr("disabled");
-                                        $('#btn_loading').css('visibility', 'hidden');
-                                        window.scrollTo(0,0);
-                                    }
-                                });
-                            });
-                        });
-
-                        function emptyFields(){
-                             document.getElementById('name').value = '';
-                             document.getElementById('email').value = '';
-                             document.getElementById('address').value = '';
-                             document.getElementById('nic').value = '';
-                             document.getElementById('phone').value = '';
-                             document.getElementById('uname').value = '';
-                             document.getElementById('pass').value = '';
-                             document.getElementById('re_pass').value = '';
+                        },
+                        error: function(xhr) {
+                            // Try to parse JSON error message
+                            let responseText = xhr.responseText;
+                            try {
+                                let errorResponse = JSON.parse(responseText);
+                                $("#error").html(errorResponse.message);
+                            } catch (e) {
+                                $("#error").html("Unexpected error occurred");
+                            }
+                            $('#error_message').css('display', 'block');
+                        },
+                        complete: function(){
+                            $(":submit").removeAttr("disabled");
+                            $('#btn_loading').css('visibility', 'hidden');
+                            window.scrollTo(0,0);
                         }
+                    });
+                });
+            });
 
-                    </script>
+            function emptyFields(){
+                 document.getElementById('name').value = '';
+                 document.getElementById('email').value = '';
+                 document.getElementById('address').value = '';
+                 document.getElementById('nic').value = '';
+                 document.getElementById('phone').value = '';
+                 document.getElementById('uname').value = '';
+                 document.getElementById('pass').value = '';
+                 document.getElementById('re_pass').value = '';
+            }
 
+        </script>
     </body>
 </html>

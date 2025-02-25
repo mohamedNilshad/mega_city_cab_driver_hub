@@ -115,7 +115,6 @@
     //update drivers
     $("#updateDriverForm").submit(function(event) {
         event.preventDefault();
-
         $.ajax({
             type: "POST",
             url: "../../driver",
@@ -249,7 +248,6 @@
     }
 
     function openEditModal(driver) {
-        console.log(driver.nic);
         document.getElementById("driver_id").value = driver.id;
         document.getElementById("reg_num").value = driver.regNumber;
         document.getElementById("update_name").value = driver.name;
