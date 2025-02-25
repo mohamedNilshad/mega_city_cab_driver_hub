@@ -16,8 +16,8 @@ public class User {
     private String password;
 
 
-
-    public User(int id, int userType, String name, String email, String nic, String address, String phone, String userName, String password) {
+    //select
+    public User(int id, int userType, String name, String email, String nic, String address, String phone, String userName) {
         this.id = id;
         this.userType = userType;
         this.name = name;
@@ -26,9 +26,21 @@ public class User {
         this.address = address;
         this.phone = phone;
         this.userName = userName;
-        this.password = password;
     }
 
+    //update
+    public User(int id,  String name, String email, String nic, String address, String phone, String userName) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.nic = nic;
+        this.address = address;
+        this.phone = phone;
+        this.userName = userName;
+    }
+
+
+    //insert
     public User(int userType, String name, String email, String nic, String address, String phone, String userName, String password) {
         this.userType = userType;
         this.name = name;

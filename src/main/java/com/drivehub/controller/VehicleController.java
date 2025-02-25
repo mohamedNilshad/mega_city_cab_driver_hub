@@ -1,23 +1,26 @@
 package com.drivehub.controller;
 
+import com.drivehub.model.StatusModel;
 import com.drivehub.model.Vehicle;
 import com.drivehub.model.VehicleTypes;
 import com.drivehub.service.VehicleService;
+
+import com.drivehub.util.FileSave;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import java.io.File;
+
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+
 import java.text.ParseException;
 import java.util.List;
 
@@ -117,6 +120,8 @@ public class VehicleController extends HttpServlet {
                 addNewVehicle(request, response);
             } else if ("vehicle_update".equals(action)) {
                 updateVehicle(request, response);
+            } else if ("vehicle_delete".equals(action)) {
+                deleteVehicle(request, response);
             }
         } catch (ParseException e) {
             throw new RuntimeException(e);
@@ -130,43 +135,33 @@ public class VehicleController extends HttpServlet {
         JSONObject jsonResponse = new JSONObject();
 
         try{
-            String imageFileName = saveFile(request.getPart("v_image"), "uploads");
-//            // Get uploaded file
-//            Part filePart = request.getPart("v_image");
-//            String imageFileName = filePart.getSubmittedFileName();
-//
-//            // Define upload directory
-//            String uploadDir = getServletContext().getRealPath("") + File.separator + "uploads";
-//            File uploadFolder = new File(uploadDir);
-//            if (!uploadFolder.exists()) {
-//                uploadFolder.mkdir(); // Create folder if not exists
-//            }
-//
-//            // Save file to server
-//            File file = new File(uploadFolder, imageFileName);
-//            try (InputStream fileContent = filePart.getInputStream()) {
-//                Files.copy(fileContent, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-//            }
+            StatusModel result = FileSave.saveFile(request.getPart("v_image"), getRealPath(), "uploads");
 
-            Vehicle newVehicle = new Vehicle(
-                    Integer.parseInt(request.getParameter("v_type")),
-                    Integer.parseInt(request.getParameter("driver")),
-                    request.getParameter("v_name"),
-                    request.getParameter("v_number"),
-                    Integer.parseInt(request.getParameter("seat_count")),
-                    imageFileName
-            );
+            if(result.isSuccess()){
+                String imageFileName = result.getData();
 
+                Vehicle newVehicle = new Vehicle(
+                        Integer.parseInt(request.getParameter("v_type")),
+                        Integer.parseInt(request.getParameter("driver")),
+                        request.getParameter("v_name"),
+                        request.getParameter("v_number"),
+                        Integer.parseInt(request.getParameter("seat_count")),
+                        imageFileName
+                );
 
-            boolean isRegistered = vehicleService.addNewVehicle(newVehicle);
+                boolean isRegistered = vehicleService.addNewVehicle(newVehicle);
 
-            if (isRegistered) {
-                jsonResponse.put("status", "success");
-                jsonResponse.put("message", "New Vehicle Added Successful!");
+                if (isRegistered) {
+                    jsonResponse.put("status", "success");
+                    jsonResponse.put("message", "New Vehicle Added Successful!");
 
-            } else {
+                } else {
+                    jsonResponse.put("status", "error");
+                    jsonResponse.put("message", "New Vehicle Adding Failed!");
+                }
+            }else{
                 jsonResponse.put("status", "error");
-                jsonResponse.put("message", "New Vehicle Adding Failed!");
+                jsonResponse.put("message", result.getMessage());
             }
 
         } catch (Exception e) {
@@ -186,15 +181,25 @@ public class VehicleController extends HttpServlet {
 
         try{
             String imageName = request.getParameter("old_v_image");
-            if(request.getPart("update_v_image") != null){
-                imageName = saveFile(request.getPart("update_v_image"), "uploads");
-                deleteFile(request.getParameter("old_v_image"),"uploads");
+            Part filePart = request.getPart("update_v_image");
+
+            if (filePart != null && filePart.getSize() > 0){
+                StatusModel result = FileSave.saveFile(request.getPart("update_v_image"), getRealPath(), "uploads");
+                if(result.isSuccess()){
+                    imageName = result.getData();
+                    StatusModel result1 = FileSave.deleteFile(request.getParameter("old_v_image"), getRealPath(), "uploads");
+
+                    if(!result1.isSuccess()){
+                        System.out.println(result1.getMessage());
+                    }
+                }
             }
 
             Vehicle vehicle = new Vehicle(
                     Integer.parseInt(request.getParameter("vehicle_id")),
                     Integer.parseInt(request.getParameter("update_v_type")),
                     Integer.parseInt(request.getParameter("update_driver")),
+                    Integer.parseInt(request.getParameter("old_driver_id")),
                     request.getParameter("update_v_name"),
                     request.getParameter("update_v_number"),
                     Integer.parseInt(request.getParameter("update_seat_count")),
@@ -221,58 +226,47 @@ public class VehicleController extends HttpServlet {
         out.flush();
     }
 
-    private String saveFile(Part filePart, String folderName){
-        try {
-            // Get uploaded file
-            String fileName = filePart.getSubmittedFileName();
+    private void deleteVehicle(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject jsonResponse = new JSONObject();
 
-            // Define upload directory
-            String uploadDir = getServletContext().getRealPath("") + File.separator + folderName;
-            File uploadFolder = new File(uploadDir);
-            if (!uploadFolder.exists()) {
-                uploadFolder.mkdir(); // Create folder if not exists
+        try{
+
+            Vehicle vehicle = new Vehicle();
+            vehicle.setId(Integer.parseInt(request.getParameter("d_v_id")));
+            vehicle.setDriverId(Integer.parseInt(request.getParameter("d_driver_id")));
+            vehicle.setVehicleImage(request.getParameter("d_image_name"));
+
+            boolean isDelete = vehicleService.deleteVehicle(vehicle);
+
+            if (isDelete) {
+
+                StatusModel result = FileSave.deleteFile(vehicle.getVehicleImage(), getRealPath(), "uploads");
+                if(!result.isSuccess()){
+                    System.out.println(result.getMessage());
+                }
+
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "Vehicle Deleted Successful!");
+
+            } else {
+                jsonResponse.put("status", "error");
+                jsonResponse.put("message", "Vehicle Deleted Failed!");
             }
-
-            // Save file to server
-            File file = new File(uploadFolder, fileName);
-            try (InputStream fileContent = filePart.getInputStream()) {
-                Files.copy(fileContent, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            }catch (Exception e) {
-                return e.toString();
-            }
-            return fileName;
-        } catch (RuntimeException e) {
-
-            return e.toString();
+        } catch (Exception e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+            System.out.println(e);
+            throw new RuntimeException(e);
         }
-
+        out.print(jsonResponse);
+        out.flush();
     }
 
-    private String deleteFile(String fileName, String folderName){
-        try {
-            // Define upload directory path
-            String uploadDir = getServletContext().getRealPath("") + File.separator + folderName;
-
-            // Locate the file
-            File fileToDelete = new File(uploadDir, fileName);
-
-            // Check if file exists and delete it
-            if (fileToDelete.exists()) {
-                if (fileToDelete.delete()) {
-                    System.out.println("File deleted successfully: " + fileName);
-                } else {
-                    System.out.println("Failed to delete file: " + fileName);
-                }
-            } else {
-                System.out.println("File not found: " + fileName);
-            }
-
-            return fileName;
-        } catch (RuntimeException e) {
-
-            return e.toString();
-        }
-
+    private String getRealPath(){
+        return getServletContext().getRealPath("");
     }
 
 }

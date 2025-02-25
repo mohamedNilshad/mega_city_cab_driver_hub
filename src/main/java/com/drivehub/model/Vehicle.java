@@ -9,6 +9,7 @@ public class Vehicle {
     private int vehicleTypeId ;
     private String vehicleType ;
     private int driverId ;
+    private int oldDriverId ;
     private String driverName ;
     private String driverRegNum ;
     private String vehicleName;
@@ -17,10 +18,11 @@ public class Vehicle {
     private String vehicleImage;
 
     //update
-    public Vehicle(int id, int vehicleTypeId, int driverId, String vehicleName, String vehicleNumber, int seatCount, String vehicleImage) {
+    public Vehicle(int id, int vehicleTypeId, int driverId, int oldDriverId, String vehicleName, String vehicleNumber, int seatCount, String vehicleImage) {
         this.id = id;
         this.vehicleTypeId = vehicleTypeId;
         this.driverId = driverId;
+        this.oldDriverId = oldDriverId;
         this.vehicleName = vehicleName;
         this.vehicleNumber = vehicleNumber;
         this.seatCount = seatCount;
@@ -70,6 +72,10 @@ public class Vehicle {
         return driverId;
     }
 
+    public int getOldDriverId() {
+        return oldDriverId;
+    }
+
     public String getDriverName() {
         return driverName;
     }
@@ -114,6 +120,10 @@ public class Vehicle {
         this.driverId = driverId;
     }
 
+    public void setOldDriverId(int oldDriverId) {
+        this.oldDriverId = oldDriverId;
+    }
+
     public void setDriverName(String driverName) {
         this.driverName = driverName;
     }
@@ -144,6 +154,7 @@ public class Vehicle {
         jsonMap.put("vehicleTypeId", vehicleTypeId);
         jsonMap.put("vehicleType", vehicleType);
         jsonMap.put("driverId", driverId);
+        jsonMap.put("oldDriverId", oldDriverId);
         jsonMap.put("driverName", driverName);
         jsonMap.put("driverRegNum", driverRegNum);
         jsonMap.put("vehicleName", vehicleName);
@@ -160,6 +171,7 @@ public class Vehicle {
                 ", vehicleTypeId='" + vehicleTypeId + '\'' +
                 ", vehicleType='" + vehicleType + '\'' +
                 ", driverId='" + driverId + '\'' +
+                ", oldDriverId='" + oldDriverId + '\'' +
                 ", driverName='" + driverName + '\'' +
                 ", driverRegNum='" + driverRegNum + '\'' +
                 ", vehicleName='" + vehicleName + '\'' +

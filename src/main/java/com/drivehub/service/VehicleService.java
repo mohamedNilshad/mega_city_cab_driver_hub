@@ -17,6 +17,10 @@ public class VehicleService {
         return vehicleDAO.updateVehicle(vehicle);
     }
 
+    public Boolean deleteVehicle(Vehicle vehicle) {
+        return vehicleDAO.deleteVehicle(vehicle);
+    }
+
     public List<VehicleTypes> getVehicleTypes() {
         return vehicleDAO.getVehicleTypes();
     }

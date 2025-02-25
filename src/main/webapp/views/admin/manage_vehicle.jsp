@@ -133,6 +133,7 @@
                             <input type="hidden" name="action" value="vehicle_update" required>
                             <input type="hidden" name="vehicle_id" id="vehicle_id" required>
                             <input type="hidden" name="old_v_image" id="old_v_image" required>
+                            <input type="hidden" name="old_driver_id" id="old_driver_id" required>
                             <div class="mb-3">
                                 <label for="driver" class="form-label">Select Vehicle Type</label>
                                 <select class="form-select" id="update_v_type" name="update_v_type">
@@ -177,6 +178,35 @@
                 </div>
             </div>
         </div>
+
+        <!-- Delete Confirmation-->
+        <div class="modal fade" id="deleteVehicleForm" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="popupFormLabel2">Confirm Delete</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <p style="margin-left:15px;">Are you sure you want to delete this item?</p>
+                    <div class="modal-body">
+                        <form id="deleteVehicle">
+                            <input type="hidden" name="action" value="vehicle_delete" required>
+                            <input type="hidden" name="d_v_id" id="d_v_id" required>
+                            <input type="hidden" name="d_driver_id" id="d_driver_id" required>
+                            <input type="hidden" name="d_image_name" id="d_image_name" required>
+
+                            <div class="row justify-content-center">
+                                <button type="submit" class="btn btn-danger me-2" style="width: 40%;">
+                                    <i class="fa fa-spinner fa-spin" id="dv_btn_loading" style="display: none; margin-right: 5px;"></i>Delete
+                                </button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" style="width: 40%;">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
         <jsp:include page="../../WEB-INF/includes/footer.jsp" />

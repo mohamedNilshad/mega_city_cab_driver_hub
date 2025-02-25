@@ -27,7 +27,7 @@ public class DriverDAO {
             return licenseTypesList;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error: " + e.getMessage());
         }
         return null;
     }
@@ -61,7 +61,7 @@ public class DriverDAO {
             return DriverList;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error: " + e.getMessage());
         }
         return null;
     }
@@ -85,7 +85,7 @@ public class DriverDAO {
             return DriverList;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error: " + e.getMessage());
         }
         return null;
     }
@@ -115,7 +115,7 @@ public class DriverDAO {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error: " + e.getMessage());
         }
         return false;
     }
@@ -124,8 +124,6 @@ public class DriverDAO {
 
         try {
             Connection conn = DBConnection.getConnection();
-
-            String regNumber = generateRegNumber();
 
             PreparedStatement stmt = conn.prepareStatement(
                     "UPDATE `drivers` SET fullName = ?, driverNic = ?, driverPhone = ?, driverEmail = ?, driverAddress = ?, licenseType = ?, licenseExpireDate = ? WHERE id = ?"
@@ -147,7 +145,7 @@ public class DriverDAO {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error: " + e.getMessage());
         }
         return false;
     }

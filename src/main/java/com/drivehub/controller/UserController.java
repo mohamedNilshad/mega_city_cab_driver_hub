@@ -25,8 +25,34 @@ public class UserController extends HttpServlet {
                 session.invalidate();
                 response.sendRedirect("index.jsp");
             }
+        }else if ("profile_info".equals(action)) {
+            getProfileInfo(request, response);
         }
     }
+
+    private void getProfileInfo(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
+        int userId = Integer.parseInt(request.getParameter("userId"));
+
+        User user = userService.getProfileInfo(userId);
+        JSONObject jsonResponse = new JSONObject();
+
+        if (user != null) {
+            jsonResponse.put("status", "success");
+            jsonResponse.put("data", user.toJson());
+
+        } else {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", "Wrong Credentials!");
+        }
+        out.print(jsonResponse);
+        out.flush();
+    }
+
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
         String action = request.getParameter("action");
@@ -35,6 +61,10 @@ public class UserController extends HttpServlet {
             registerUser(request, response);
         } else if ("login".equals(action)) {
             loginUser(request, response);
+        } else if ("confirm_password".equals(action)) {
+            confirmPassword(request, response);
+        } else if ("update_profile".equals(action)) {
+            updateProfile(request, response);
         }
     }
 
@@ -98,6 +128,64 @@ public class UserController extends HttpServlet {
         } else {
             jsonResponse.put("status", "error");
             jsonResponse.put("message", "Wrong Credentials!");
+        }
+        out.print(jsonResponse);
+        out.flush();
+    }
+
+    private void confirmPassword(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject jsonResponse = new JSONObject();
+
+        int userId = Integer.parseInt(request.getParameter("u_id"));
+        String password = request.getParameter("confirm_password");
+
+        boolean isConfirm = userService.confirmPassword(userId, password);
+
+        if (isConfirm) {
+
+            jsonResponse.put("status", "success");
+            jsonResponse.put("message", "Password Confirmed");
+
+        } else {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", "Wrong Current Password!");
+        }
+        out.print(jsonResponse);
+        out.flush();
+    }
+
+    private void updateProfile(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject jsonResponse = new JSONObject();
+
+        User user = new User(
+                Integer.parseInt(request.getParameter("userId")),
+                request.getParameter("admin_name"),
+                request.getParameter("admin_email"),
+                request.getParameter("admin_nic"),
+                request.getParameter("admin_address"),
+                request.getParameter("admin_phone"),
+                request.getParameter("admin_username")
+        );
+
+        user.setPassword(request.getParameter("admin_new_password"));
+
+        boolean isUpdated = userService.updateProfile(user);
+
+        if (isUpdated) {
+            jsonResponse.put("status", "success");
+            jsonResponse.put("message", "Profile Updated Successful");
+
+        } else {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", "Profile Updated Failed!");
         }
         out.print(jsonResponse);
         out.flush();

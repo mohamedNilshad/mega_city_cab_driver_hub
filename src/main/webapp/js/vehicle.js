@@ -195,7 +195,7 @@
                                     <td>${vehicle.driverRegNum}</td>
                                     <td>
                                         <button type="button" class="icon-btn" onclick='openEditModal(${jsonVehicle})'><i class="zmdi zmdi-edit"></i></button>
-                                        <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
+                                        <button type="button" class="icon-btn" style="color: red" onclick='openDeleteModal(${vehicle.id},${vehicle.driverId},"${vehicle.vehicleImage}")'><i class="zmdi zmdi-delete"></i></button>
                                     </td>
                                 </tr>
                             `;
@@ -292,20 +292,94 @@
         });
     });
 
+    //delete vehicle
+    $("#deleteVehicle").submit(function(event) {
+        event.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "../../vehicle",
+            data:  $(this).serialize(),
+            dataType: "json",
+            beforeSend: function() {
+                $('#dv_btn_loading').css('display', 'inline');
+                $(":submit").attr("disabled", true);
+            },
+            success: function(response) {
+                if (response.status === "success") {
+                    fetchAvailableDrivers();
+                    fetchVehicles();
+                    $("#success_alert").hide();
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
 
+            },
+            error: function(xhr) {
+                    let responseText = xhr.responseText;
+                    let errorMsg = '';
+                    try {
+                        let errorResponse = JSON.parse(responseText);
+                        errorMsg = errorResponse.message;
+                    } catch (e) {
+                        errorMsg = "Unexpected error occurred "+e;
+                    }
+
+                    $("#success_alert").hide();
+                        $('#error_alert').html(errorMsg);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#dv_btn_loading').css('display', 'none');
+                $("#deleteVehicleForm").modal("hide");
+            }
+        });
+    });
+
+    //update vehicle form
     function openEditModal(vehicle) {
+        let updateDriver = [...drivers];
+
+        let currentDriver = {
+            id: vehicle.driverId,
+            isAllocate: 1,
+            licenseTypeId: 0,
+            name: vehicle.driverName
+        };
+        updateDriver.unshift(currentDriver);
 
         document.getElementById("vehicle_id").value = vehicle.id;
         document.getElementById("old_v_image").value = vehicle.vehicleImage;
+        document.getElementById("old_driver_id").value = vehicle.driverId;
         buildVehicleType('update_v_type', vehicleTypes, vehicle.vehicleTypeId);
         document.getElementById("update_v_name").value = vehicle.vehicleName;
         document.getElementById("update_v_number").value = vehicle.vehicleNumber;
         document.getElementById("update_seat_count").value = vehicle.seatCount;
         document.getElementById("old_image").src = contextPath + vehicle.vehicleImage;
         document.getElementById("old_image_label").innerHTML = vehicle.vehicleImage;
-        buildDriverList('update_driver', drivers, vehicle.driverId);
+        buildDriverList('update_driver', updateDriver, vehicle.driverId);
 
         let modal = new bootstrap.Modal(document.getElementById("vehicleUpdateFrom"));
+        modal.show();
+    }
+
+    //delete vehicle model
+    function openDeleteModal(v_id, d_id, d_image) {
+        document.getElementById("d_v_id").value = v_id;
+        document.getElementById("d_driver_id").value = d_id;
+        document.getElementById("d_image_name").value = d_image;
+
+        let modal = new bootstrap.Modal(document.getElementById("deleteVehicleForm"));
         modal.show();
     }
 
@@ -351,7 +425,6 @@
          document.getElementById('v_number').value = '';
          document.getElementById('seat_count').value = '';
          document.getElementById('v_image').value = '';
-
          document.getElementById('driver').selectedIndex = 0;
     }
 

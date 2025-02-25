@@ -7,6 +7,7 @@ import com.drivehub.util.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,13 +86,14 @@ public class VehicleDAO {
             int rs = stmt.executeUpdate();
 
             if (rs > 0) {
-                PreparedStatement stmt2 = conn.prepareStatement("UPDATE `drivers` SET isAllocate = ? WHERE id = ?");
-
-                stmt2.setInt(1, 1);
-                stmt2.setInt(2, newVehicle.getDriverId());
-
-                int rs2 = stmt2.executeUpdate();
-                if (rs2 > 0) {
+//                PreparedStatement stmt2 = conn.prepareStatement("UPDATE `drivers` SET isAllocate = ? WHERE id = ?");
+//
+//                stmt2.setInt(1, 1);
+//                stmt2.setInt(2, newVehicle.getDriverId());
+//
+//                int rs2 = stmt2.executeUpdate();
+                boolean updated = updateDriverAllocation(newVehicle.getDriverId(), 1);
+                if (updated) {
                     return true;
                 }
             }
@@ -122,11 +124,58 @@ public class VehicleDAO {
             int rs = stmt.executeUpdate();
 
             if (rs > 0) {
-                return true;
+                //update old driver
+                boolean updatedOld = updateDriverAllocation(vehicle.getOldDriverId(), 0);
+                if (updatedOld) {
+                    //update new driver
+                    boolean updatedNew = updateDriverAllocation(vehicle.getDriverId(), 1);
+                    return true;
+                }
             }
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public Boolean deleteVehicle(Vehicle vehicle) {
+
+        try {
+            Connection conn = DBConnection.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM `vehicles` WHERE id = ?");
+            stmt.setInt(1, vehicle.getId());
+            int rs = stmt.executeUpdate();
+
+            if (rs > 0) {
+                //update driver
+                boolean updatedDriver = updateDriverAllocation(vehicle.getDriverId(), 0);
+                if (updatedDriver) {
+                    return true;
+                }
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
+    private boolean updateDriverAllocation(int driverId, int value){
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("UPDATE `drivers` SET isAllocate = ? WHERE id = ?");
+
+            stmt.setInt(1, value);
+            stmt.setInt(2, driverId);
+
+            int rs = stmt.executeUpdate();
+            if (rs > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return false;
     }
