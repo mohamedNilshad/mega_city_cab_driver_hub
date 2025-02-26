@@ -16,6 +16,7 @@ public class Vehicle {
     private String vehicleNumber;
     private int seatCount;
     private String vehicleImage;
+    private int isAvailable;
 
     //update
     public Vehicle(int id, int vehicleTypeId, int driverId, int oldDriverId, String vehicleName, String vehicleNumber, int seatCount, String vehicleImage) {
@@ -100,8 +101,11 @@ public class Vehicle {
         return vehicleImage;
     }
 
+    public int getIsAvailable() {
+        return isAvailable;
+    }
 
-    //Setters
+//Setters
 
 
     public void setId(int id) {
@@ -147,6 +151,9 @@ public class Vehicle {
     public void setVehicleImage(String vehicleImage) {
         this.vehicleImage = vehicleImage;
     }
+    public void setIsAvailable(int isAvailable) {
+        this.isAvailable = isAvailable;
+    }
 
     public Map<String, Object> toJson() {
         Map<String, Object> jsonMap = new HashMap<>();
@@ -161,6 +168,7 @@ public class Vehicle {
         jsonMap.put("vehicleNumber", vehicleNumber);
         jsonMap.put("seatCount", seatCount);
         jsonMap.put("vehicleImage", vehicleImage);
+        jsonMap.put("isAvailable", isAvailable);
         return jsonMap; // Excludes password for security
     }
 
@@ -178,6 +186,7 @@ public class Vehicle {
                 ", vehicleNumber='" + vehicleNumber + '\'' +
                 ", seatCount='" + seatCount + '\'' +
                 ", vehicleImage='" + vehicleImage + '\'' +
+                ", isAvailable='" + isAvailable + '\'' +
                 '}';
     }
 }

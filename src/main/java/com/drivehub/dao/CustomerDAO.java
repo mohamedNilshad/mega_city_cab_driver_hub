@@ -111,4 +111,28 @@ public class CustomerDAO {
         }
         return null;
     }
+
+    public User getCustomer(int customerId) {
+
+        try  {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT id,fullName,userNic,userPhone FROM users WHERE id = ?");
+            stmt.setInt(1, customerId);
+            ResultSet rs = stmt.executeQuery();
+
+            User customer = new User();
+
+            if (rs.next()) {
+                customer.setId(rs.getInt("id"));
+                customer.setName(rs.getString("fullName"));
+                customer.setNic(rs.getString("userNic"));
+                customer.setPhone(rs.getString("userPhone"));
+            }
+            return customer;
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return null;
+    }
 }

@@ -41,7 +41,7 @@
                                     <td>${customer.phone}</td>
                                     <td>${customer.userName}</td>
                                     <td><button type="button" class="icon-btn" onclick='openEditModal(${jsonCustomer})'><i class="zmdi zmdi-edit"></i></button></td>
-                                    <td><button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#bookingForm">Book</button></td>
+                                    <td><a href="booking.jsp?cid=${customer.id}" class="btn btn-warning" >Book</a></td>
                                 </tr>
                             `;
                             tbody.append(newRow);
@@ -148,7 +148,6 @@
             }
         });
     });
-
 
     //add new customer
     $("#newCustomerForm").submit(function(event) {

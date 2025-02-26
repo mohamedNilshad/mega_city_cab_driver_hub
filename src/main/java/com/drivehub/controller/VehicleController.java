@@ -258,7 +258,7 @@ public class VehicleController extends HttpServlet {
         } catch (Exception e) {
             jsonResponse.put("status", "error");
             jsonResponse.put("message", e);
-            System.out.println(e);
+
             throw new RuntimeException(e);
         }
         out.print(jsonResponse);

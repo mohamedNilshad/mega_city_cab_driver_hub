@@ -24,7 +24,32 @@ public class CustomerController extends HttpServlet {
         String action = request.getParameter("action");
         if ("customer_list".equals(action)) {
             getCustomerList(response);
+        }else if ("customer_info".equals(action)) {
+            getCustomerInfo(request, response);
         }
+    }
+
+    private void getCustomerInfo(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
+        int customerId = Integer.parseInt(request.getParameter("customer_id"));
+
+        User customer = customerService.getCustomerInfo(customerId);
+        JSONObject jsonResponse = new JSONObject();
+
+        if (customer != null) {
+            jsonResponse.put("status", "success");
+            jsonResponse.put("data", customer.toJson());
+
+        } else {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", "Wrong Credentials!");
+        }
+        out.print(jsonResponse);
+        out.flush();
     }
 
     private void getCustomerList(HttpServletResponse response) throws IOException{

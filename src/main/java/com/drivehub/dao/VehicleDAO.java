@@ -86,12 +86,6 @@ public class VehicleDAO {
             int rs = stmt.executeUpdate();
 
             if (rs > 0) {
-//                PreparedStatement stmt2 = conn.prepareStatement("UPDATE `drivers` SET isAllocate = ? WHERE id = ?");
-//
-//                stmt2.setInt(1, 1);
-//                stmt2.setInt(2, newVehicle.getDriverId());
-//
-//                int rs2 = stmt2.executeUpdate();
                 boolean updated = updateDriverAllocation(newVehicle.getDriverId(), 1);
                 if (updated) {
                     return true;
@@ -128,8 +122,7 @@ public class VehicleDAO {
                 boolean updatedOld = updateDriverAllocation(vehicle.getOldDriverId(), 0);
                 if (updatedOld) {
                     //update new driver
-                    boolean updatedNew = updateDriverAllocation(vehicle.getDriverId(), 1);
-                    return true;
+                    return updateDriverAllocation(vehicle.getDriverId(), 1);
                 }
             }
 

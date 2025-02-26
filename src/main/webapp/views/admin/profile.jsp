@@ -19,18 +19,17 @@
         <jsp:include page="includes/admin_header.jsp" />
         <style>
             .overlay {
-                   position: absolute;
-                   top: 0;
-                   left: 0;
-                   width: 100%;
-                   height: 100%;
-                   background: rgba(255, 255, 255, 0.7);
-                   display: flex;
-                   justify-content: center;
-                   align-items: center;
-                   z-index: 10;
-               }
-
+               position: absolute;
+               top: 0;
+               left: 0;
+               width: 100%;
+               height: 100%;
+               background: rgba(255, 255, 255, 0.7);
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               z-index: 10;
+           }
         </style>
     </head>
     <body id="page-top"  style="padding-top: 110px; padding-bottom: 10px;">
