@@ -33,7 +33,7 @@
         <div class="alert alert-success custom-alert" role="alert" id="success_alert"></div>
         <div class="alert alert-danger custom-alert" role="alert" id="error_alert"></div>
 
-        <table id="vehiclesTable"  class="table">
+        <table id="vehiclesTable" class="table">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col" style="width: 3%">#</th>

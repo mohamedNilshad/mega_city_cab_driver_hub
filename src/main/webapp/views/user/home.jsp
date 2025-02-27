@@ -20,6 +20,7 @@
     <head>
         <jsp:include page="includes/user_header.jsp" />
 
+
     </head>
     <body id="page-top" style="padding: 10px; padding-top: 110px; ">
         <!-- Navigation-->
@@ -28,6 +29,7 @@
             <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookingForm">Schedule Booking</a>
             <a href="instant_ride.jsp" class="btn btn-secondary">Instant Ride</a>
         </div>
+
 
         <div class="navbar navbar-light" style="background-color: #e3f2fd; margin-bottom: 5px;">
             <div class="navbar-brand">Cars</div>

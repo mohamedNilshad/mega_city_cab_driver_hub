@@ -213,24 +213,24 @@
 
             },
             error: function(xhr) {
-                    let responseText = xhr.responseText;
-                    let errorMsg = '';
-                    try {
-                        let errorResponse = JSON.parse(responseText);
-                        errorMsg = errorResponse.message;
-                    } catch (e) {
-                        errorMsg = "Unexpected error occurred: "+e;
-                    }
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred: "+e;
+                }
 
-                    let tbody = $("#vehiclesTable tbody");
-                    tbody.empty();
-                    tbody.append(`<tr><td colspan="8" style="text-align:center;">No Data</td></tr>`);
+                let tbody = $("#vehiclesTable tbody");
+                tbody.empty();
+                tbody.append(`<tr><td colspan="8" style="text-align:center;">No Data</td></tr>`);
 
-                    $("#success_alert").hide();
-                        $('#error_alert').html(errorMsg);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
             },
 
         });

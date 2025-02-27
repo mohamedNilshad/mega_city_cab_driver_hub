@@ -9,31 +9,37 @@ public class PaymentInfo {
     private int referenceNumber;
     private int customerId;
     private User customer;
-    private int paymentType;
-    private int isPaid;
+    private int paymentType; //1<-Cash on the spot, 2<- online payment
+    private double totalAmount;
+    private double providedAmount;
+    private int isPaid; //0,1
 
 
     //select
-    public PaymentInfo(int id, int referenceNumber, int customerId, User customer, int paymentType, int isPaid) {
+    public PaymentInfo(int id, int referenceNumber, int customerId, User customer, int paymentType, double totalAmount, double providedAmount, int isPaid) {
         this.id = id;
         this.referenceNumber = referenceNumber;
         this.customerId = customerId;
         this.customer = customer;
         this.paymentType = paymentType;
+        this.totalAmount = totalAmount;
+        this.providedAmount = providedAmount;
         this.isPaid = isPaid;
     }
 
     //update
-    public PaymentInfo(int id, int isPaid) {
+    public PaymentInfo(int id, double totalAmount, double providedAmount, int isPaid) {
         this.id = id;
+        this.totalAmount = totalAmount;
+        this.providedAmount = providedAmount;
         this.isPaid = isPaid;
     }
 
     //insert
-    public PaymentInfo(int referenceNumber, int customerId, int paymentType, int isPaid) {
-        this.referenceNumber = referenceNumber;
+    public PaymentInfo(int customerId, int paymentType, double totalAmount,int isPaid) {
         this.customerId = customerId;
         this.paymentType = paymentType;
+        this.totalAmount = totalAmount;
         this.isPaid = isPaid;
     }
 
@@ -55,6 +61,10 @@ public class PaymentInfo {
 
     public User getCustomer() {
         return customer;
+    }
+
+    public double getTotalAmount() {
+        return totalAmount;
     }
 
     public int getPaymentType() {
@@ -98,6 +108,8 @@ public class PaymentInfo {
         jsonMap.put("customerId", customerId);
         jsonMap.put("customer", customer.toJson());
         jsonMap.put("paymentType", paymentType);
+        jsonMap.put("totalAmount", totalAmount);
+        jsonMap.put("providedAmount", providedAmount);
         jsonMap.put("isPaid", isPaid);
         return jsonMap; // Excludes password for security
     }
@@ -110,7 +122,8 @@ public class PaymentInfo {
                 ", isPaid='" + isPaid + '\'' +
                 ", referenceNumber='" + referenceNumber + '\'' +
                 ", customerId='" + customerId + '\'' +
-                ", paymentType='" + paymentType + '\'' +
+                ", totalAmount='" + totalAmount + '\'' +
+                ", providedAmount='" + providedAmount + '\'' +
                 ", isPaid='" + isPaid + '\'' +
                 '}';
     }

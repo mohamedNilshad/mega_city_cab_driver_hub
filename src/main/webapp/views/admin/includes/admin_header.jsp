@@ -65,4 +65,5 @@ crossorigin="anonymous"></script>
         vertical-align: middle;
     }
 
+
 </style>

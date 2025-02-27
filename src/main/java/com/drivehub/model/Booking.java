@@ -19,43 +19,51 @@ public class Booking {
     private Timestamp startDate;
     private Timestamp endDate;
     private double totalAmount;
+    private int requestedSeatCount;
+    private double totalRequestedDistance;
+    private String passengerName;
+    private String passengerPhone;
     private int status; // 0<-scheduled 1<-completed 2<-canceled 3<-ongoing
 
+
     //select
-    public Booking(int id, String bookingNumber, int bookingType, User customer, int customerId, Vehicle vehicle, int vehicleId, PaymentInfo paymentInfo, int paymentId, String fromDestination, String toDestination, Timestamp startDate, Timestamp endDate, double totalAmount, int status) {
+    public Booking(int id, String bookingNumber, int bookingType, int customerId, Vehicle vehicle, int vehicleId, int paymentId, String fromDestination, String toDestination, Timestamp startDate, Timestamp endDate, double totalAmount, String passengerName, String passengerPhone, int status) {
         this.id = id;
         this.bookingNumber = bookingNumber;
         this.bookingType = bookingType;
-        this.customer = customer;
         this.customerId = customerId;
         this.vehicle = vehicle;
         this.vehicleId = vehicleId;
-        this.paymentInfo = paymentInfo;
         this.paymentId = paymentId;
         this.fromDestination = fromDestination;
         this.toDestination = toDestination;
         this.startDate = startDate;
         this.endDate = endDate;
         this.totalAmount = totalAmount;
+        this.passengerName = passengerName;
+        this.passengerPhone = passengerPhone;
         this.status = status;
     }
 
     //insert
-    public Booking(int customerId, int vehicleId, int paymentId, int bookingType, String fromDestination, String toDestination, Timestamp startDate, Timestamp endDate, double totalAmount, int status) {
+    public Booking(int customerId, int vehicleId, int bookingType, String fromDestination, String toDestination, Timestamp startDate, Timestamp endDate, double totalAmount, int requestedSeatCount, double totalRequestedDistance, String passengerName, String passengerPhone, int status) {
         this.customerId = customerId;
         this.vehicleId = vehicleId;
-        this.paymentId = paymentId;
         this.bookingType = bookingType;
         this.fromDestination = fromDestination;
         this.toDestination = toDestination;
         this.startDate = startDate;
         this.endDate = endDate;
         this.totalAmount = totalAmount;
+        this.requestedSeatCount = requestedSeatCount;
+        this.totalRequestedDistance = totalRequestedDistance;
+        this.passengerName = passengerName;
+        this.passengerPhone = passengerPhone;
         this.status = status;
     }
 
     //update
-    public Booking(int id, String bookingNumber, int customerId, int vehicleId, String fromDestination, String toDestination, Timestamp startDate, Timestamp endDate, double totalAmount, int status) {
+    public Booking(int id,int vehicleId, String fromDestination, String toDestination, Timestamp startDate, Timestamp endDate, double totalAmount, int status) {
         this.id = id;
         this.vehicleId = vehicleId;
         this.fromDestination = fromDestination;
@@ -65,6 +73,8 @@ public class Booking {
         this.totalAmount = totalAmount;
         this.status = status;
     }
+
+    public Booking() {}
 
     //Getters
     public int getId() {
@@ -89,6 +99,22 @@ public class Booking {
 
     public int getCustomerId() {
         return customerId;
+    }
+
+    public double getTotalRequestedDistance() {
+        return totalRequestedDistance;
+    }
+
+    public String getPassengerName() {
+        return passengerName;
+    }
+
+    public String getPassengerPhone() {
+        return passengerPhone;
+    }
+
+    public int getRequestedSeatCount() {
+        return requestedSeatCount;
     }
 
     public Vehicle getVehicle() {
@@ -127,16 +153,19 @@ public class Booking {
         Map<String, Object> jsonMap = new HashMap<>();
         jsonMap.put("id", id);
         jsonMap.put("bookingNumber", bookingNumber);
-        jsonMap.put("customer", customer.toJson());
         jsonMap.put("customerId", customerId);
         jsonMap.put("vehicle", vehicle.toJson());
         jsonMap.put("vehicleId", vehicleId);
-        jsonMap.put("paymentInfo", paymentInfo.toJson());
         jsonMap.put("paymentId", paymentId);
         jsonMap.put("fromDestination", fromDestination);
         jsonMap.put("toDestination", toDestination);
         jsonMap.put("startDate", startDate);
         jsonMap.put("endDate", endDate);
+        jsonMap.put("requestedSeatCount", requestedSeatCount);
+        jsonMap.put("totalRequestedDistance", totalRequestedDistance);
+        jsonMap.put("totalAmount", totalAmount);
+        jsonMap.put("passengerPhone", passengerPhone);
+        jsonMap.put("passengerName", passengerName);
         jsonMap.put("status", status);
         return jsonMap;
     }
