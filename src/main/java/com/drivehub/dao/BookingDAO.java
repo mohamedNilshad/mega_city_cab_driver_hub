@@ -22,10 +22,13 @@ public class BookingDAO {
                     "SELECT id, vehicleName, seatCount, vehicleImage FROM vehicles "+
                             "WHERE vehicleTypeId = ? AND (seatCount IN (?, ?, ?))"
             );
+
+            //(seatCount <= selectedVehicle.seatCount + 1) && (seatCount >= selectedVehicle.seatCount - 3)
             stmt.setInt(1, vType);
             stmt.setInt(2, seatCount);
             stmt.setInt(3, seatCount + 1);
             stmt.setInt(4, seatCount - 1);
+
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -50,29 +53,98 @@ public class BookingDAO {
         try  {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT b.*, v.vehicleNumber FROM bookings b "+
-                            "INNER JOIN vehicles v ON b.vehicle_id = v.id WHERE customer_id  = ?"
+                    "SELECT b.*, v.*, c.userNic FROM bookings b "+
+                            "INNER JOIN users c ON b.customer_id = c.id "+
+                            "INNER JOIN vehicles v ON b.vehicle_id = v.id WHERE b.customer_id = ?"
             );
             stmt.setInt(1, customerId);
             ResultSet rs = stmt.executeQuery();
 
-
             while (rs.next()) {
+
                 Vehicle v = new Vehicle();
                 v.setVehicleNumber(rs.getString("vehicleNumber"));
+                v.setVehicleTypeId(rs.getInt("vehicleTypeId"));
+                v.setVehicleName(rs.getString("vehicleName"));
+                v.setSeatCount(rs.getInt("seatCount"));
+                v.setVehicleImage(rs.getString("vehicleImage"));
+
+                User customer = new User();
+                customer.setNic(rs.getString("userNic"));
+
+                List<PaymentInfo> paymentList = getPaymentList(rs.getInt("id"));
                 Booking b = new Booking(
                         rs.getInt("id"),
                         rs.getString("booking_number"),
+                        paymentList,
                         rs.getInt("booking_type"),
                         rs.getInt("customer_id"),
+                        customer,
                         v,
                         rs.getInt("vehicle_id"),
-                        rs.getInt("payment_id"),
                         rs.getString("from_destination"),
                         rs.getString("to_destination"),
                         rs.getTimestamp("start_date"),
                         rs.getTimestamp("to_date"),
                         rs.getDouble("total_amount"),
+                        rs.getInt("requested_seat_count"),
+                        rs.getDouble("total_requested_distance"),
+                        rs.getString("passenger_name"),
+                        rs.getString("passenger_phone"),
+                        rs.getInt("status")
+                );
+
+                bookingList.add(b);
+            }
+
+            return bookingList;
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+            System.err.println("Error: " + e);
+        }
+        return null;
+    }
+
+    public List<Booking> getScheduledBookings() {
+        List<Booking> bookingList = new ArrayList<>();
+        try  {
+            Connection conn = DBConnection.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT b.*, v.vehicleNumber, v.vehicleTypeId, c.userNic FROM bookings b "+
+                            "INNER JOIN vehicles v ON b.vehicle_id = v.id "+
+                            "INNER JOIN users c ON b.customer_id = c.id "+
+                            "WHERE b.status = ? ORDER BY b.start_date"
+            );
+            stmt.setInt(1, 0);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Vehicle v = new Vehicle();
+                User customer = new User();
+                customer.setNic(rs.getString("userNic"));
+                v.setVehicleNumber(rs.getString("vehicleNumber"));
+                v.setVehicleTypeId(rs.getInt("vehicleTypeId"));
+
+                List<PaymentInfo> paymentList = getPaymentList(rs.getInt("id"));
+
+                Booking b = new Booking(
+                        rs.getInt("id"),
+                        rs.getString("booking_number"),
+                        paymentList,
+                        rs.getInt("booking_type"),
+                        rs.getInt("customer_id"),
+                        customer,
+                        v,
+                        rs.getInt("vehicle_id"),
+                        rs.getString("from_destination"),
+                        rs.getString("to_destination"),
+                        rs.getTimestamp("start_date"),
+                        rs.getTimestamp("to_date"),
+                        rs.getDouble("total_amount"),
+                        rs.getInt("requested_seat_count"),
+                        rs.getDouble("total_requested_distance"),
                         rs.getString("passenger_name"),
                         rs.getString("passenger_phone"),
                         rs.getInt("status")
@@ -94,14 +166,14 @@ public class BookingDAO {
         try {
             Connection conn = DBConnection.getConnection();
 
-            int paymentId = getPaymentId(paymentInfo);
             String bookingNumber = generateBookingNumber();
 
             PreparedStatement stmt = conn.prepareStatement(
                     "INSERT INTO `bookings`(`booking_number`, `booking_type`, `customer_id`, `vehicle_id`, "+
-                            "`payment_id`, `from_destination`, `to_destination`, `start_date`, `to_date`, `total_amount`, "+
+                            "`from_destination`, `to_destination`, `start_date`, `to_date`, `total_amount`, "+
                             " `requested_seat_count`, `total_requested_distance`, `passenger_name`, `passenger_phone`, `status`)"+
-                            " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+                            " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    Statement.RETURN_GENERATED_KEYS
             );
 
             stmt.setString(1,bookingNumber);
@@ -109,18 +181,44 @@ public class BookingDAO {
             stmt.setInt(3, newBooking.getCustomerId());
             stmt.setInt(4, newBooking.getVehicleId());
 
-            stmt.setInt(5, paymentId);
-            stmt.setString(6, newBooking.getFromDestination());
-            stmt.setString(7, newBooking.getToDestination());
-            stmt.setTimestamp(8, newBooking.getStartDate());
-            stmt.setTimestamp(9, newBooking.getEndDate());
-            stmt.setDouble(10, newBooking.getTotalAmount());
+            stmt.setString(5, newBooking.getFromDestination());
+            stmt.setString(6, newBooking.getToDestination());
+            stmt.setTimestamp(7, newBooking.getStartDate());
+            stmt.setTimestamp(8, newBooking.getEndDate());
+            stmt.setDouble(9, newBooking.getTotalAmount());
 
-            stmt.setInt(11, newBooking.getRequestedSeatCount());
-            stmt.setDouble(12, newBooking.getTotalRequestedDistance());
-            stmt.setString(13, newBooking.getPassengerName());
-            stmt.setString(14, newBooking.getPassengerPhone());
-            stmt.setInt(15, newBooking.getStatus());
+            stmt.setInt(10, newBooking.getRequestedSeatCount());
+            stmt.setDouble(11, newBooking.getTotalRequestedDistance());
+            stmt.setString(12, newBooking.getPassengerName());
+            stmt.setString(13, newBooking.getPassengerPhone());
+            stmt.setInt(14, newBooking.getStatus());
+
+            int rs = stmt.executeUpdate();
+            if (rs > 0) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int insertedId = generatedKeys.getInt(1);
+                        return addPaymentInfo(paymentInfo, insertedId);
+                    }
+                }
+            }
+
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public Boolean changeBookingStatus(int status, int bookingId)  {
+
+        try {
+            Connection conn = DBConnection.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement("UPDATE `bookings` SET status = ? WHERE id = ?");
+
+            stmt.setInt(1, status);
+            stmt.setInt(2, bookingId);
 
             int rs = stmt.executeUpdate();
 
@@ -134,33 +232,26 @@ public class BookingDAO {
         return false;
     }
 
-    private int getPaymentId(PaymentInfo paymentInfo) throws SQLException {
+    private boolean addPaymentInfo(PaymentInfo paymentInfo, int bookingId) throws SQLException {
         Connection conn = DBConnection.getConnection();
 
         String refNumber = generateReferenceNumber();
 
         PreparedStatement stmt = conn.prepareStatement(
-                "INSERT INTO `payment_info`(`reference_number`, `customer_id`, `payment_type`, `total_amount`, `is_paid`) VALUES (?,?,?,?,?)",
-                Statement.RETURN_GENERATED_KEYS
+                "INSERT INTO `payment_info`(`reference_number`, `booking_id`, `customer_id`, `payment_type`, `total_amount`, `provided_amount`, `is_paid`) VALUES (?,?,?,?,?,?,?)"
         );
 
         stmt.setString(1,refNumber);
-        stmt.setInt(2, paymentInfo.getCustomerId());
-        stmt.setInt(3, paymentInfo.getPaymentType());
-        stmt.setDouble(4, paymentInfo.getTotalAmount());
-        stmt.setInt(5, paymentInfo.getIsPaid());
+        stmt.setInt(2, bookingId);
+        stmt.setInt(3, paymentInfo.getCustomerId());
+        stmt.setInt(4, paymentInfo.getPaymentType());
+        stmt.setDouble(5, paymentInfo.getTotalAmount());
+        stmt.setDouble(6, paymentInfo.getProvidedAmount());
+        stmt.setInt(7, paymentInfo.getIsPaid());
 
         int rs = stmt.executeUpdate();
 
-        int insertedId = -1;
-        if (rs > 0) {
-            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    insertedId = generatedKeys.getInt(1);
-                }
-            }
-        }
-        return  insertedId;
+        return  rs > 0;
     }
 
     private String generateReferenceNumber() throws SQLException {
@@ -192,6 +283,8 @@ public class BookingDAO {
         stmt.setInt(3, seatCount);
         stmt.setInt(4, seatCount + 1);
         stmt.setInt(5, seatCount - 1);
+
+
         ResultSet rs = stmt.executeQuery();
 
         List<Integer> idList = new ArrayList<>();
@@ -204,6 +297,25 @@ public class BookingDAO {
         return list;
 
 
+    }
+
+    private List<PaymentInfo> getPaymentList(int bookId) throws SQLException {
+        Connection conn = DBConnection.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM payment_info WHERE booking_id = ?"
+        );
+        stmt.setInt(1, bookId);
+        ResultSet rs = stmt.executeQuery();
+        List<PaymentInfo> paymentList = new ArrayList<>();
+
+        while (rs.next()) {
+            PaymentInfo p = new PaymentInfo();
+            p.setId(rs.getInt("id"));
+            p.setProvidedAmount(rs.getDouble("provided_amount"));
+            paymentList.add(p);
+        }
+
+        return paymentList;
     }
 
     private String generateBookingNumber() throws SQLException {
@@ -220,4 +332,6 @@ public class BookingDAO {
         }
         return bookingNum;
     }
+
+
 }

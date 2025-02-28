@@ -94,7 +94,6 @@ public class User {
     public void setPassword(String password) {this.password = password;}
 
 
-    // ✅ Convert User object to a JSON-like format
     public Map<String, Object> toJson() {
         Map<String, Object> jsonMap = new HashMap<>();
         jsonMap.put("id", id);
@@ -105,10 +104,9 @@ public class User {
         jsonMap.put("email", email);
         jsonMap.put("nic", nic);
         jsonMap.put("phone", phone);
-        return jsonMap; // Excludes password for security
+        return jsonMap;
     }
 
-    // ✅ Override toString for debugging
     @Override
     public String toString() {
         return "User{" +

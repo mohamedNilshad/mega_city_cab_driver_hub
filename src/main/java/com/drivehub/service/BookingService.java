@@ -19,7 +19,15 @@ public class BookingService {
         return bookingDAO.getUserBookings(customerId);
     }
 
+    public List<Booking> getScheduledBookings() {
+        return bookingDAO.getScheduledBookings();
+    }
+
     public Boolean addNewBooking(Booking booking, PaymentInfo paymentInfo) {
         return bookingDAO.addNewBooking(booking, paymentInfo);
+    }
+
+    public Boolean changeBookingStatus(int status, int bookingId) {
+        return bookingDAO.changeBookingStatus( status, bookingId);
     }
 }

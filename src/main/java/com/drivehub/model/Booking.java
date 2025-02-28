@@ -2,6 +2,7 @@ package com.drivehub.model;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Booking {
@@ -12,8 +13,7 @@ public class Booking {
     private int customerId;
     private Vehicle vehicle;
     private int vehicleId;
-    private PaymentInfo paymentInfo;
-    private int paymentId;
+    private List<PaymentInfo> paymentInfoList;
     private String fromDestination;
     private String toDestination;
     private Timestamp startDate;
@@ -27,18 +27,21 @@ public class Booking {
 
 
     //select
-    public Booking(int id, String bookingNumber, int bookingType, int customerId, Vehicle vehicle, int vehicleId, int paymentId, String fromDestination, String toDestination, Timestamp startDate, Timestamp endDate, double totalAmount, String passengerName, String passengerPhone, int status) {
+    public Booking(int id, String bookingNumber, List<PaymentInfo> paymentInfoList, int bookingType, int customerId, User customer, Vehicle vehicle, int vehicleId, String fromDestination, String toDestination, Timestamp startDate, Timestamp endDate, double totalAmount, int requestedSeatCount, double totalRequestedDistance, String passengerName, String passengerPhone, int status) {
         this.id = id;
         this.bookingNumber = bookingNumber;
+        this.paymentInfoList = paymentInfoList;
         this.bookingType = bookingType;
         this.customerId = customerId;
+        this.customer = customer;
         this.vehicle = vehicle;
         this.vehicleId = vehicleId;
-        this.paymentId = paymentId;
         this.fromDestination = fromDestination;
         this.toDestination = toDestination;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.requestedSeatCount = requestedSeatCount;
+        this.totalRequestedDistance = totalRequestedDistance;
         this.totalAmount = totalAmount;
         this.passengerName = passengerName;
         this.passengerPhone = passengerPhone;
@@ -81,9 +84,6 @@ public class Booking {
         return id;
     }
 
-    public int getPaymentId() {
-        return paymentId;
-    }
 
     public int getBookingType() {
         return bookingType;
@@ -150,13 +150,15 @@ public class Booking {
     }
 
     public Map<String, Object> toJson() {
+
         Map<String, Object> jsonMap = new HashMap<>();
         jsonMap.put("id", id);
         jsonMap.put("bookingNumber", bookingNumber);
         jsonMap.put("customerId", customerId);
-        jsonMap.put("vehicle", vehicle.toJson());
+        jsonMap.put("customer", customer == null ? "" : customer.toJson());
+        jsonMap.put("paymentInfoList", paymentInfoList.isEmpty() ? "" : paymentInfoList);
+        jsonMap.put("vehicle", vehicle == null ? "" : vehicle.toJson());
         jsonMap.put("vehicleId", vehicleId);
-        jsonMap.put("paymentId", paymentId);
         jsonMap.put("fromDestination", fromDestination);
         jsonMap.put("toDestination", toDestination);
         jsonMap.put("startDate", startDate);

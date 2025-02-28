@@ -27,96 +27,62 @@
         <div style="padding-bottom: 5px; padding-right: 10px; float: right;">
             <a href="customer_booking.jsp" class="btn btn-primary">New Customer Booking</a>
         </div>
-          <table class="ctable table" style="text-align: center;">
+        <div class="alert alert-success custom-alert" role="alert" id="success_alert"></div>
+        <div class="alert alert-danger custom-alert" role="alert" id="error_alert"></div>s
+
+        <table id="bookingsTable" class="ctable table" style="text-align: center;">
             <thead class="thead-dark">
-                <tr>
-                    <th scope="col" style="width: 3%; vertical-align: middle;">#</th>
-                    <th scope="col" style="vertical-align: middle;">Booking Number</th>
-                    <th scope="col" style="vertical-align: middle;">Booking Type</th>
-                    <th scope="col" style="vertical-align: middle;">Customer Name</th>
-                    <th scope="col" style="vertical-align: middle;">Vehicle Number</th>
-                    <th scope="col" style="vertical-align: middle;">From</th>
-                    <th scope="col" style="vertical-align: middle;">To</th>
-                    <th scope="col" style="vertical-align: middle;">Start Date</th>
-                    <th scope="col" style="vertical-align: middle;">End Date</th>
-                    <th scope="col" style="vertical-align: middle;">Total Amount (LKR)</th>
-                    <th scope="col" style="width: 15%; vertical-align: middle;">Status</th>
-                    <th scope="col" style="width: 5%; vertical-align: middle;">Actions</th>
-                </tr>
+            <tr>
+                <th scope="col" style="width: 3%; vertical-align: middle;">#</th>
+                <th scope="col" style="vertical-align: middle;">Booking Number</th>
+                <th scope="col" style="vertical-align: middle;">Booking Type</th>
+                <th scope="col" style="vertical-align: middle;">Customer Name</th>
+                <th scope="col" style="vertical-align: middle;">Customer NIC</th>
+                <th scope="col" style="vertical-align: middle;">Vehicle Number</th>
+                <th scope="col" style="vertical-align: middle;">From</th>
+                <th scope="col" style="vertical-align: middle;">To</th>
+                <th scope="col" style="vertical-align: middle;">Start Date</th>
+                <th scope="col" style="vertical-align: middle;">End Date</th>
+                <th scope="col" style="vertical-align: middle;">Total Amount (LKR)</th>
+                <th scope="col" style="width: 15%; vertical-align: middle;">Status</th>
+                <th scope="col" style="width: 5%; vertical-align: middle;">Actions</th>
+            </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td style="vertical-align: middle;">45875</td>
-                    <td style="vertical-align: middle;">Instant Ride</td>
-                    <td style="vertical-align: middle;">Mark</td>
-                    <td style="vertical-align: middle;">GEF 4581</td>
-                    <td style="vertical-align: middle;">Kandy</td>
-                    <td style="vertical-align: middle;">Colombo</td>
-                    <td style="vertical-align: middle;">02-March-2025 08:00 AM</td>
-                    <td style="vertical-align: middle;">03-March-2025 08:00 AM</td>
-                    <td style="vertical-align: middle;">2500.00</td>
-                    <td class="status status-completed" style="vertical-align: middle;">Completed</td>
-                    <td style="vertical-align: middle;">
-                        <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
-                        <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>45876</td>
-                    <td>Instant Ride</td>
-                    <td>Mark</td>
-                    <td>GEF 4581</td>
-                    <td>Kandy</td>
-                    <td>Colombo</td>
-                    <td>02-March-2025 08:00 AM</td>
-                    <td>03-March-2025 08:00 AM</td>
-                    <td>2500.00</td>
-                    <td class="status status-scheduled">03-March-2025 08:00 AM</td>
-                    <td>
-                        <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
-                        <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>45877</td>
-                    <td>Scheduled Ride</td>
-                    <td>Mark</td>
-                    <td>GEF 4581</td>
-                    <td>Kandy</td>
-                    <td>Colombo</td>
-                    <td>02-March-2025 08:00 AM</td>
-                    <td>03-March-2025 08:00 AM</td>
-                    <td>2500.00</td>
-                    <td class="status status-canceled">Canceled</td>
-                    <td>
-                        <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
-                        <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">4</th>
-                    <td>45877</td>
-                    <td>Scheduled Ride</td>
-                    <td>Mark</td>
-                    <td>GEF 4581</td>
-                    <td>Kandy</td>
-                    <td>Colombo</td>
-                    <td>02-March-2025 08:00 AM</td>
-                    <td>03-March-2025 08:00 AM</td>
-                    <td>2500.00</td>
-                    <td class="status status-ongoing">On Going</td>
-                    <td>
-                        <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>
-                        <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>
-                    </td>
-                </tr>
+
             </tbody>
         </table>
-        
+
+        <!-- Status Change Confirmation-->
+        <div class="modal fade" id="confirmStatusChangeModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="statusLabel"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <p style="margin-left:15px;">Are you sure you want to <span id="subtitle" style="font-weight: bold;"> </span> this ?</p>
+                    <div class="modal-body">
+                        <form id="changeStatusForm">
+                            <input type="hidden" name="action" value="change_change" required>
+                            <input type="hidden" name="status" id="status" required>
+                            <input type="hidden" name="booking_id" id="booking_id" required>
+
+                            <div class="row justify-content-center">
+                                <button type="submit" class="btn btn-success me-2" style="width: 40%;">
+                                    <i class="fa fa-spinner fa-spin" id="cs_btn_loading" style="display: none; margin-right: 5px;"></i>Confirm
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <jsp:include page="../../WEB-INF/includes/footer.jsp" />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <jsp:include page="../../js/home.js" />
         
     </body>
 </html>

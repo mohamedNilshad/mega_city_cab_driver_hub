@@ -36,10 +36,11 @@ public class PaymentInfo {
     }
 
     //insert
-    public PaymentInfo(int customerId, int paymentType, double totalAmount,int isPaid) {
+    public PaymentInfo(int customerId, int paymentType, double totalAmount, double providedAmount, int isPaid) {
         this.customerId = customerId;
         this.paymentType = paymentType;
         this.totalAmount = totalAmount;
+        this.providedAmount = providedAmount;
         this.isPaid = isPaid;
     }
 
@@ -67,6 +68,10 @@ public class PaymentInfo {
         return totalAmount;
     }
 
+    public double getProvidedAmount() {
+        return providedAmount;
+    }
+
     public int getPaymentType() {
         return paymentType;
     }
@@ -82,6 +87,14 @@ public class PaymentInfo {
 
     public void setPaymentType(int paymentType) {
         this.paymentType = paymentType;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public void setProvidedAmount(double providedAmount) {
+        this.providedAmount = providedAmount;
     }
 
     public void setCustomer(User customer) {
@@ -100,7 +113,7 @@ public class PaymentInfo {
         this.id = id;
     }
 
-    // ✅ Convert User object to a JSON-like format
+
     public Map<String, Object> toJson() {
         Map<String, Object> jsonMap = new HashMap<>();
         jsonMap.put("id", id);
@@ -114,7 +127,7 @@ public class PaymentInfo {
         return jsonMap; // Excludes password for security
     }
 
-    // ✅ Override toString for debugging
+
     @Override
     public String toString() {
         return "User{" +
