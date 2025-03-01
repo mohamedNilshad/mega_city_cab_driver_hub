@@ -167,15 +167,15 @@ public class UserController extends HttpServlet {
 
         User user = new User(
                 Integer.parseInt(request.getParameter("userId")),
-                request.getParameter("admin_name"),
-                request.getParameter("admin_email"),
-                request.getParameter("admin_nic"),
-                request.getParameter("admin_address"),
-                request.getParameter("admin_phone"),
-                request.getParameter("admin_username")
+                request.getParameter("name"),
+                request.getParameter("email"),
+                request.getParameter("nic"),
+                request.getParameter("address"),
+                request.getParameter("phone"),
+                request.getParameter("username")
         );
 
-        user.setPassword(request.getParameter("admin_new_password"));
+        user.setPassword(request.getParameter("new_password"));
 
         boolean isUpdated = userService.updateProfile(user);
 

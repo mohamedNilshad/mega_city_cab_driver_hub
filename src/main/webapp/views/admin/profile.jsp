@@ -32,7 +32,7 @@
            }
         </style>
     </head>
-    <body id="page-top"  style="padding-top: 110px; padding-bottom: 10px;">
+    <body id="page-top" style="padding-top: 110px; padding-bottom: 10px;">
         <!-- Navigation-->
         <jsp:include page="nav.jsp" />
 
@@ -55,38 +55,38 @@
                         <input type="hidden" name="userId" id="userId">
                         <div class="mb-3">
                             <label for="admin_name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="admin_name" name="admin_name" placeholder="Enter your name">
+                            <input type="text" class="form-control" id="admin_name" name="name" placeholder="Enter your name">
                         </div>
 
                         <div class="mb-3">
                             <label for="admin_nic" class="form-label">NIC Number</label>
-                            <input type="text" class="form-control" id="admin_nic" name="admin_nic" placeholder="Enter your NIC" readonly>
+                            <input type="text" class="form-control" id="admin_nic" name="nic" placeholder="Enter your NIC" readonly>
                             <span style="color: red; font-weight: bold; font-size:10px;">* You can't edit your NIC, Contact Super Admin</span>
                         </div>
 
                         <div class="mb-3">
                             <label for="admin_email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="admin_email" name="admin_email" placeholder="Enter your email">
+                            <input type="email" class="form-control" id="admin_email" name="email" placeholder="Enter your email">
                         </div>
 
                         <div class="mb-3">
                             <label for="admin_phone" class="form-label">Phone</label>
-                            <input type="email" class="form-control" id="admin_phone" name="admin_phone" placeholder="Enter your phone">
+                            <input type="email" class="form-control" id="admin_phone" name="phone" placeholder="Enter your phone">
                         </div>
 
                         <div class="mb-3">
                             <label for="admin_address" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="admin_address" name="admin_address" placeholder="Enter your address">
+                            <input type="text" class="form-control" id="admin_address" name="address" placeholder="Enter your address">
                         </div>
 
                         <div class="mb-3">
                             <label for="admin_username" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="admin_username" name="admin_username" placeholder="Enter your username" readonly>
+                            <input type="text" class="form-control" id="admin_username" name="username" placeholder="Enter your username" readonly>
                         </div>
 
                         <div class="mb-3">
                             <label for="admin_new_password" class="form-label">New Password</label>
-                            <input type="password" class="form-control" id="admin_new_password" name="admin_new_password" placeholder="Enter your New Password">
+                            <input type="password" class="form-control" id="admin_new_password" name="new_password" placeholder="Enter your New Password">
                         </div>
 
                         <button type="button" class="btn btn-primary" onclick="openPasswordModel()" id="saveProfile">Update</button>

@@ -16,7 +16,7 @@ public class BookingDAO {
         try  {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT id, vehicleName, seatCount, vehicleImage FROM vehicles "+
+                    "SELECT id, vehicleName, seatCount, vehicleImage, vehicleDescription FROM vehicles "+
                             "WHERE vehicleTypeId = ? AND (seatCount IN (?, ?, ?))"
             );
 
@@ -34,6 +34,7 @@ public class BookingDAO {
                 v.setVehicleName(rs.getString("vehicleName"));
                 v.setSeatCount(rs.getInt("seatCount"));
                 v.setVehicleImage(rs.getString("vehicleImage"));
+                v.setDescription(rs.getString("vehicleDescription"));
                 VehicleList.add(v);
             }
             conn.close();
@@ -101,6 +102,7 @@ public class BookingDAO {
                 v.setVehicleName(rs.getString("vehicleName"));
                 v.setSeatCount(rs.getInt("seatCount"));
                 v.setVehicleImage(rs.getString("vehicleImage"));
+                v.setDescription(rs.getString("vehicleDescription"));
 
                 User customer = new User();
                 customer.setNic(rs.getString("userNic"));

@@ -212,6 +212,7 @@
                     <form id="paymentType1Form">
                         <input type="hidden" name="action" value="cash_payment" required>
                         <input type="hidden" name="action" id="balance_amount" value="-1" required>
+                        <input type="hidden" id="is_update" value="false" required>
 
 
                         <div class="row justify-content-center">

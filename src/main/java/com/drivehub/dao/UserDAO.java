@@ -1,5 +1,7 @@
 package com.drivehub.dao;
 import java.sql.*;
+import java.util.Objects;
+
 import com.drivehub.model.User;
 import com.drivehub.util.DBConnection;
 import com.drivehub.util.HashUtil;
@@ -65,7 +67,7 @@ public class UserDAO {
             Connection conn = DBConnection.getConnection();
 
             PreparedStatement stmt;
-            if(user.getPassword() == null){
+            if(user.getPassword() == null || Objects.equals(user.getPassword(), "")){
                 stmt = conn.prepareStatement(
                         "UPDATE `users` SET fullName = ?, userEmail = ?, userNic = ?, userAddress = ?, userPhone = ?, userName = ? WHERE id = ?"
                 );

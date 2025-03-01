@@ -92,17 +92,15 @@ public class BookingController extends HttpServlet {
 
         try {
 //            int vType = Integer.parseInt(request.getParameter("vehicle_type_for_da"));
-            System.out.println("defaultAmountArray");
             List<DefaultAmount> defaultAmount = bookingService.getDefaultAmount(4);
 
 
             if(defaultAmount != null){
                 JSONArray defaultAmountArray = new JSONArray();
-
                 for (DefaultAmount da : defaultAmount) {
                     defaultAmountArray.put(da.toJson());
                 }
-                System.out.println(defaultAmountArray);
+
                 jsonResponse.put("status", "success");
                 jsonResponse.put("message", "Default Amounts Fetched Successfully");
                 jsonResponse.put("data", defaultAmountArray);
@@ -235,6 +233,10 @@ public class BookingController extends HttpServlet {
                     request.getParameter("phone"),
                     0
             );
+            System.out.println(request.getParameter("provided_amount"));
+            System.out.println(request.getParameter("is_paid"));
+            System.out.println(request.getParameter("payment_type"));
+            System.out.println(request.getParameter("total_amount"));
             PaymentInfo paymentInfo = new PaymentInfo(
                     Integer.parseInt(request.getParameter("customerId")),
                     Integer.parseInt(request.getParameter("payment_type")),
@@ -242,6 +244,7 @@ public class BookingController extends HttpServlet {
                     Double.parseDouble(request.getParameter("provided_amount")),
                     Integer.parseInt(request.getParameter("is_paid"))
             );
+
 
             boolean isAdded= bookingService.addNewBooking(newBooking,paymentInfo);
 
@@ -302,11 +305,11 @@ public class BookingController extends HttpServlet {
 
             if (isUpdated) {
                 jsonResponse.put("status", "success");
-                jsonResponse.put("message", "New Booking Added Successful!");
+                jsonResponse.put("message", "Booking Updated Successful!");
 
             } else {
                 jsonResponse.put("status", "error");
-                jsonResponse.put("message", "New Booking Adding Failed!");
+                jsonResponse.put("message", "Booking Updating Failed!");
             }
 
         } catch (Exception e) {

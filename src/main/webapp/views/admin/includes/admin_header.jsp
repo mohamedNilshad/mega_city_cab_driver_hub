@@ -2,25 +2,25 @@
 <%@page import="com.drivehub.util.constant.ConstantStrings"%>
 
 <meta charset="utf-8" />
-<meta name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <meta name="description" content="" />
 <meta name="author" content="" />
+
 <title><%= ConstantStrings.BRAND_NAME%></title>
+
 <!-- Favicon-->
 <link rel="icon" type="image/x-icon" href="../../assets/favicon.ico" />
+
 <!-- Font Awesome icons (free version)-->
-<script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"
-crossorigin="anonymous"></script>
+<script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
 <!-- Google fonts-->
-<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700"
-      rel="stylesheet" type="text/css" />
-<link
-    href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic"
-    rel="stylesheet" type="text/css" />
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+
 <!-- Core theme CSS (includes Bootstrap)-->
 <link href="../../css/index-styles.css" rel="stylesheet" />
 <link href="../../css/style_2.css" rel="stylesheet" />
+
 <link rel="stylesheet" href="../../fonts/material-icon/css/material-design-iconic-font.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <!-- Bootstrap 4 CSS -->
@@ -39,17 +39,6 @@ crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
-<script>
-    function onMouseOver(id) {
-     console.log(id);
-     document.getElementById(id).style.whiteSpace = "wrap";
-     document.getElementById(id).style.overflow = "visible";
-    }
-    function onMouseLeave(id) {
-        document.getElementById(id).style.whiteSpace = "nowrap";
-        document.getElementById(id).style.overflow = "hidden";
-    }
-</script>
 
 <style>
 
@@ -69,12 +58,9 @@ crossorigin="anonymous"></script>
     .fa {
       margin-left: -12px;
       margin-right: 8px;
-/*       visibility: hidden; */
-
     }
     .c-table table, thead.thead-dark th, td{
         vertical-align: middle;
     }
-
 
 </style>

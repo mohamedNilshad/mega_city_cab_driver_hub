@@ -102,8 +102,7 @@
                                       <td style="vertical-align: middle;">${isPaid}</td>
                                       ${status}
                                       <td>
-                                            ${editButton}
-                                            <button type="button" class="icon-btn" onclick='openEditModal(${jsonVehicle})'><i class="zmdi zmdi-receipt"></i></button>
+                                           <button type="button" class="icon-btn" onclick='openEditModal(${jsonVehicle})'><i class="zmdi zmdi-receipt"></i></button>
                                       </td>
                                   </tr>
                               `;

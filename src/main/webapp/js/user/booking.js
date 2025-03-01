@@ -1,263 +1,11 @@
 <script>
 
     document.addEventListener("DOMContentLoaded", function () {
-        fetchVehicleType();
-        fetchCustomers();
-        disableAllFields();
-
-        setDate("from_date");
-        setDate("to_date");
         fetchUserBookings();
         fetchDefaultAmounts();
     });
 
-    document.addEventListener("change", function () {
-            if(document.getElementById("seat_count").value != ""){
-                if (event.target.name === "cabSelection") {
-    //                console.log("Selected Vehicle ID:", event.target.value);
-                    document.getElementById("total_distance").disabled = false;
-                }else{
-                    let result = readSelectedVehicle("cabSelection");
-                    if(result == ""){
-                        document.getElementById("total_distance").disabled = true;
-                    }
-                }
-            }
-        });
-
     //db
-    function fetchVehicleType(isUpdate = false, selectId = -1){
-        $.ajax({
-            type: "GET",
-            url: "../../vehicle",
-            data: { action: "vehicle_types" },
-            dataType: "json",
-            beforeSend: function() {
-                document.getElementById("formOverlay").classList.remove("d-none");
-            },
-            success: function(response) {
-                if (response.status === "success") {
-                    vehicleTypes = response.data;
-                    let dropdownId = isUpdate ? 'update_v_type' : 'v_type';
-                    buildVehicleType(dropdownId, vehicleTypes, selectId);
-                }else {
-                    $("#success_alert").hide();
-                        $('#error_alert').html(response.message);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-                }
-
-            },
-            error: function(xhr) {
-                    let responseText = xhr.responseText;
-                    let errorMsg = '';
-                    try {
-                        let errorResponse = JSON.parse(responseText);
-                        errorMsg = errorResponse.message;
-                    } catch (e) {
-                        errorMsg = "Unexpected error occurred: "+e;
-                    }
-
-                    $("#success_alert").hide();
-                        $('#error_alert').html(errorMsg);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-            },
-            complete: function(){
-                document.getElementById("formOverlay").classList.add("d-none");
-            }
-        });
-    }
-
-    function fetchCustomers(){
-        $.ajax({
-            type: "GET",
-            url: "../../customer",
-            data: { action: "customer_info", customer_id: customerId },
-            dataType: "json",
-            beforeSend: function() {
-                document.getElementById("formOverlay").classList.remove("d-none");
-            },
-            success: function(response) {
-
-                if (response.status === "success") {
-                    setCustomerInfo(response.data);
-                }else {
-                    $("#success_alert").hide();
-                        $('#error_alert').html(response.message);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-                    document.getElementById("formOverlay").classList.add("d-none");
-                }
-
-            },
-            error: function(xhr) {
-                let responseText = xhr.responseText;
-                let errorMsg = '';
-                try {
-                    let errorResponse = JSON.parse(responseText);
-                    errorMsg = errorResponse.message;
-                } catch (e) {
-                    errorMsg = "Unexpected error occurred: "+e;
-                }
-
-                $("#success_alert").hide();
-                    $('#error_alert').html(errorMsg);
-                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                    $("#error_alert").slideUp(500);
-                });
-                document.getElementById("formOverlay").classList.add("d-none");
-            }
-        });
-    }
-
-    function validateVehicle(){
-
-        let seatCount = document.getElementById("seat_count").value;
-
-        if(seatCount == ""){
-            document.getElementById("selectVehicle").style.display = 'none';
-            return;
-        }
-
-        let startDate = document.getElementById("from_date").value;
-        let endDate = document.getElementById("to_date").value;
-        let v_type = document.getElementById("v_type").value;
-
-        $.ajax({
-            type: "GET",
-            url: "../../booking",
-            data: { action: "vehicle_list_by_seat", vehicle_type: v_type, seat_count: seatCount, start_date: startDate, end_date: endDate},
-            dataType: "json",
-            beforeSend: function() {
-
-            },
-            success: function(response) {
-                if (response.status === "success") {
-                    addVehicleList('vehicleList', response.data);
-                }else {
-
-                    $("#success_alert").hide();
-                        $('#error_alert').html(response.message);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-                }
-
-            },
-            error: function(xhr) {
-
-                    let responseText = xhr.responseText;
-                    let errorMsg = '';
-                    try {
-                        let errorResponse = JSON.parse(responseText);
-                        errorMsg = errorResponse.message;
-                    } catch (e) {
-                        errorMsg = "Unexpected error occurred: "+e;
-                    }
-
-                    $("#success_alert").hide();
-                        $('#error_alert').html(errorMsg);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-            },
-            complete: function(){
-                $('#selectVehicle').css('display', 'block');
-            }
-
-        });
-    }
-
-    function updateValidateVehicle(svTypeId = "", isUpdate = false){
-
-        let seatCount = document.getElementById('update_seat_count').value;
-
-        if(seatCount == ""){
-            document.getElementById("updateSelectVehicle").style.display = 'none';
-            return;
-        }
-
-        let startDate = document.getElementById('update_from_date').value;
-        let endDate = document.getElementById('update_to_date').value;
-        let v_type = svTypeId != "" ? svTypeId : document.getElementById('update_v_type').value;
-
-        $.ajax({
-            type: "GET",
-            url: "../../booking",
-            data: { action: "vehicle_list_by_seat", vehicle_type: v_type, seat_count: seatCount, start_date: startDate, end_date: endDate},
-            dataType: "json",
-            beforeSend: function() {
-
-            },
-            success: function(response) {
-
-                if (response.status === "success") {
-                    let vehicles = response.data;
-                    let temp = document.getElementById("old_selected_v_type").value == v_type;
-
-                    let seatCountMatch = (seatCount == selectedVehicle.seatCount + 1) || (seatCount == selectedVehicle.seatCount - 1) || (seatCount == selectedVehicle.seatCount);
-
-                    if(temp && seatCountMatch){
-                        vehicles = [...response.data];
-                        vehicles.unshift(selectedVehicle);
-                        vehicles = removeDuplicateVehicle(vehicles, "id");
-                    }
-
-                    addVehicleList('updateVehicleList', vehicles, temp);
-                }else {
-
-                    $("#success_alert").hide();
-                        $('#error_alert').html(response.message);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-                }
-
-            },
-            error: function(xhr) {
-
-                    let responseText = xhr.responseText;
-                    let errorMsg = '';
-                    try {
-                        let errorResponse = JSON.parse(responseText);
-                        errorMsg = errorResponse.message;
-                    } catch (e) {
-                        errorMsg = "Unexpected error occurred: "+e;
-                    }
-
-                    $("#success_alert").hide();
-                        $('#error_alert').html(errorMsg);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-            },
-            complete: function(){
-                $('#updateSelectVehicle').css('display', 'block');
-            }
-
-        });
-    }
-
-    function removeDuplicateVehicle(arr, key) {
-        let seen = new Set();
-
-        // Traverse from end to start
-        for (let i = arr.length - 1; i >= 0; i--) {
-            let value = arr[i][key];  // Use key for uniqueness
-            if (seen.has(value)) {
-                arr.splice(i, 1); // Remove the last occurrence
-            } else {
-                seen.add(value);
-            }
-        }
-
-        return arr;
-    }
-
     function fetchUserBookings(isReset = false){
 
         $.ajax({
@@ -406,6 +154,48 @@
         });
     }
 
+    function fetchVehicleType(isUpdate = false, selectId = -1){
+        $.ajax({
+            type: "GET",
+            url: "../../vehicle",
+            data: { action: "vehicle_types" },
+            dataType: "json",
+            success: function(response) {
+                if (response.status === "success") {
+                    vehicleTypes = response.data;
+                    let dropdownId = isUpdate ? 'update_v_type' : 'v_type';
+                    buildVehicleType(dropdownId, vehicleTypes, selectId);
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+                    let responseText = xhr.responseText;
+                    let errorMsg = '';
+                    try {
+                        let errorResponse = JSON.parse(responseText);
+                        errorMsg = errorResponse.message;
+                    } catch (e) {
+                        errorMsg = "Unexpected error occurred: "+e;
+                    }
+
+                    $("#success_alert").hide();
+                        $('#error_alert').html(errorMsg);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+            },
+
+        });
+    }
+
+
+
     //add new Booking Cash payment
     $("#paymentType1Form").submit(function(event) {
         event.preventDefault();
@@ -418,10 +208,10 @@
 
         $('#nb_btn_loading').css('display', 'inline');
         $(":submit").attr("disabled", true);
-        let payNowAmount = document.getElementById('payNowAmount').value;
+
         document.getElementById('payment_type').value = '1';
         document.getElementById('selected_vehicle').value = readSelectedVehicle("cabSelection");
-        document.getElementById('provided_amount').value = payNowAmount == "" ? 0.0 : payNowAmount;
+        document.getElementById('provided_amount').value = document.getElementById('payNowAmount').value;
         document.getElementById('is_paid').value = ($("#isPayNow").prop('checked') == true) ? 1 : 0;
         //add all the required values to this
 
@@ -437,7 +227,7 @@
                         $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
                         $("#success_alert").slideUp(500);
                     });
-                    fetchUserBookings();
+                    fetchUserBookings(true);
                     emptyFields();
                     $("#paymentTypeModel").modal("hide");
                 }else {
@@ -487,7 +277,7 @@
         let newVehicleId = readSelectedVehicle("cabSelection");
 
         document.getElementById('update_selected_vehicle').value = newVehicleId == 0 ? document.getElementById("old_selected_v_type").value : newVehicleId;
-        document.getElementById('provided_amount').value = document.getElementById('payNowAmount').value;
+        document.getElementById('update_provided_amount').value = document.getElementById('payNowAmount').value;
         document.getElementById('update_is_paid').value = ($("#isPayNow").prop('checked') == true) ? 1 : 0;
         //add all the required values to this
 
@@ -633,6 +423,52 @@
     });
 
     //form
+    function openEditModal(booking){
+        let totalProvidedAmount = 0;
+        for(let i=0; i<booking.paymentInfoList.length; i++){
+            totalProvidedAmount += booking.paymentInfoList[i].providedAmount;
+        }
+
+        //default data setting
+        document.getElementById("is_update").value = true;
+        document.getElementById("enable").value = 0;
+        document.getElementById("update_booking_id").value = booking.id;
+        document.getElementById("old_selected_vehicle").value = booking.vehicleId;
+        document.getElementById("old_selected_v_type").value = booking.vehicle.vehicleTypeId;
+        document.getElementById("update_selected_vehicle").value = booking.vehicle.vehicleTypeId;
+        document.getElementById("update_provided_amount").value = totalProvidedAmount;
+
+        //default form setting
+        document.getElementById("isPayNow").checked = false;
+        document.getElementById("pt2").checked = true;
+        document.getElementById("payNow").style.display = "none";
+        document.getElementById("payNowAmountField").style.display = "none";
+
+        fetchVehicleType(true, booking.vehicle.vehicleTypeId);
+
+        let sDate = convertToISOFormat(booking.startDate);
+        let eDate = convertToISOFormat(booking.endDate);
+        setDate("update_from_date", sDate);
+        setDate("update_to_date", eDate);
+
+        document.getElementById("update_from").value = booking.fromDestination;
+        document.getElementById("update_to").value = booking.toDestination;
+        document.getElementById("update_seat_count").value = booking.requestedSeatCount;
+
+        selectedVehicle = booking.vehicle;
+        updateValidateVehicle(booking.vehicle.vehicleTypeId);
+
+        document.getElementById("update_total_distance").value = booking.totalRequestedDistance;
+        document.getElementById("update_total_amount").value = booking.totalAmount;
+        document.getElementById("updateCustomerId").value = booking.customerId;
+        document.getElementById("update_customer_nic").value = booking.customer.nic;
+        document.getElementById("update_customer_name").value = booking.passengerName;
+        document.getElementById("update_phone").value = booking.passengerPhone;
+
+        let modal = new bootstrap.Modal(document.getElementById("editBookingModel"));
+        modal.show();
+    }
+
     function setCustomerInfo(customer){
         document.getElementById('customerId').value = customer.id;
         document.getElementById('customer_name').value = customer.name;
@@ -702,7 +538,6 @@
         }else{
             let i=1;
             $.each(vehicle, function(index, typeObj) {
-
                 let id = 'cb'+i;
                 let titleId = 'title'+i;
                 i = i+1;
@@ -748,6 +583,7 @@
         document.getElementById("is_update").value = isUpdate;
 
         if(isUpdate){
+
             seat_count = "update_seat_count";
             v_type = "update_v_type";
             from_date = "update_from_date";
@@ -835,6 +671,76 @@
         }else{
             payNowField.style.display = "none";
         }
+    }
+
+    function updateValidateVehicle(svTypeId = "", isUpdate = false){
+
+        let seatCount = document.getElementById('update_seat_count').value;
+
+        if(seatCount == ""){
+            document.getElementById("updateSelectVehicle").style.display = 'none';
+            return;
+        }
+
+        let startDate = document.getElementById('update_from_date').value;
+        let endDate = document.getElementById('update_to_date').value;
+        let v_type = svTypeId != "" ? svTypeId : document.getElementById('update_v_type').value;
+
+        $.ajax({
+            type: "GET",
+            url: "../../booking",
+            data: { action: "vehicle_list_by_seat", vehicle_type: v_type, seat_count: seatCount, start_date: startDate, end_date: endDate},
+            dataType: "json",
+            beforeSend: function() {
+
+            },
+            success: function(response) {
+
+                if (response.status === "success") {
+                    let vehicles = response.data;
+                    let temp = document.getElementById("old_selected_v_type").value == v_type;
+
+                    let seatCountMatch = (seatCount == selectedVehicle.seatCount + 1) || (seatCount == selectedVehicle.seatCount - 1) || (seatCount == selectedVehicle.seatCount);
+
+                    if(temp && seatCountMatch){
+                        vehicles = [...response.data];
+                        vehicles.unshift(selectedVehicle);
+                        vehicles = removeDuplicateVehicle(vehicles, "id");
+                    }
+
+                    addVehicleList('updateVehicleList', vehicles, temp);
+                }else {
+
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+
+                    let responseText = xhr.responseText;
+                    let errorMsg = '';
+                    try {
+                        let errorResponse = JSON.parse(responseText);
+                        errorMsg = errorResponse.message;
+                    } catch (e) {
+                        errorMsg = "Unexpected error occurred: "+e;
+                    }
+
+                    $("#success_alert").hide();
+                        $('#error_alert').html(errorMsg);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+            },
+            complete: function(){
+                $('#updateSelectVehicle').css('display', 'block');
+            }
+
+        });
     }
 
     function buildVehicleType(idName, vTypes, selectId){
@@ -947,6 +853,22 @@
         document.getElementById("total_distance").disabled = true;
     }
 
+    function removeDuplicateVehicle(arr, key) {
+            let seen = new Set();
+
+            // Traverse from end to start
+            for (let i = arr.length - 1; i >= 0; i--) {
+                let value = arr[i][key];  // Use key for uniqueness
+                if (seen.has(value)) {
+                    arr.splice(i, 1); // Remove the last occurrence
+                } else {
+                    seen.add(value);
+                }
+            }
+
+            return arr;
+        }
+
     function emptyFields(){
         document.getElementById('v_type').selectedIndex = 0;
         setDate("from_date");
@@ -958,52 +880,6 @@
         document.getElementById('total_distance').value = '';
         document.getElementById('selectVehicle').style.display = 'none';
         disableAllFields();
-    }
-
-    function openEditModal(booking){
-        let totalProvidedAmount = 0;
-        for(let i=0; i<booking.paymentInfoList.length; i++){
-            totalProvidedAmount += booking.paymentInfoList[i].providedAmount;
-        }
-
-        //default data setting
-        document.getElementById("is_update").value = true;
-        document.getElementById("enable").value = 0;
-        document.getElementById("update_booking_id").value = booking.id;
-        document.getElementById("old_selected_vehicle").value = booking.vehicleId;
-        document.getElementById("old_selected_v_type").value = booking.vehicle.vehicleTypeId;
-        document.getElementById("update_selected_vehicle").value = booking.vehicle.vehicleTypeId;
-        document.getElementById("update_provided_amount").value = totalProvidedAmount;
-
-        //default form setting
-        document.getElementById("isPayNow").checked = false;
-        document.getElementById("pt2").checked = true;
-        document.getElementById("payNow").style.display = "none";
-        document.getElementById("payNowAmountField").style.display = "none";
-
-        fetchVehicleType(true, booking.vehicle.vehicleTypeId);
-
-        let sDate = convertToISOFormat(booking.startDate);
-        let eDate = convertToISOFormat(booking.endDate);
-        setDate("update_from_date", sDate);
-        setDate("update_to_date", eDate);
-
-        document.getElementById("update_from").value = booking.fromDestination;
-        document.getElementById("update_to").value = booking.toDestination;
-        document.getElementById("update_seat_count").value = booking.requestedSeatCount;
-
-        selectedVehicle = booking.vehicle;
-        updateValidateVehicle(booking.vehicle.vehicleTypeId);
-
-        document.getElementById("update_total_distance").value = booking.totalRequestedDistance;
-        document.getElementById("update_total_amount").value = booking.totalAmount;
-        document.getElementById("updateCustomerId").value = booking.customerId;
-        document.getElementById("update_customer_nic").value = booking.customer.nic;
-        document.getElementById("update_customer_name").value = booking.passengerName;
-        document.getElementById("update_phone").value = booking.passengerPhone;
-
-        let modal = new bootstrap.Modal(document.getElementById("editBookingModel"));
-        modal.show();
     }
 
     function convertToISOFormat(dateTimeStr) {
@@ -1026,112 +902,5 @@
         return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
 
-    ///old
-
-    //add new customer
-    $("#newBookingForm").submit(function(event) {
-            event.preventDefault();
-            $('#nb_btn_loading').css('display', 'inline');
-            $(":submit").attr("disabled", true);
-
-            $.ajax({
-                type: "POST",
-                url: "../../booking",
-                data: $(this).serialize(),
-                dataType: "json",
-                success: function(response) {
-                    if (response.status === "success") {
-                        $("#success_alert").hide();
-                            $('#success_alert').html(response.message);
-                            $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
-                            $("#success_alert").slideUp(500);
-                        });
-                        emptyFields();
-                    }else {
-                        $("#success_alert").hide();
-                            $('#error_alert').html(response.message);
-                            $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                            $("#error_alert").slideUp(500);
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    let responseText = xhr.responseText;
-                    let errorMsg = '';
-                    try {
-                        let errorResponse = JSON.parse(responseText);
-                        errorMsg = errorResponse.message;
-                    } catch (e) {
-                        errorMsg = "Unexpected error occurred "+e;
-                    }
-
-                    $("#success_alert").hide();
-                        $('#error_alert').html(errorMsg);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-                },
-                complete: function(){
-                    $(":submit").removeAttr("disabled");
-                    $('#nb_btn_loading').css('display', 'none');
-                    window.scrollTo(0,0);
-                }
-            });
-        });
-
-
-    //update customer
-    $("#editCustomerForm").submit(function(event) {
-        event.preventDefault();
-        $.ajax({
-            type: "POST",
-            url: "../../customer",
-            data: $(this).serialize(),
-            dataType: "json",
-            beforeSend: function() {
-                $('#uc_btn_loading').css('display', 'inline');
-                $(":submit").attr("disabled", true);
-            },
-            success: function(response) {
-                if (response.status === "success") {
-                    fetchCustomers();
-                    $("#success_alert").hide();
-                        $('#success_alert').html(response.message);
-                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#success_alert").slideUp(500);
-                    });
-                    $("#editCustomerModel").modal("hide");
-                }else {
-                    $("#success_alert").hide();
-                        $('#error_alert').html(response.message);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-                }
-
-            },
-            error: function(xhr) {
-                    let responseText = xhr.responseText;
-                    let errorMsg = '';
-                    try {
-                        let errorResponse = JSON.parse(responseText);
-                        errorMsg = errorResponse.message;
-                    } catch (e) {
-                        errorMsg = "Unexpected error occurred "+e;
-                    }
-
-                    $("#success_alert").hide();
-                        $('#error_alert').html(errorMsg);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-            },
-            complete: function(){
-                $(":submit").removeAttr("disabled");
-                $('#uc_btn_loading').css('display', 'none');
-
-            }
-        });
-    });
 
 </script>
