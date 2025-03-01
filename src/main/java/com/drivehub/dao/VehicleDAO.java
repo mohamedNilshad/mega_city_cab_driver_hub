@@ -26,6 +26,7 @@ public class VehicleDAO {
             while (rs.next()) {
                 vehicleTypesList.add(new VehicleTypes(rs.getInt("id"), rs.getString("vehicleType")));
             }
+            conn.close();
             return vehicleTypesList;
 
         } catch (Exception e) {
@@ -57,9 +58,11 @@ public class VehicleDAO {
                         rs.getString("vehicleName"),
                         rs.getString("vehicleNumber"),
                         rs.getInt("seatCount"),
-                        rs.getString("vehicleImage")
+                        rs.getString("vehicleImage"),
+                        rs.getString("vehicleDescription")
                 ));
             }
+            conn.close();
             return VehicleList;
 
         } catch (Exception e) {
@@ -74,7 +77,7 @@ public class VehicleDAO {
             Connection conn = DBConnection.getConnection();
 
             PreparedStatement stmt = conn.prepareStatement(
-                    "INSERT INTO `vehicles`(vehicleTypeId,driverId,vehicleName,vehicleNumber,seatCount,vehicleImage) VALUES (?,?,?,?,?,?)");
+                    "INSERT INTO `vehicles`(vehicleTypeId,driverId,vehicleName,vehicleNumber,seatCount,vehicleImage,vehicleDescription) VALUES (?,?,?,?,?,?,?)");
 
             stmt.setInt(1,newVehicle.getVehicleTypeId());
             stmt.setInt(2, newVehicle.getDriverId());
@@ -82,14 +85,14 @@ public class VehicleDAO {
             stmt.setString(4, newVehicle.getVehicleNumber());
             stmt.setInt(5, newVehicle.getSeatCount());
             stmt.setString(6, newVehicle.getVehicleImage());
+            stmt.setString(7, newVehicle.getDescription());
 
             int rs = stmt.executeUpdate();
 
             if (rs > 0) {
-                boolean updated = updateDriverAllocation(newVehicle.getDriverId(), 1);
-                if (updated) {
-                    return true;
-                }
+                conn.close();
+                return updateDriverAllocation(newVehicle.getDriverId(), 1);
+
             }
 
         } catch (Exception e) {
@@ -104,7 +107,7 @@ public class VehicleDAO {
             Connection conn = DBConnection.getConnection();
 
             PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE `vehicles` SET vehicleTypeId = ?, driverId = ?, vehicleName = ?, vehicleNumber = ?, seatCount = ?, vehicleImage = ? WHERE id = ?"
+                    "UPDATE `vehicles` SET vehicleTypeId = ?, driverId = ?, vehicleName = ?, vehicleNumber = ?, seatCount = ?, vehicleImage = ?, vehicleDescription = ? WHERE id = ?"
             );
 
             stmt.setInt(1, vehicle.getVehicleTypeId());
@@ -113,11 +116,13 @@ public class VehicleDAO {
             stmt.setString(4, vehicle.getVehicleNumber());
             stmt.setInt(5, vehicle.getSeatCount());
             stmt.setString(6, vehicle.getVehicleImage());
-            stmt.setInt(7, vehicle.getId());
+            stmt.setString(7, vehicle.getDescription());
+            stmt.setInt(8, vehicle.getId());
 
             int rs = stmt.executeUpdate();
 
             if (rs > 0) {
+                conn.close();
                 //update old driver
                 boolean updatedOld = updateDriverAllocation(vehicle.getOldDriverId(), 0);
                 if (updatedOld) {
@@ -142,11 +147,9 @@ public class VehicleDAO {
             int rs = stmt.executeUpdate();
 
             if (rs > 0) {
+                conn.close();
                 //update driver
-                boolean updatedDriver = updateDriverAllocation(vehicle.getDriverId(), 0);
-                if (updatedDriver) {
-                    return true;
-                }
+                return updateDriverAllocation(vehicle.getDriverId(), 0);
             }
 
         } catch (Exception e) {
@@ -164,13 +167,12 @@ public class VehicleDAO {
             stmt.setInt(2, driverId);
 
             int rs = stmt.executeUpdate();
-            if (rs > 0) {
-                return true;
-            }
+            conn.close();
+            return(rs > 0);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return false;
+
     }
 
 }

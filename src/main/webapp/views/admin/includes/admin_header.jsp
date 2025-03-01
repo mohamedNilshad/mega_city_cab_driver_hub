@@ -39,9 +39,20 @@ crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
-
+<script>
+    function onMouseOver(id) {
+     console.log(id);
+     document.getElementById(id).style.whiteSpace = "wrap";
+     document.getElementById(id).style.overflow = "visible";
+    }
+    function onMouseLeave(id) {
+        document.getElementById(id).style.whiteSpace = "nowrap";
+        document.getElementById(id).style.overflow = "hidden";
+    }
+</script>
 
 <style>
+
     .custom-alert {
         position: fixed;
         bottom: 20px;

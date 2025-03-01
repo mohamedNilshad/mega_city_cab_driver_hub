@@ -28,7 +28,7 @@
             <a href="customer_booking.jsp" class="btn btn-primary">New Customer Booking</a>
         </div>
         <div class="alert alert-success custom-alert" role="alert" id="success_alert"></div>
-        <div class="alert alert-danger custom-alert" role="alert" id="error_alert"></div>s
+        <div class="alert alert-danger custom-alert" role="alert" id="error_alert"></div>
 
         <table id="bookingsTable" class="ctable table" style="text-align: center;">
             <thead class="thead-dark">
@@ -44,6 +44,7 @@
                 <th scope="col" style="vertical-align: middle;">Start Date</th>
                 <th scope="col" style="vertical-align: middle;">End Date</th>
                 <th scope="col" style="vertical-align: middle;">Total Amount (LKR)</th>
+                <th scope="col" style="vertical-align: middle;">Is Paid</th>
                 <th scope="col" style="width: 15%; vertical-align: middle;">Status</th>
                 <th scope="col" style="width: 5%; vertical-align: middle;">Actions</th>
             </tr>

@@ -76,6 +76,16 @@
                                 </td>`;
                               }
 
+                              let payment = booking.paymentInfoList;
+                              let isPaid = "Yes";
+
+                              for(let i=0; i<payment.length; i++){
+                                  if(payment[i].isPaid == 0){
+                                      isPaid = "No";
+                                      break;
+                                  }
+                              }
+
                               let newRow = `
                                   <tr>
                                       <td>${i}</td>
@@ -89,6 +99,7 @@
                                       <td style="vertical-align: middle;">${booking.startDate}</td>
                                       <td style="vertical-align: middle;">${booking.endDate}</td>
                                       <td style="vertical-align: middle;">${booking.totalAmount}</td>
+                                      <td style="vertical-align: middle;">${isPaid}</td>
                                       ${status}
                                       <td>
                                             ${editButton}
@@ -136,54 +147,54 @@
 
     //change status
     $("#changeStatusForm").submit(function(event) {
-            event.preventDefault();
-            $('#cs_btn_loading').css('display', 'inline');
-            $(":submit").attr("disabled", true);
+        event.preventDefault();
+        $('#cs_btn_loading').css('display', 'inline');
+        $(":submit").attr("disabled", true);
 
-            $.ajax({
-                type: "POST",
-                url: "../../booking",
-                data: $(this).serialize(),
-                dataType: "json",
-                success: function(response) {
-                    if (response.status === "success") {
-                        $("#success_alert").hide();
-                            $('#success_alert').html(response.message);
-                            $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
-                            $("#success_alert").slideUp(500);
-                        });
-                        fetchBookings();
-                    }else {
-                        $("#success_alert").hide();
-                            $('#error_alert').html(response.message);
-                            $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                            $("#error_alert").slideUp(500);
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    let responseText = xhr.responseText;
-                    let errorMsg = '';
-                    try {
-                        let errorResponse = JSON.parse(responseText);
-                        errorMsg = errorResponse.message;
-                    } catch (e) {
-                        errorMsg = "Unexpected error occurred "+e;
-                    }
-
+        $.ajax({
+            type: "POST",
+            url: "../../booking",
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function(response) {
+                if (response.status === "success") {
                     $("#success_alert").hide();
-                        $('#error_alert').html(errorMsg);
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                    fetchBookings();
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
                         $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
                         $("#error_alert").slideUp(500);
                     });
-                },
-                complete: function(){
-                    $(":submit").removeAttr("disabled");
-                    $('#cs_btn_loading').css('display', 'none');
-                    $("#confirmStatusChangeModel").modal("hide");
                 }
-            });
+            },
+            error: function(xhr) {
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred "+e;
+                }
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#cs_btn_loading').css('display', 'none');
+                $("#confirmStatusChangeModel").modal("hide");
+            }
         });
+    });
 
     //form
     function changeStatus(bid, value, label){

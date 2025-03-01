@@ -1,9 +1,6 @@
 package com.drivehub.dao;
 
-import com.drivehub.model.Booking;
-import com.drivehub.model.PaymentInfo;
-import com.drivehub.model.User;
-import com.drivehub.model.Vehicle;
+import com.drivehub.model.*;
 import com.drivehub.util.DBConnection;
 import com.drivehub.util.Formats;
 
@@ -39,8 +36,43 @@ public class BookingDAO {
                 v.setVehicleImage(rs.getString("vehicleImage"));
                 VehicleList.add(v);
             }
-
+            conn.close();
             return getSortedVehicleList(VehicleList, seatCount, startDate, endDate);
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<DefaultAmount> getDefaultAmount(int vType) {
+
+        try  {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT * FROM default_amounts"
+            );
+//            stmt.setInt(1, vType);
+            ResultSet rs = stmt.executeQuery();
+
+            List<DefaultAmount> defaultAmountList = new ArrayList<>();
+
+            while (rs.next()) {
+                DefaultAmount defaultAmount = new DefaultAmount(
+                        rs.getInt("id"),
+                        rs.getInt("vehicle_type"),
+                        rs.getDouble("per_one_day"),
+                        rs.getDouble("discount_full_amount"),
+                        rs.getDouble("discount_balance_amount"),
+                        rs.getDouble("penalty_extra_km"),
+                        rs.getDouble("maximum_km_per_day"),
+                        rs.getInt("discount_days")
+                );
+                defaultAmountList.add(defaultAmount);
+
+            }
+            conn.close();
+            return defaultAmountList;
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -53,9 +85,9 @@ public class BookingDAO {
         try  {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT b.*, v.*, c.userNic FROM bookings b "+
+                    "SELECT b.*, v.*, v.id AS v_id, c.userNic FROM bookings b "+
                             "INNER JOIN users c ON b.customer_id = c.id "+
-                            "INNER JOIN vehicles v ON b.vehicle_id = v.id WHERE b.customer_id = ?"
+                            "INNER JOIN vehicles v ON b.vehicle_id = v.id WHERE b.customer_id = ? ORDER BY b.id DESC"
             );
             stmt.setInt(1, customerId);
             ResultSet rs = stmt.executeQuery();
@@ -63,6 +95,7 @@ public class BookingDAO {
             while (rs.next()) {
 
                 Vehicle v = new Vehicle();
+                v.setId(rs.getInt("v_id"));
                 v.setVehicleNumber(rs.getString("vehicleNumber"));
                 v.setVehicleTypeId(rs.getInt("vehicleTypeId"));
                 v.setVehicleName(rs.getString("vehicleName"));
@@ -94,9 +127,10 @@ public class BookingDAO {
                         rs.getInt("status")
                 );
 
+
                 bookingList.add(b);
             }
-
+            conn.close();
             return bookingList;
 
         } catch (Exception e) {
@@ -152,7 +186,7 @@ public class BookingDAO {
 
                 bookingList.add(b);
             }
-
+            conn.close();
             return bookingList;
 
         } catch (Exception e) {
@@ -198,9 +232,47 @@ public class BookingDAO {
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         int insertedId = generatedKeys.getInt(1);
+                        conn.close();
                         return addPaymentInfo(paymentInfo, insertedId);
                     }
                 }
+            }
+
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public Boolean updateBooking(Booking booking, PaymentInfo paymentInfo) {
+
+        try {
+            Connection conn = DBConnection.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement(
+                    "UPDATE `bookings` SET `vehicle_id` = ? , `from_destination` = ? , `to_destination` = ? , `start_date` = ? , "+
+                            "`to_date` = ? , `total_amount` = ? , `requested_seat_count` = ? , `total_requested_distance` = ? , `passenger_name` = ? , "+
+                            " `passenger_phone` = ? "+
+                            " WHERE id = ?"
+            );
+
+            stmt.setInt(1,booking.getVehicleId());
+            stmt.setString(2, booking.getFromDestination());
+            stmt.setString(3, booking.getToDestination());
+            stmt.setTimestamp(4, booking.getStartDate());
+            stmt.setTimestamp(5, booking.getEndDate());
+            stmt.setDouble(6, booking.getTotalAmount());
+            stmt.setInt(7, booking.getRequestedSeatCount());
+            stmt.setDouble(8, booking.getTotalRequestedDistance());
+            stmt.setString(9, booking.getPassengerName());
+            stmt.setString(10, booking.getPassengerPhone());
+            stmt.setInt(11, booking.getId());
+
+            int rs = stmt.executeUpdate();
+            if (rs > 0) {
+                conn.close();
+                return addPaymentInfo(paymentInfo, booking.getId());
             }
 
 
@@ -223,6 +295,7 @@ public class BookingDAO {
             int rs = stmt.executeUpdate();
 
             if (rs > 0) {
+                conn.close();
                 return true;
             }
 
@@ -250,12 +323,13 @@ public class BookingDAO {
         stmt.setInt(7, paymentInfo.getIsPaid());
 
         int rs = stmt.executeUpdate();
-
+        conn.close();
         return  rs > 0;
     }
 
     private String generateReferenceNumber() throws SQLException {
         Connection conn = DBConnection.getConnection();
+
         int bookingNum = 8000000;
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT reference_number FROM payment_info ORDER BY id DESC"
@@ -266,6 +340,7 @@ public class BookingDAO {
             int oldRefNum = Integer.parseInt(rs.getString("reference_number"));
             bookingNum = oldRefNum + 7;
         }
+        conn.close();
         return String.valueOf(bookingNum);
     }
 
@@ -294,6 +369,7 @@ public class BookingDAO {
         }
 
         list.removeIf(vehicle -> idList.contains(vehicle.getId()));
+        conn.close();
         return list;
 
 
@@ -312,9 +388,10 @@ public class BookingDAO {
             PaymentInfo p = new PaymentInfo();
             p.setId(rs.getInt("id"));
             p.setProvidedAmount(rs.getDouble("provided_amount"));
+            p.setIsPaid(rs.getInt("is_paid"));
             paymentList.add(p);
         }
-
+        conn.close();
         return paymentList;
     }
 
@@ -330,6 +407,7 @@ public class BookingDAO {
             String oldBookingNum = rs.getString("booking_number");
             bookingNum = Formats.regNumberFormat(oldBookingNum, "B", 5);
         }
+        conn.close();
         return bookingNum;
     }
 

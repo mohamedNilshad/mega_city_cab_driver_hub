@@ -1,6 +1,7 @@
 package com.drivehub.controller;
 
 import com.drivehub.model.Booking;
+import com.drivehub.model.DefaultAmount;
 import com.drivehub.model.PaymentInfo;
 import com.drivehub.model.Vehicle;
 import com.drivehub.service.BookingService;
@@ -34,6 +35,8 @@ public class BookingController extends HttpServlet {
             getUserBookings(request, response);
         }else if ("get_all_scheduled_bookings".equals(action)) {
             getScheduledBookings(response);
+        }else if ("get_default_amount".equals(action)) {
+            getDefaultAmounts(request, response);
         }
     }
 
@@ -79,6 +82,45 @@ public class BookingController extends HttpServlet {
         out.flush();
     }
 
+    private void getDefaultAmounts(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
+        JSONObject jsonResponse = new JSONObject();
+
+        try {
+//            int vType = Integer.parseInt(request.getParameter("vehicle_type_for_da"));
+            System.out.println("defaultAmountArray");
+            List<DefaultAmount> defaultAmount = bookingService.getDefaultAmount(4);
+
+
+            if(defaultAmount != null){
+                JSONArray defaultAmountArray = new JSONArray();
+
+                for (DefaultAmount da : defaultAmount) {
+                    defaultAmountArray.put(da.toJson());
+                }
+                System.out.println(defaultAmountArray);
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "Default Amounts Fetched Successfully");
+                jsonResponse.put("data", defaultAmountArray);
+            }else{
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "No Data");
+            }
+        } catch (JSONException e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+
+            throw new RuntimeException(e);
+        }
+
+        out.print(jsonResponse);
+        out.flush();
+    }
+
     private void getUserBookings(HttpServletRequest request, HttpServletResponse response) throws IOException{
 
         response.setContentType("application/json");
@@ -99,7 +141,7 @@ public class BookingController extends HttpServlet {
                 for (Booking b : bookings) {
                     bookingArray.put(b.toJson());
                 }
-                System.out.println(bookingArray);
+
                 jsonResponse.put("status", "success");
                 jsonResponse.put("message", "User Bookings Fetched Successfully");
                 jsonResponse.put("data", bookingArray);
@@ -161,8 +203,10 @@ public class BookingController extends HttpServlet {
         try {
             if ("new_booking".equals(action)) {
                 addNewBooking(request, response);
-            }if ("change_change".equals(action)) {
+            }else if ("change_change".equals(action)) {
                 changeBookingStatus(request, response);
+            }else if ("update_booking".equals(action)) {
+                updateBooking(request, response);
             }
         } catch (ParseException e) {
             throw new RuntimeException(e);
@@ -219,6 +263,61 @@ public class BookingController extends HttpServlet {
         out.flush();
     }
 
+    private void updateBooking(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject jsonResponse = new JSONObject();
+
+        try{
+            System.out.println("Calling");
+
+            Booking booking = new Booking(
+                    Integer.parseInt(request.getParameter("update_booking_id")),
+                    Integer.parseInt(request.getParameter("update_selected_vehicle")),
+                    request.getParameter("update_from"),
+                    request.getParameter("update_to"),
+                    Formats.dateTimeFormat(request.getParameter("update_from_date")),
+                    Formats.dateTimeFormat(request.getParameter("update_to_date")),
+                    Double.parseDouble(request.getParameter("update_total_amount")),
+                    Integer.parseInt(request.getParameter("update_seat_count")),
+                    Double.parseDouble(request.getParameter("update_total_distance")),
+                    request.getParameter("update_customer_name"),
+                    request.getParameter("update_phone"),
+                    0
+            );
+
+
+            PaymentInfo paymentInfo = new PaymentInfo(
+                    Integer.parseInt(request.getParameter("customerId")),
+                    Integer.parseInt(request.getParameter("update_payment_type")),
+                    Double.parseDouble(request.getParameter("update_total_amount")),
+                    Double.parseDouble(request.getParameter("update_provided_amount")),
+                    Integer.parseInt(request.getParameter("update_is_paid"))
+            );
+
+
+            boolean isUpdated= bookingService.updateBooking(booking, paymentInfo);
+
+
+            if (isUpdated) {
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "New Booking Added Successful!");
+
+            } else {
+                jsonResponse.put("status", "error");
+                jsonResponse.put("message", "New Booking Adding Failed!");
+            }
+
+        } catch (Exception e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+            throw new RuntimeException(e);
+        }
+        out.print(jsonResponse);
+        out.flush();
+    }
+
     private void changeBookingStatus(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -248,7 +347,6 @@ public class BookingController extends HttpServlet {
         out.print(jsonResponse);
         out.flush();
     }
-
 
 }
 

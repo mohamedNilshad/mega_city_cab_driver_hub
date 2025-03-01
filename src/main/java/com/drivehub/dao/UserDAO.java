@@ -17,7 +17,7 @@ public class UserDAO {
 
 
             if (rs.next()) {
-                return new User(
+                User user = new User(
                         rs.getInt("id"),
                         rs.getInt("userType"),
                         rs.getString("fullName"),
@@ -27,6 +27,9 @@ public class UserDAO {
                         rs.getString("userPhone"),
                         rs.getString("userName")
                 );
+
+                conn.close();
+                return user;
             }
 
         } catch (Exception e) {
@@ -46,6 +49,7 @@ public class UserDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
+                conn.close();
                 return true;
             }
 
@@ -90,9 +94,8 @@ public class UserDAO {
 
             int rs = stmt.executeUpdate();
 
-            if (rs > 0) {
-                return true;
-            }
+            conn.close();
+            return(rs > 0);
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -114,6 +117,8 @@ public class UserDAO {
             if (rs.next()) {
                 user.setId(rs.getInt("id"));
                 user.setUserType(rs.getInt("userType"));
+
+                conn.close();
                 return user;
             }
 
@@ -139,9 +144,8 @@ public class UserDAO {
             stmt.setString(8, HashUtil.toMD5(newUser.getPassword()));
             int rs = stmt.executeUpdate();
 
-            if (rs > 0) {
-                return true;
-            }
+            conn.close();
+            return(rs > 0);
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());

@@ -24,6 +24,7 @@ public class DriverDAO {
             while (rs.next()) {
                 licenseTypesList.add(new LicenseTypes(rs.getInt("id"), rs.getString("licenseType")));
             }
+            conn.close();
             return licenseTypesList;
 
         } catch (Exception e) {
@@ -58,6 +59,7 @@ public class DriverDAO {
                         rs.getInt("isAllocate")
                 ));
             }
+            conn.close();
             return DriverList;
 
         } catch (Exception e) {
@@ -82,6 +84,7 @@ public class DriverDAO {
                         rs.getString("fullName")
                 ));
             }
+            conn.close();
             return DriverList;
 
         } catch (Exception e) {
@@ -111,6 +114,7 @@ public class DriverDAO {
             int rs = stmt.executeUpdate();
 
             if (rs > 0) {
+                conn.close();
                 return true;
             }
 
@@ -141,6 +145,7 @@ public class DriverDAO {
             int rs = stmt.executeUpdate();
 
             if (rs > 0) {
+                conn.close();
                 return true;
             }
 
@@ -162,6 +167,7 @@ public class DriverDAO {
             String oldRegNum = rs.getString("registrationNumber");
             regNum = Formats.regNumberFormat(oldRegNum, "D", 4);
         }
+        conn.close();
         return regNum;
     }
 }

@@ -29,6 +29,7 @@ public class CustomerDAO {
             int rs = stmt.executeUpdate();
 
             if (rs > 0) {
+                conn.close();
                 return true;
             }
 
@@ -74,6 +75,7 @@ public class CustomerDAO {
             int rs = stmt.executeUpdate();
 
             if (rs > 0) {
+                conn.close();
                 return true;
             }
 
@@ -104,6 +106,7 @@ public class CustomerDAO {
                         rs.getString("userName")
                 ));
             }
+            conn.close();
             return CustomerList;
 
         } catch (Exception e) {
@@ -128,6 +131,7 @@ public class CustomerDAO {
                 customer.setNic(rs.getString("userNic"));
                 customer.setPhone(rs.getString("userPhone"));
             }
+            conn.close();
             return customer;
 
         } catch (Exception e) {

@@ -8,7 +8,7 @@ import java.util.Map;
 public class Booking {
     private int id;
     private String bookingNumber;
-    private int bookingType; //0<- Schedule Booking 1<- instant Booking
+    private int bookingType; //1<- Schedule Booking 2<- instant Booking
     private User customer;
     private int customerId;
     private Vehicle vehicle;
@@ -66,7 +66,7 @@ public class Booking {
     }
 
     //update
-    public Booking(int id,int vehicleId, String fromDestination, String toDestination, Timestamp startDate, Timestamp endDate, double totalAmount, int status) {
+    public Booking(int id,int vehicleId, String fromDestination, String toDestination, Timestamp startDate, Timestamp endDate, double totalAmount, int requestedSeatCount, double totalRequestedDistance, String passengerName, String passengerPhone, int status) {
         this.id = id;
         this.vehicleId = vehicleId;
         this.fromDestination = fromDestination;
@@ -74,6 +74,10 @@ public class Booking {
         this.startDate = startDate;
         this.endDate = endDate;
         this.totalAmount = totalAmount;
+        this.requestedSeatCount = requestedSeatCount;
+        this.totalRequestedDistance = totalRequestedDistance;
+        this.passengerName = passengerName;
+        this.passengerPhone = passengerPhone;
         this.status = status;
     }
 
@@ -156,6 +160,7 @@ public class Booking {
         jsonMap.put("bookingNumber", bookingNumber);
         jsonMap.put("customerId", customerId);
         jsonMap.put("customer", customer == null ? "" : customer.toJson());
+        jsonMap.put("bookingType", bookingType);
         jsonMap.put("paymentInfoList", paymentInfoList.isEmpty() ? "" : paymentInfoList);
         jsonMap.put("vehicle", vehicle == null ? "" : vehicle.toJson());
         jsonMap.put("vehicleId", vehicleId);

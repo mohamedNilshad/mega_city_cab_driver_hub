@@ -16,10 +16,11 @@ public class Vehicle {
     private String vehicleNumber;
     private int seatCount;
     private String vehicleImage;
+    private String description;
     private int isAvailable;
 
     //update
-    public Vehicle(int id, int vehicleTypeId, int driverId, int oldDriverId, String vehicleName, String vehicleNumber, int seatCount, String vehicleImage) {
+    public Vehicle(int id, int vehicleTypeId, int driverId, int oldDriverId, String vehicleName, String vehicleNumber, int seatCount, String vehicleImage, String description) {
         this.id = id;
         this.vehicleTypeId = vehicleTypeId;
         this.driverId = driverId;
@@ -28,20 +29,22 @@ public class Vehicle {
         this.vehicleNumber = vehicleNumber;
         this.seatCount = seatCount;
         this.vehicleImage = vehicleImage;
+        this.description = description;
     }
 
     //insert
-    public Vehicle(int vehicleTypeId, int driverId, String vehicleName, String vehicleNumber, int seatCount, String vehicleImage) {
+    public Vehicle(int vehicleTypeId, int driverId, String vehicleName, String vehicleNumber, int seatCount, String vehicleImage, String description) {
         this.vehicleTypeId = vehicleTypeId;
         this.driverId = driverId;
         this.vehicleName = vehicleName;
         this.vehicleNumber = vehicleNumber;
         this.seatCount = seatCount;
         this.vehicleImage = vehicleImage;
+        this.description = description;
     }
 
     //select
-    public Vehicle(int id, int vehicleTypeId, String vehicleType, int driverId, String driverName, String driverRegNum, String vehicleName, String vehicleNumber, int seatCount, String vehicleImage) {
+    public Vehicle(int id, int vehicleTypeId, String vehicleType, int driverId, String driverName, String driverRegNum, String vehicleName, String vehicleNumber, int seatCount, String vehicleImage, String description) {
         this.id = id;
         this.vehicleTypeId = vehicleTypeId;
         this.vehicleType = vehicleType;
@@ -52,6 +55,7 @@ public class Vehicle {
         this.vehicleNumber = vehicleNumber;
         this.seatCount = seatCount;
         this.vehicleImage = vehicleImage;
+        this.description = description;
     }
 
     public Vehicle() {}
@@ -63,6 +67,10 @@ public class Vehicle {
 
     public int getVehicleTypeId() {
         return vehicleTypeId;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public String getVehicleType() {
@@ -120,6 +128,10 @@ public class Vehicle {
         this.vehicleType = vehicleType;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public void setDriverId(int driverId) {
         this.driverId = driverId;
     }
@@ -168,6 +180,7 @@ public class Vehicle {
         jsonMap.put("vehicleNumber", vehicleNumber);
         jsonMap.put("seatCount", seatCount);
         jsonMap.put("vehicleImage", vehicleImage);
+        jsonMap.put("description", description);
         jsonMap.put("isAvailable", isAvailable);
         return jsonMap; // Excludes password for security
     }
@@ -186,6 +199,7 @@ public class Vehicle {
                 ", vehicleNumber='" + vehicleNumber + '\'' +
                 ", seatCount='" + seatCount + '\'' +
                 ", vehicleImage='" + vehicleImage + '\'' +
+                ", description='" + description + '\'' +
                 ", isAvailable='" + isAvailable + '\'' +
                 '}';
     }

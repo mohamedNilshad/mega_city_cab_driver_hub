@@ -1,6 +1,7 @@
 package com.drivehub.service;
 import com.drivehub.dao.BookingDAO;
 import com.drivehub.model.Booking;
+import com.drivehub.model.DefaultAmount;
 import com.drivehub.model.PaymentInfo;
 import com.drivehub.model.Vehicle;
 
@@ -15,6 +16,10 @@ public class BookingService {
         return bookingDAO.getVehicleListBySeat(vType, seatCount, startDate, endDate);
     }
 
+    public List<DefaultAmount> getDefaultAmount(int vType) {
+        return bookingDAO.getDefaultAmount(vType);
+    }
+
     public List<Booking> getUserBookings(int customerId) {
         return bookingDAO.getUserBookings(customerId);
     }
@@ -25,6 +30,10 @@ public class BookingService {
 
     public Boolean addNewBooking(Booking booking, PaymentInfo paymentInfo) {
         return bookingDAO.addNewBooking(booking, paymentInfo);
+    }
+
+    public Boolean updateBooking(Booking booking, PaymentInfo paymentInfo) {
+        return bookingDAO.updateBooking(booking, paymentInfo);
     }
 
     public Boolean changeBookingStatus(int status, int bookingId) {

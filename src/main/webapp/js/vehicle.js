@@ -191,6 +191,7 @@
                                     <td>${vehicle.vehicleNumber}</td>
                                     <td>${vehicle.vehicleName}</td>
                                     <td>${vehicle.vehicleType}</td>
+                                    <td><div id="description${i}" class="text-container">${vehicle.description}</div></td>
                                     <td>${vehicle.driverName}</td>
                                     <td>${vehicle.driverRegNum}</td>
                                     <td>
@@ -367,6 +368,7 @@
         document.getElementById("update_seat_count").value = vehicle.seatCount;
         document.getElementById("old_image").src = contextPath + vehicle.vehicleImage;
         document.getElementById("old_image_label").innerHTML = vehicle.vehicleImage;
+        document.getElementById("update_v_description").value = vehicle.description;
         buildDriverList('update_driver', updateDriver, vehicle.driverId);
 
         let modal = new bootstrap.Modal(document.getElementById("vehicleUpdateFrom"));

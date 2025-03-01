@@ -146,7 +146,8 @@ public class VehicleController extends HttpServlet {
                         request.getParameter("v_name"),
                         request.getParameter("v_number"),
                         Integer.parseInt(request.getParameter("seat_count")),
-                        imageFileName
+                        imageFileName,
+                        request.getParameter("v_description")
                 );
 
                 boolean isRegistered = vehicleService.addNewVehicle(newVehicle);
@@ -203,7 +204,8 @@ public class VehicleController extends HttpServlet {
                     request.getParameter("update_v_name"),
                     request.getParameter("update_v_number"),
                     Integer.parseInt(request.getParameter("update_seat_count")),
-                    imageName
+                    imageName,
+                    request.getParameter("update_v_description")
             );
 
             boolean isRegistered = vehicleService.updateVehicle(vehicle);

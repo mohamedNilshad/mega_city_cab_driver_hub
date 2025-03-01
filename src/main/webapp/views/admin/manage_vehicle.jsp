@@ -18,6 +18,27 @@
 <html lang="en">
     <head>
         <jsp:include page="includes/admin_header.jsp" />
+        <style>
+
+             .text-container {
+                width: 200px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                cursor: pointer;
+                transition: all 0.3s ease-in-out;
+            }
+
+            .text-container:hover {
+                white-space: normal;
+                overflow: visible;
+                background: white;
+                position: absolute;
+                z-index: 10;
+                padding: 5px;
+                border: 1px solid #ccc;
+            }
+        </style>
     </head>
     <body id="page-top"  style="padding-top: 110px;">
         <!-- Navigation-->
@@ -41,6 +62,7 @@
                     <th scope="col">Vehicle Number</th>
                     <th scope="col">Vehicle Name</th>
                     <th scope="col">Vehicle Type</th>
+                    <th scope="col">Description</th>
                     <th scope="col">Driver Name</th>
                     <th scope="col">Driver Reg. Number</th>
                     <th scope="col" style="width: 5%">Actions</th>
@@ -103,6 +125,11 @@
                                 <label for="seat_count" class="form-label">Vehicle Image</label>
                                 <input type="file" min="2" max="100" class="form-control" id="v_image" name="v_image" accept="image/*" placeholder="Select Vehicle Image">
                             </div>
+
+                            <div class="mb-3">
+                                <label for="v_description" class="form-label">Description</label>
+                                <textarea class="form-control" id="v_description" name="v_description" placeholder="Enter Description"></textarea>
+                            </div>
                             
                             <div class="mb-3">
                                 <label for="driver" class="form-label">Select an Driver</label>
@@ -162,6 +189,11 @@
                             <div class="mb-3">
                                 <label for="seat_count" class="form-label">New Vehicle Image</label>
                                 <input type="file" min="2" max="100" class="form-control" id="update_v_image" name="update_v_image" accept="image/*" placeholder="Select Vehicle Image">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="v_description" class="form-label">Description</label>
+                                <textarea class="form-control" id="update_v_description" name="update_v_description" placeholder="Enter Description"></textarea>
                             </div>
 
                             <div class="mb-3">

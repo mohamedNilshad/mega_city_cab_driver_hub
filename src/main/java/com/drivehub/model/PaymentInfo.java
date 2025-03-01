@@ -124,7 +124,7 @@ public class PaymentInfo {
         jsonMap.put("totalAmount", totalAmount);
         jsonMap.put("providedAmount", providedAmount);
         jsonMap.put("isPaid", isPaid);
-        return jsonMap; // Excludes password for security
+        return jsonMap;
     }
 
 

@@ -31,14 +31,12 @@
            z-index: 10;
         }
 
-
         .hide-text {
           white-space: nowrap;
           width: 100%;
           overflow: hidden;
           text-overflow: ellipsis;
         }
-
 
         .crb input[type="radio"][id^="cb"] {
           display: none;
@@ -114,6 +112,7 @@
                 </div>
                 <form id="newBookingForm">
                     <input type="hidden" name="action" value="new_booking">
+                    <input type="hidden" id="enable" value="0">
                     <input type="hidden" name="payment_type" id="payment_type">
                     <input type="hidden" name="selected_vehicle" id="selected_vehicle">
                     <input type="hidden" name="provided_amount" id="provided_amount">
@@ -214,6 +213,7 @@
                         <input type="hidden" name="action" value="cash_payment" required>
                         <input type="hidden" name="action" id="balance_amount" value="-1" required>
 
+
                         <div class="row justify-content-center">
                             <div class="mb-3" id="selectPaymentType">
                                 <div class="row g-4 crb" id="paymentType">
@@ -296,6 +296,7 @@
             <th scope="col" style="vertical-align: middle;">Start Date</th>
             <th scope="col" style="vertical-align: middle;">End Date</th>
             <th scope="col" style="vertical-align: middle;">Total Amount (LKR)</th>
+            <th scope="col" style="vertical-align: middle;">Is Paid</th>
             <th scope="col" style="width: 15%; vertical-align: middle;">Status</th>
             <th scope="col" style="width: 5%; vertical-align: middle;">Actions</th>
         </tr>
@@ -322,10 +323,12 @@
                         <input type="hidden" name="update_booking_id" id="update_booking_id">
                         <input type="hidden" name="update_payment_type" id="update_payment_type">
                         <input type="hidden" name="update_selected_vehicle" id="update_selected_vehicle">
+
                         <input type="hidden" name="selected_vehicle" id="old_selected_vehicle">
                         <input type="hidden" name="selected_v_type" id="old_selected_v_type">
-                        <input type="hidden" name="provided_amount" id="update_provided_amount">
-                        <input type="hidden" name="is_paid" id="update_is_paid">
+
+                        <input type="hidden" name="update_provided_amount" id="update_provided_amount">
+                        <input type="hidden" name="update_is_paid" id="update_is_paid">
 
                         <div class="row">
                             <!-- Booking Details (Left Side) -->
@@ -340,27 +343,27 @@
 
                                 <div class="mb-3">
                                     <label for="update_from_date" class="form-label">From Date</label>
-                                    <input type="datetime-local" class="form-control" id="update_from_date" name="from_date" onchange="validateChange(this.id ,this.value, true)">
+                                    <input type="datetime-local" class="form-control" id="update_from_date" name="update_from_date" onchange="validateChange(this.id ,this.value, true)">
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="update_to_date" class="form-label">To Date</label>
-                                    <input type="datetime-local" class="form-control" id="update_to_date" name="to_date" onchange="validateChange(this.id ,this.value, true)">
+                                    <input type="datetime-local" class="form-control" id="update_to_date" name="update_to_date" onchange="validateChange(this.id ,this.value, true)">
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="update_from" class="form-label">From Destination</label>
-                                    <input type="text" class="form-control" id="update_from" name="from" placeholder="Enter From Destination" oninput="validateChange(this.id ,this.value, true)">
+                                    <input type="text" class="form-control" id="update_from" name="update_from" placeholder="Enter From Destination" oninput="validateChange(this.id ,this.value, true)">
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="update_to" class="form-label">To Destination</label>
-                                    <input type="text" class="form-control" id="update_to" name="to" placeholder="Enter To Destination" oninput="validateChange(this.id ,this.value, true)">
+                                    <input type="text" class="form-control" id="update_to" name="update_to" placeholder="Enter To Destination" oninput="validateChange(this.id ,this.value, true)">
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="update_seat_count" class="form-label">Seat Count</label>
-                                    <input type="number" min="2" max="100" class="form-control" id="update_seat_count" name="seat_count" placeholder="Enter seat count" oninput="updateValidateVehicle()">
+                                    <input type="number" min="2" max="100" class="form-control" id="update_seat_count" name="update_seat_count" placeholder="Enter seat count" oninput="updateValidateVehicle()">
                                 </div>
 
                                 <div class="mb-3" id="updateSelectVehicle" style="display:block;">
@@ -370,12 +373,12 @@
 
                                 <div class="mb-3">
                                     <label for="update_total_distance" class="form-label">Total Distance (Approximately) (KM)</label>
-                                    <input type="number" min="5" class="form-control" id="update_total_distance" step="0.1" name="total_distance" placeholder="Enter Distance(KM)" oninput="calculateTotalAmount(this.value, true)">
+                                    <input type="number" min="5" class="form-control" id="update_total_distance" step="0.1" name="update_total_distance" placeholder="Enter Distance(KM)" oninput="calculateTotalAmount(this.value, true)">
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="update_total_distance" class="form-label">Total Amount(LKR)</label>
-                                    <input type="text" class="form-control" id="update_total_amount" name="total_amount" placeholder="Total Amount (LKR)" readonly>
+                                    <input type="text" class="form-control" id="update_total_amount" name="update_total_amount" placeholder="Total Amount (LKR)" readonly>
                                 </div>
                             </div>
 
@@ -386,7 +389,7 @@
                                 <input type="hidden" id="updateCustomerId" name="customerId">
                                 <div class="mb-3">
                                     <label for="update_customer_name" class="form-label">Passenger Name</label>
-                                    <input type="text" class="form-control" id="update_customer_name" name="customer_name" placeholder="Enter customer name">
+                                    <input type="text" class="form-control" id="update_customer_name" name="update_customer_name" placeholder="Enter customer name">
                                 </div>
 
                                 <div class="mb-3">
@@ -396,7 +399,7 @@
 
                                 <div class="mb-3">
                                     <label for="phone" class="form-label">Passenger Phone</label>
-                                    <input type="text" class="form-control" id="update_phone" name="phone" placeholder="Enter phone number">
+                                    <input type="text" class="form-control" id="update_phone" name="update_phone" placeholder="Enter phone number">
                                 </div>
                             </div>
                         </div>
