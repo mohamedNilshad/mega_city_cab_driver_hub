@@ -8,10 +8,12 @@ public class LicenseTypes {
     private int id;
     private String type;
 
+    //select, update
     public LicenseTypes(int id, String type) {
         this.id = id;
         this.type = type;
     }
+    //insert
     public LicenseTypes(String type) {
         this.type = type;
     }

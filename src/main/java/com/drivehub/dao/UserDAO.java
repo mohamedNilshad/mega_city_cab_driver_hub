@@ -1,5 +1,7 @@
 package com.drivehub.dao;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.drivehub.model.User;
@@ -27,12 +29,46 @@ public class UserDAO {
                         rs.getString("userNic"),
                         rs.getString("userAddress"),
                         rs.getString("userPhone"),
-                        rs.getString("userName")
+                        rs.getString("userName"),
+                        rs.getInt("blockUser")
                 );
 
                 conn.close();
                 return user;
             }
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<User> getUsers(int userType) {
+        List<User> CustomerList = new ArrayList<>();
+        try  {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT * FROM users WHERE userType = ? ORDER BY id DESC"
+            );
+            stmt.setInt(1, userType);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                CustomerList.add(new User(
+                        rs.getInt("id"),
+                        rs.getInt("userType"),
+                        rs.getString("fullName"),
+                        rs.getString("userEmail"),
+                        rs.getString("userNic"),
+                        rs.getString("userAddress"),
+                        rs.getString("userPhone"),
+                        rs.getString("userName"),
+                        rs.getInt("blockUser")
+
+                ));
+            }
+            conn.close();
+            return CustomerList;
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -105,6 +141,27 @@ public class UserDAO {
         return false;
     }
 
+    public boolean changeUserStatus(int userId, int status) {
+
+        try  {
+            Connection conn = DBConnection.getConnection();
+
+            PreparedStatement stmt;
+
+            stmt = conn.prepareStatement("UPDATE `users` SET blockUser = ? WHERE id = ?");
+            stmt.setInt(1, status);
+            stmt.setInt(2, userId);
+            int rs = stmt.executeUpdate();
+
+            conn.close();
+            return(rs > 0);
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
     public User login(String uname, String uPassword) {
 
         try  {
@@ -117,6 +174,9 @@ public class UserDAO {
 
             User user = new User();
             if (rs.next()) {
+                if(rs.getInt("blockUser") == 1){
+                    return null;
+                }
                 user.setId(rs.getInt("id"));
                 user.setUserType(rs.getInt("userType"));
 

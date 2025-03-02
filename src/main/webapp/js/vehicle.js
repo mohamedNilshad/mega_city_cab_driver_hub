@@ -381,7 +381,7 @@
         document.getElementById("d_driver_id").value = d_id;
         document.getElementById("d_image_name").value = d_image;
 
-        let modal = new bootstrap.Modal(document.getElementById("deleteVehicleForm"));
+        let modal = new bootstrap.Modal(document.getElementById("AdminStatusConfirm"));
         modal.show();
     }
 

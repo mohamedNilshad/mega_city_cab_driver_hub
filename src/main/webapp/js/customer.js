@@ -5,7 +5,7 @@
         $.ajax({
             type: "GET",
             url: "../../customer",
-            data: { action: "customer_list" },
+            data: { action: "customer_list", user_type: 2},
             dataType: "json",
             beforeSend: function() {
                 let tbody = $("#customersTable tbody");
@@ -167,6 +167,7 @@
                         $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
                         $("#success_alert").slideUp(500);
                     });
+                    fetchCustomers();
                     emptyFields();
                 }else {
                     $("#success_alert").hide();

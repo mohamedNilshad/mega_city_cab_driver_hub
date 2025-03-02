@@ -103,7 +103,9 @@ public class CustomerDAO {
                         rs.getString("userNic"),
                         rs.getString("userAddress"),
                         rs.getString("userPhone"),
-                        rs.getString("userName")
+                        rs.getString("userName"),
+                        rs.getInt("blockUser")
+
                 ));
             }
             conn.close();

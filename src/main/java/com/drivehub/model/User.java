@@ -6,7 +6,7 @@ import java.util.Map;
 public class User {
 
     private int id;
-    private int userType; //1,2
+    private int userType; //0<-super admin, 1<-admin, 2<-customer
     private String name;
     private String email;
     private String nic;
@@ -14,10 +14,11 @@ public class User {
     private String phone;
     private String userName;
     private String password;
+    private int block;
 
 
     //select
-    public User(int id, int userType, String name, String email, String nic, String address, String phone, String userName) {
+    public User(int id, int userType, String name, String email, String nic, String address, String phone, String userName, int block) {
         this.id = id;
         this.userType = userType;
         this.name = name;
@@ -26,6 +27,7 @@ public class User {
         this.address = address;
         this.phone = phone;
         this.userName = userName;
+        this.block = block;
     }
 
     //update
@@ -74,6 +76,9 @@ public class User {
 
     public String getPassword() {return password;}
 
+    public int getBlock() {return block;}
+
+
     //Setters
     public void setId(int id) {this.id = id;}
 
@@ -93,6 +98,7 @@ public class User {
 
     public void setPassword(String password) {this.password = password;}
 
+    public void setBlock(int block) {this.block = block;}
 
     public Map<String, Object> toJson() {
         Map<String, Object> jsonMap = new HashMap<>();
@@ -104,6 +110,7 @@ public class User {
         jsonMap.put("email", email);
         jsonMap.put("nic", nic);
         jsonMap.put("phone", phone);
+        jsonMap.put("block", block);
         return jsonMap;
     }
 
@@ -118,6 +125,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", nic='" + nic + '\'' +
                 ", phone='" + phone + '\'' +
+                ", block='" + block + '\'' +
                 '}';
     }
 }

@@ -1,6 +1,7 @@
 package com.drivehub.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,8 @@ import javax.servlet.http.HttpSession;
 
 import com.drivehub.model.User;
 import com.drivehub.service.UserService;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 @WebServlet("/user")
@@ -27,8 +30,48 @@ public class UserController extends HttpServlet {
             }
         }else if ("profile_info".equals(action)) {
             getProfileInfo(request, response);
+        }else if ("user_list".equals(action)) {
+            getUserList(request, response);
         }
     }
+
+    private void getUserList(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
+        JSONObject jsonResponse = new JSONObject();
+        try {
+            int userType = Integer.parseInt(request.getParameter("user_type"));
+            List<User> users = userService.getUsers(userType);
+
+            if(users != null){
+
+                JSONArray userArray = new JSONArray();
+
+                for (User c : users) {
+                    userArray.put(c.toJson());
+                }
+
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "User Fetched Successfully");
+                jsonResponse.put("data", userArray);
+            }else{
+                jsonResponse.put("status", "error");
+                jsonResponse.put("message", "User Fetched Failed!");
+            }
+        } catch (JSONException e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+
+            throw new RuntimeException(e);
+        }
+
+        out.print(jsonResponse);
+        out.flush();
+    }
+
 
     private void getProfileInfo(HttpServletRequest request, HttpServletResponse response) throws IOException{
 
@@ -65,6 +108,12 @@ public class UserController extends HttpServlet {
             confirmPassword(request, response);
         } else if ("update_profile".equals(action)) {
             updateProfile(request, response);
+        } else if ("admin_update".equals(action)) {
+            updateProfile(request, response);
+        } else if ("admin_new".equals(action)) {
+            registerUser(request, response);
+        } else if ("change_user_status".equals(action)) {
+            changeUserStatus(request, response);
         }
     }
 
@@ -73,16 +122,34 @@ public class UserController extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
 
-        User newUser = new User(
-               2,
-               request.getParameter("name"),
-               request.getParameter("email"),
-               request.getParameter("nic"),
-               request.getParameter("address"),
-               request.getParameter("phone"),
-               request.getParameter("uname"),
-               request.getParameter("pass")
-       );
+        String action = request.getParameter("action");
+        User newUser;
+        String userNameLabel = "";
+        if("admin_new".equals(action)){
+            newUser = new User(
+                    1,
+                    request.getParameter("new_admin_name"),
+                    request.getParameter("new_admin_email"),
+                    request.getParameter("new_admin_nic"),
+                    request.getParameter("new_admin_address"),
+                    request.getParameter("new_admin_phone"),
+                    request.getParameter("admin_username"),
+                    request.getParameter("admin_password")
+            );
+            userNameLabel = "New Admin ";
+        }else{
+            newUser = new User(
+                    2,
+                    request.getParameter("name"),
+                    request.getParameter("email"),
+                    request.getParameter("nic"),
+                    request.getParameter("address"),
+                    request.getParameter("phone"),
+                    request.getParameter("uname"),
+                    request.getParameter("pass")
+            );
+        }
+
 
         boolean isRegistered = userService.register(newUser);
 
@@ -91,11 +158,11 @@ public class UserController extends HttpServlet {
         if (isRegistered) {
 
             jsonResponse.put("status", "success");
-            jsonResponse.put("message", "Registration Successful!");
+            jsonResponse.put("message", userNameLabel + "Registration Successful!");
 
         } else {
             jsonResponse.put("status", "error");
-            jsonResponse.put("message", "Registration Failed!");
+            jsonResponse.put("message", userNameLabel + "Registration Failed!");
         }
         out.print(jsonResponse);
         out.flush();
@@ -117,8 +184,10 @@ public class UserController extends HttpServlet {
             HttpSession session = request.getSession();
             if(user.getUserType() == 1){
                 session.setAttribute("adminId", user.getId());
-            }else{
+            }else if(user.getUserType() == 2){
                 session.setAttribute("userId", user.getId());
+            }else if(user.getUserType() == 0){
+                session.setAttribute("superAdminId", user.getId());
             }
 
             jsonResponse.put("status", "success");
@@ -158,6 +227,31 @@ public class UserController extends HttpServlet {
         out.flush();
     }
 
+    private void changeUserStatus(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject jsonResponse = new JSONObject();
+
+        int userId = Integer.parseInt(request.getParameter("statusUserId"));
+        int status = Integer.parseInt(request.getParameter("status"));
+        status = (status == 0) ? 1 : 0;
+
+        boolean isChanged = userService.changeUserStatus(userId, status);
+
+        if (isChanged) {
+            jsonResponse.put("status", "success");
+            jsonResponse.put("message", "Status Changed Successfully!");
+
+        } else {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", "Status Changed Failed!!");
+        }
+        out.print(jsonResponse);
+        out.flush();
+    }
+
     private void updateProfile(HttpServletRequest request, HttpServletResponse response) throws IOException{
 
         response.setContentType("application/json");
@@ -165,27 +259,44 @@ public class UserController extends HttpServlet {
         PrintWriter out = response.getWriter();
         JSONObject jsonResponse = new JSONObject();
 
-        User user = new User(
-                Integer.parseInt(request.getParameter("userId")),
-                request.getParameter("name"),
-                request.getParameter("email"),
-                request.getParameter("nic"),
-                request.getParameter("address"),
-                request.getParameter("phone"),
-                request.getParameter("username")
-        );
+        String action = request.getParameter("action");
+        User user;
+        String userNameLabel = "";
+        if("admin_update".equals(action)){
+             user = new User(
+                    Integer.parseInt(request.getParameter("adminId")),
+                    request.getParameter("update_admin_name"),
+                    request.getParameter("update_admin_email"),
+                    request.getParameter("update_admin_nic"),
+                    request.getParameter("update_admin_address"),
+                    request.getParameter("update_admin_phone"),
+                    request.getParameter("update_admin_username")
+            );
+            user.setPassword(request.getParameter("update_admin_password"));
+            userNameLabel = "Admin ";
+        }else{
+             user = new User(
+                    Integer.parseInt(request.getParameter("userId")),
+                    request.getParameter("name"),
+                    request.getParameter("email"),
+                    request.getParameter("nic"),
+                    request.getParameter("address"),
+                    request.getParameter("phone"),
+                    request.getParameter("username")
+            );
+            user.setPassword(request.getParameter("new_password"));
+        }
 
-        user.setPassword(request.getParameter("new_password"));
 
         boolean isUpdated = userService.updateProfile(user);
 
         if (isUpdated) {
             jsonResponse.put("status", "success");
-            jsonResponse.put("message", "Profile Updated Successful");
+            jsonResponse.put("message", userNameLabel + "Profile Updated Successful");
 
         } else {
             jsonResponse.put("status", "error");
-            jsonResponse.put("message", "Profile Updated Failed!");
+            jsonResponse.put("message", userNameLabel + "Profile Updated Failed!");
         }
         out.print(jsonResponse);
         out.flush();

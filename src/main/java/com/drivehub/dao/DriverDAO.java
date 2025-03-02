@@ -113,10 +113,27 @@ public class DriverDAO {
 
             int rs = stmt.executeUpdate();
 
-            if (rs > 0) {
-                conn.close();
-                return true;
-            }
+            conn.close();
+            return (rs > 0);
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public Boolean addNewLicenseType(LicenseTypes licenseType) {
+
+        try {
+            Connection conn = DBConnection.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO `license_type`(licenseType) VALUES (?)");
+
+            stmt.setString(1,licenseType.getType());
+            int rs = stmt.executeUpdate();
+
+            conn.close();
+            return (rs > 0);
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -144,10 +161,49 @@ public class DriverDAO {
 
             int rs = stmt.executeUpdate();
 
-            if (rs > 0) {
-                conn.close();
-                return true;
-            }
+            conn.close();
+            return (rs > 0);
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public Boolean updateLicenseType(LicenseTypes licenseType) {
+
+        try {
+            Connection conn = DBConnection.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement("UPDATE `license_type` SET licenseType = ? WHERE id = ?");
+
+            stmt.setString(1, licenseType.getType());
+            stmt.setInt(2, licenseType.getId());
+
+            int rs = stmt.executeUpdate();
+
+            conn.close();
+            return (rs > 0);
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public Boolean deleteLicenseType(int typeId) {
+
+        try {
+            Connection conn = DBConnection.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM `license_type` WHERE id = ?");
+
+            stmt.setInt(1, typeId);
+
+            int rs = stmt.executeUpdate();
+
+            conn.close();
+            return (rs > 0);
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());

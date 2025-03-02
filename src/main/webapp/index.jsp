@@ -105,8 +105,10 @@
                                 if (response.status === "success") {
                                     if (response.userType == 1) {
                                         window.location.href = "views/admin/home.jsp?user=" + encodeURIComponent(response.userId);
-                                    } else {
+                                    } else if (response.userType == 2){
                                          window.location.href = "views/user/home.jsp?user=" + encodeURIComponent(response.userId);
+                                    } else if (response.userType == 0){
+                                         window.location.href = "views/super_admin/home.jsp?user=" + encodeURIComponent(response.userId);
                                     }
                                 }else {
                                     $('#error_message').css('display', 'block');

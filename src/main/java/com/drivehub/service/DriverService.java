@@ -17,6 +17,18 @@ public class DriverService {
         return driverDAO.updateDriver(driver);
     }
 
+    public Boolean updateLicenseType(LicenseTypes licenseType) {
+        return driverDAO.updateLicenseType(licenseType);
+    }
+
+    public Boolean deleteLicenseType(int typeId) {
+        return driverDAO.deleteLicenseType(typeId);
+    }
+
+    public Boolean addNewLicenseType(LicenseTypes licenseType) {
+        return driverDAO.addNewLicenseType(licenseType);
+    }
+
     public List<LicenseTypes> getLicenseTypes() {
         return driverDAO.getLicenseTypes();
     }

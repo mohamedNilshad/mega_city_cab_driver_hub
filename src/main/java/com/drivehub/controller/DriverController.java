@@ -33,6 +33,7 @@ public class DriverController extends HttpServlet {
             getAvailableDriverList(response);
         }
     }
+
     private void getLicenseTypes(HttpServletResponse response) throws IOException{
 
         response.setContentType("application/json");
@@ -148,6 +149,12 @@ public class DriverController extends HttpServlet {
                 addNewDriver(request, response);
             } else if ("driver_update".equals(action)) {
                 updateDriver(request, response);
+            } else if ("update_license_type".equals(action)) {
+                updateLicenseType(request, response);
+            } else if ("new_license_type".equals(action)) {
+                addNewLicenseType(request, response);
+            } else if ("delete_license_type".equals(action)) {
+                deleteLicenseType(request, response);
             }
         } catch (ParseException e) {
             throw new RuntimeException(e);
@@ -216,6 +223,103 @@ public class DriverController extends HttpServlet {
             if (isRegistered) {
                 jsonResponse.put("status", "success");
                 jsonResponse.put("message", "Driver Updated Successful!");
+
+            } else {
+                jsonResponse.put("status", "error");
+                jsonResponse.put("message", "Updated Failed!");
+            }
+        } catch (Exception e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+
+            throw new RuntimeException(e);
+        }
+        out.print(jsonResponse);
+        out.flush();
+    }
+
+    private void updateLicenseType(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject jsonResponse = new JSONObject();
+
+        try{
+
+            LicenseTypes licenseType = new LicenseTypes(
+                    Integer.parseInt(request.getParameter("licenseTypeId")),
+                    request.getParameter("update_license_type")
+            );
+
+            boolean isUpdated = driverService.updateLicenseType(licenseType);
+
+            if (isUpdated) {
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "License Type Updated Successful!");
+
+            } else {
+                jsonResponse.put("status", "error");
+                jsonResponse.put("message", "Updated Failed!");
+            }
+        } catch (Exception e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+
+            throw new RuntimeException(e);
+        }
+        out.print(jsonResponse);
+        out.flush();
+    }
+
+    private void deleteLicenseType(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject jsonResponse = new JSONObject();
+
+        try{
+
+
+            int typeId = Integer.parseInt(request.getParameter("l_type_id"));
+
+
+            boolean isUpdated = driverService.deleteLicenseType(typeId);
+
+            if (isUpdated) {
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "License Type Updated Successful!");
+
+            } else {
+                jsonResponse.put("status", "error");
+                jsonResponse.put("message", "Updated Failed!");
+            }
+        } catch (Exception e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+
+            throw new RuntimeException(e);
+        }
+        out.print(jsonResponse);
+        out.flush();
+    }
+
+    private void addNewLicenseType(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject jsonResponse = new JSONObject();
+
+        try{
+
+            LicenseTypes licenseType = new LicenseTypes(
+                    request.getParameter("new_license_type")
+            );
+
+            boolean isUpdated = driverService.addNewLicenseType(licenseType);
+
+            if (isUpdated) {
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "License Type Updated Successful!");
 
             } else {
                 jsonResponse.put("status", "error");

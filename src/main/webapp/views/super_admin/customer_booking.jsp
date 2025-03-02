@@ -5,7 +5,7 @@
     HttpSession sessionObj = request.getSession(false);
     Integer userId = -1;
     if (sessionObj != null) {
-        userId = (Integer) sessionObj.getAttribute("adminId");
+        userId = (Integer) sessionObj.getAttribute("superAdminId");
         if(userId == null){
             response.sendRedirect("../../index.jsp");
         }
@@ -16,7 +16,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <jsp:include page="includes/admin_header.jsp" />
+        <jsp:include page="includes/header.jsp" />
         <style>
             .datepicker,
             .timepicker,
@@ -27,7 +27,7 @@
             }
         </style>
     </head>
-    <body id="page-top" style="padding-top: 5px;">
+    <body id="page-top"  style="padding-top: 5px;">
 
         <a href="home.jsp" class="btn btn-dark" style="margin-left: 5px;"><i class="zmdi zmdi-arrow-left"></i></a>
 
