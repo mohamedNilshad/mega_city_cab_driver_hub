@@ -69,21 +69,6 @@
                 </tr>
             </thead>
             <tbody>
-<!--                <tr>-->
-<!--                    <th scope="row">1</th>-->
-<!--                    <td>-->
-<!--                        <img src="${pageContext.request.contextPath}/uploads/car_1.jpg" width="50px;" height="30px;">-->
-<!--                    </td>-->
-<!--                    <td>CFG 2548</td>-->
-<!--                    <td>3258</td>-->
-<!--                    <td>David</td>-->
-<!--                    <td>Toyota Car</td>-->
-<!--                    <td>CFG 2548</td>-->
-<!--                    <td>-->
-<!--                        <button type="button" class="icon-btn"><i class="zmdi zmdi-edit"></i></button>-->
-<!--                        <button type="button" class="icon-btn" style="color: red"><i class="zmdi zmdi-delete"></i></button>-->
-<!--                    </td>-->
-<!--                </tr>-->
 
             </tbody>
         </table>
@@ -238,7 +223,6 @@
                 </div>
             </div>
         </div>
-
 
 
         <jsp:include page="../../WEB-INF/includes/footer.jsp" />

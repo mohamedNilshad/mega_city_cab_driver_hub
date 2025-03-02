@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 public class DBConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/drive_hub";
     private static final String USER = "root";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = "nilshad";
 
     public static Connection getConnection() {
         // Database connection
