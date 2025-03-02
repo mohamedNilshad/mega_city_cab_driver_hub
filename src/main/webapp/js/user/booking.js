@@ -63,11 +63,14 @@
                               let payment = booking.paymentInfoList;
                               let isPaid = "Yes";
 
+
+                              let tempTotalProAmount = 0.0;
                               for(let i=0; i<payment.length; i++){
-                                if(payment[i].isPaid == 0){
-                                    isPaid = "No";
-                                    break;
-                                }
+                                tempTotalProAmount += payment[i].providedAmount;
+                              }
+
+                              if(tempTotalProAmount < booking.totalAmount){
+                                isPaid = "No";
                               }
 
 
@@ -195,7 +198,6 @@
     }
 
 
-
     //add new Booking Cash payment
     $("#paymentType1Form").submit(function(event) {
         event.preventDefault();
@@ -277,7 +279,8 @@
         let newVehicleId = readSelectedVehicle("cabSelection");
 
         document.getElementById('update_selected_vehicle').value = newVehicleId == 0 ? document.getElementById("old_selected_v_type").value : newVehicleId;
-        document.getElementById('update_provided_amount').value = document.getElementById('payNowAmount').value;
+        let payNowAmount = document.getElementById('payNowAmount').value;
+        document.getElementById('update_provided_amount').value = payNowAmount == "" ? 0.0 : payNowAmount;
         document.getElementById('update_is_paid').value = ($("#isPayNow").prop('checked') == true) ? 1 : 0;
         //add all the required values to this
 
@@ -666,9 +669,10 @@
             let amount = document.getElementById(total_amount).value;
             let balanceAmount = document.getElementById("balance_amount").value;
 
-            document.getElementById("payNowAmount").value = balanceAmount == "-1" ? amount : balanceAmount;
+            document.getElementById("payNowAmount").value = (balanceAmount == "-1") ? amount : balanceAmount;
             payNowField.style.display = "block";
         }else{
+            document.getElementById("payNowAmount").value = "";
             payNowField.style.display = "none";
         }
     }
@@ -758,6 +762,7 @@
         });
         if(selectId != -1){
             dropdown.val(selectId);
+            calculateTotalAmount(selectId, true);
         }
     }
 
