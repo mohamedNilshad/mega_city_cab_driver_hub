@@ -590,7 +590,7 @@
                     });
                     fetchUserBookings(true);
                     $("#editBookingModel").modal("hide");
-                    isCard ? $("#cardPaymentModel").modal("hide"); : $("#paymentTypeModel").modal("hide");
+                    isCard ? $("#cardPaymentModel").modal("hide") : $("#paymentTypeModel").modal("hide");
                 }else {
                     $("#success_alert").hide();
                         $('#error_alert').html(response.message);
@@ -838,6 +838,13 @@
     function changeStatus(bid, value, label){
         let subtitle = value == 2 ? "Cancel": label
 
+        document.getElementById('meter_reading').value = "";
+
+        if(value == 1 || value == 3){
+            document.getElementById('meter_reading_div').style.display = "block";
+        }else{
+            document.getElementById('meter_reading_div').style.display = "none";
+        }
         document.getElementById('booking_id').value = bid;
         document.getElementById('status').value = value;
 

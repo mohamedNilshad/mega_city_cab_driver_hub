@@ -154,6 +154,59 @@ public class BookingDAO {
         return null;
     }
 
+    public List<Booking> getAllBookings() {
+        List<Booking> bookingList = new ArrayList<>();
+        try  {
+            Connection conn = DBConnection.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT b.*, v.vehicleNumber, v.vehicleTypeId, c.userNic FROM bookings b "+
+                            "INNER JOIN vehicles v ON b.vehicle_id = v.id "+
+                            "INNER JOIN users c ON b.customer_id = c.id "+
+                            "WHERE b.status != 0 ORDER BY b.start_date"
+            );
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Vehicle v = new Vehicle();
+                User customer = new User();
+                customer.setNic(rs.getString("userNic"));
+                v.setVehicleNumber(rs.getString("vehicleNumber"));
+                v.setVehicleTypeId(rs.getInt("vehicleTypeId"));
+
+                List<PaymentInfo> paymentList = getPaymentList(rs.getInt("id"));
+
+                Booking b = new Booking(
+                        rs.getInt("id"),
+                        rs.getString("booking_number"),
+                        paymentList,
+                        rs.getInt("booking_type"),
+                        rs.getInt("customer_id"),
+                        customer,
+                        v,
+                        rs.getInt("vehicle_id"),
+                        rs.getTimestamp("start_date"),
+                        rs.getTimestamp("to_date"),
+                        rs.getDouble("total_amount"),
+                        rs.getInt("requested_seat_count"),
+                        rs.getDouble("total_requested_distance"),
+                        rs.getString("passenger_name"),
+                        rs.getString("passenger_phone"),
+                        rs.getInt("status")
+                );
+
+                bookingList.add(b);
+            }
+            conn.close();
+            return bookingList;
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
     public Boolean addNewBooking(Booking newBooking, PaymentInfo paymentInfo) {
 
         try {
@@ -234,22 +287,35 @@ public class BookingDAO {
         return false;
     }
 
-    public Boolean changeBookingStatus(int status, int bookingId)  {
+    public Boolean changeBookingStatus(int status, int bookingId, String meterReading)  {
 
         try {
             Connection conn = DBConnection.getConnection();
 
-            PreparedStatement stmt = conn.prepareStatement("UPDATE `bookings` SET status = ? WHERE id = ?");
+            PreparedStatement stmt;
 
-            stmt.setInt(1, status);
-            stmt.setInt(2, bookingId);
+            if(status == 3){
+                stmt = conn.prepareStatement("UPDATE `bookings` SET status = ?, startMeterReading = ? WHERE id = ?");
+                stmt.setInt(1, status);
+                stmt.setInt(2, Integer.parseInt(meterReading));
+                stmt.setInt(3, bookingId);
+
+            }else if(status == 1){
+                stmt = conn.prepareStatement("UPDATE `bookings` SET status = ?, endMeterReading = ? WHERE id = ?");
+                stmt.setInt(1, status);
+                stmt.setInt(2, Integer.parseInt(meterReading));
+                stmt.setInt(3, bookingId);
+
+            }else{
+                stmt = conn.prepareStatement("UPDATE `bookings` SET status = ? WHERE id = ?");
+                stmt.setInt(1, status);
+                stmt.setInt(2, bookingId);
+            }
 
             int rs = stmt.executeUpdate();
 
-            if (rs > 0) {
-                conn.close();
-                return true;
-            }
+            conn.close();
+            return (rs > 0);
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());

@@ -23,6 +23,10 @@ public class BookingService {
         return bookingDAO.getScheduledBookings();
     }
 
+    public List<Booking> getAllBookings() {
+        return bookingDAO.getAllBookings();
+    }
+
     public Boolean addNewBooking(Booking booking, PaymentInfo paymentInfo) {
         return bookingDAO.addNewBooking(booking, paymentInfo);
     }
@@ -31,7 +35,7 @@ public class BookingService {
         return bookingDAO.updateBooking(booking, paymentInfo);
     }
 
-    public Boolean changeBookingStatus(int status, int bookingId) {
-        return bookingDAO.changeBookingStatus( status, bookingId);
+    public Boolean changeBookingStatus(int status, int bookingId, String meterReading) {
+        return bookingDAO.changeBookingStatus( status, bookingId, meterReading);
     }
 }

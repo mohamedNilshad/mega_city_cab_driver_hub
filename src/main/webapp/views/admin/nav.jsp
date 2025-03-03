@@ -19,6 +19,8 @@
                 <li class="nav-item mx-0 mx-lg-1"><a
                         class="nav-link py-3 px-0 px-lg-3 rounded" href="home.jsp">Home</a></li>
                 <li class="nav-item mx-0 mx-lg-1"><a
+                        class="nav-link py-3 px-0 px-lg-3 rounded" href="history.jsp">History</a></li>
+                <li class="nav-item mx-0 mx-lg-1"><a
                         class="nav-link py-3 px-0 px-lg-3 rounded" href="manage_vehicle.jsp">Manage Vehicle</a></li>
                 <li class="nav-item mx-0 mx-lg-1"><a
                         class="nav-link py-3 px-0 px-lg-3 rounded" href="profile.jsp">Profile</a></li>

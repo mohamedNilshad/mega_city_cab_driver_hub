@@ -34,6 +34,8 @@ public class BookingController extends HttpServlet {
             getUserBookings(request, response);
         }else if ("get_all_scheduled_bookings".equals(action)) {
             getScheduledBookings(response);
+        }else if ("get_all_bookings".equals(action)) {
+            getAllBookings(response);
         }
     }
 
@@ -155,12 +157,50 @@ public class BookingController extends HttpServlet {
         out.flush();
     }
 
+    private void getAllBookings( HttpServletResponse response) throws IOException{
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
+        JSONObject jsonResponse = new JSONObject();
+
+        try {
+
+            List<Booking> bookings = bookingService.getAllBookings();
+
+            if(bookings != null){
+
+                JSONArray bookingArray = new JSONArray();
+
+                for (Booking b : bookings) {
+                    bookingArray.put(b.toJson());
+                }
+
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "Bookings Fetched Successfully");
+                jsonResponse.put("data", bookingArray);
+            }else{
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "No Data");
+            }
+        } catch (JSONException e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+
+            throw new RuntimeException(e);
+        }
+
+        out.print(jsonResponse);
+        out.flush();
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
         String action = request.getParameter("action");
         try {
             if ("new_booking".equals(action)) {
                 addNewBooking(request, response);
-            }else if ("change_change".equals(action)) {
+            }else if ("change_status".equals(action)) {
                 changeBookingStatus(request, response);
             }else if ("update_booking".equals(action)) {
                 updateBooking(request, response);
@@ -278,8 +318,9 @@ public class BookingController extends HttpServlet {
         try{
             int status = Integer.parseInt(request.getParameter("status"));
             int bookingId = Integer.parseInt(request.getParameter("booking_id"));
+            String meterReading = request.getParameter("meter_reading");
 
-            boolean isAdded= bookingService.changeBookingStatus(status,bookingId);
+            boolean isAdded= bookingService.changeBookingStatus(status, bookingId, meterReading);
 
             if (isAdded) {
                 jsonResponse.put("status", "success");

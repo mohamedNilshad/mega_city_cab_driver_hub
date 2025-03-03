@@ -39,8 +39,6 @@
                 <th scope="col" style="vertical-align: middle;">Customer Name</th>
                 <th scope="col" style="vertical-align: middle;">Customer NIC</th>
                 <th scope="col" style="vertical-align: middle;">Vehicle Number</th>
-                <th scope="col" style="vertical-align: middle;">From</th>
-                <th scope="col" style="vertical-align: middle;">To</th>
                 <th scope="col" style="vertical-align: middle;">Start Date</th>
                 <th scope="col" style="vertical-align: middle;">End Date</th>
                 <th scope="col" style="vertical-align: middle;">Total Amount (LKR)</th>

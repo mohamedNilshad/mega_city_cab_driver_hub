@@ -395,10 +395,13 @@
             <p style="margin-left:15px;">Are you sure you want to <span id="subtitle" style="font-weight: bold;"> </span> this ?</p>
             <div class="modal-body">
                 <form id="changeStatusForm">
-                    <input type="hidden" name="action" value="change_change" required>
+                    <input type="hidden" name="action" value="change_status" required>
                     <input type="hidden" name="status" id="status" required>
                     <input type="hidden" name="booking_id" id="booking_id" required>
-
+                    <div class="mb-3" id="meter_reading_div" style="display: none;">
+                        <label for="meter_reading" class="form-label">Current Meter Reading</label>
+                        <input type="number" min="5" class="form-control" id="meter_reading" step="0.1" name="meter_reading" placeholder="Enter Current Reading">
+                    </div>
                     <div class="row justify-content-center">
                         <button type="submit" class="btn btn-success me-2" style="width: 40%;">
                             <i class="fa fa-spinner fa-spin" id="cs_btn_loading" style="display: none; margin-right: 5px;"></i>Confirm
