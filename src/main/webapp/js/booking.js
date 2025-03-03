@@ -8,22 +8,20 @@
         setDate("from_date");
         setDate("to_date");
         fetchUserBookings();
-        fetchDefaultAmounts();
     });
 
     document.addEventListener("change", function () {
-            if(document.getElementById("seat_count").value != ""){
-                if (event.target.name === "cabSelection") {
-    //                console.log("Selected Vehicle ID:", event.target.value);
-                    document.getElementById("total_distance").disabled = false;
-                }else{
-                    let result = readSelectedVehicle("cabSelection");
-                    if(result == ""){
-                        document.getElementById("total_distance").disabled = true;
-                    }
+        if(document.getElementById("seat_count").value != ""){
+            if (event.target.name === "cabSelection") {
+                document.getElementById("total_distance").disabled = false;
+            }else{
+                let result = readSelectedVehicle("cabSelection");
+                if(result == ""){
+                    document.getElementById("total_distance").disabled = true;
                 }
             }
-        });
+        }
+    });
 
     //-------------------------common from db-----------------------------
     function fetchVehicleType(isUpdate = false, selectId = -1){
@@ -260,50 +258,6 @@
                     $('#selectVehicle').css('display', 'block');
                }
             }
-
-        });
-    }
-
-    //get default amounts
-    function fetchDefaultAmounts(v_type = 4){
-
-        $.ajax({
-            type: "GET",
-            url: "../../booking",
-            data: {action: "get_default_amount", vehicle_type_for_da: v_type},
-            dataType: "json",
-
-            success: function(response) {
-                if (response.status === "success") {
-                     defaultAmount = response.data;
-
-                }else {
-
-                    $("#success_alert").hide();
-                        $('#error_alert').html(response.message);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-                }
-
-            },
-            error: function(xhr) {
-
-                let responseText = xhr.responseText;
-                let errorMsg = '';
-                try {
-                    let errorResponse = JSON.parse(responseText);
-                    errorMsg = errorResponse.message;
-                } catch (e) {
-                    errorMsg = "Unexpected error occurred: "+e;
-                }
-
-                $("#success_alert").hide();
-                    $('#error_alert').html(errorMsg);
-                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                    $("#error_alert").slideUp(500);
-                });
-            },
 
         });
     }
@@ -569,7 +523,7 @@
         $(":submit").attr("disabled", true);
 
         document.getElementById('update_payment_type').value = '1';
-        let newVehicleId = readSelectedVehicle("cabSelection");
+        let newVehicleId = readSelectedVehicle("cabSelectionUpdate");
 
         document.getElementById('update_selected_vehicle').value = newVehicleId == 0 ? document.getElementById("old_selected_v_type").value : newVehicleId;
         let payNowAmount = document.getElementById('payNowAmount').value;
@@ -590,6 +544,7 @@
                         $("#success_alert").slideUp(500);
                     });
                     fetchUserBookings(true);
+                    $("#editBookingModel").modal("hide");
                     $("#paymentTypeModel").modal("hide");
                 }else {
                     $("#success_alert").hide();
@@ -618,7 +573,6 @@
             complete: function(){
                 $(":submit").removeAttr("disabled");
                 $('#nb_btn_loading').css('display', 'none');
-//                window.scrollTo(0,0);
             }
         });
     }
@@ -709,6 +663,7 @@
             vehicleList.insertAdjacentHTML('beforeend', element);
         }else{
             let i=1;
+            let sName = isUpdate ? "cabSelectionUpdate" : "cabSelection";
             $.each(vehicle, function(index, typeObj) {
 
                 let id = 'cb'+i;
@@ -716,7 +671,7 @@
                 i = i+1;
                 let element = `
                     <div style="width:50%;" class="cimg">
-                            <input type="radio" id="${id}" name="cabSelection" value="${typeObj.id}">
+                            <input type="radio" id="${id}" name="${sName}" value="${typeObj.id}">
                             <label for="${id}">
                                 <div class="card">
                                     <img class="card-img-top" src="${contextPath}${typeObj.vehicleImage}" alt="${typeObj.vehicleName} Image">
@@ -735,8 +690,7 @@
                 vehicleList.insertAdjacentHTML('beforeend', element);
             });
             if(isUpdate){
-              $("input[name='cabSelection']").prop("checked", false);
-              $("input[name='cabSelection']").eq(0).prop("checked", true);
+                $(`input[name='${sName}']`).prop("checked", false).first().prop("checked", true);
             }
         }
 
@@ -894,7 +848,7 @@
 
         if((value != "") && (vType != "") && (fromDate != "") && (toDate != "") && (seatCount != "") && (totalDistance != "")){
 
-            let dAmount = defaultAmount.find(item => item.vehicleType == vType);
+            let dAmount = vehicleTypes.find(item => item.id == vType);
 
             let perOneDay = dAmount.perOneDay;
             let discountFullAmount = dAmount.discountFullAmount;

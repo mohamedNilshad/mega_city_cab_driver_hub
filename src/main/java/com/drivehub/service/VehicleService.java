@@ -28,4 +28,17 @@ public class VehicleService {
     public List<Vehicle> getVehicles() {
         return vehicleDAO.getVehicle();
     }
+
+    public Boolean addNewVehicleType(VehicleTypes newVehicleType) {
+        return vehicleDAO.addNewVehicleType(newVehicleType);
+    }
+
+    public Boolean updateVehicleType(VehicleTypes vehicleType) {
+        return vehicleDAO.updateVehicleType(vehicleType);
+    }
+
+    public Boolean deleteVehicleType(int typeId) {
+        return vehicleDAO.deleteVehicleType(typeId);
+    }
+
 }

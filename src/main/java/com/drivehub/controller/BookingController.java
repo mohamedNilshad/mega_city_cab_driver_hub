@@ -1,7 +1,6 @@
 package com.drivehub.controller;
 
 import com.drivehub.model.Booking;
-import com.drivehub.model.DefaultAmount;
 import com.drivehub.model.PaymentInfo;
 import com.drivehub.model.Vehicle;
 import com.drivehub.service.BookingService;
@@ -35,8 +34,6 @@ public class BookingController extends HttpServlet {
             getUserBookings(request, response);
         }else if ("get_all_scheduled_bookings".equals(action)) {
             getScheduledBookings(response);
-        }else if ("get_default_amount".equals(action)) {
-            getDefaultAmounts(request, response);
         }
     }
 
@@ -67,43 +64,6 @@ public class BookingController extends HttpServlet {
                 jsonResponse.put("status", "success");
                 jsonResponse.put("message", "Vehicle Fetched Successfully");
                 jsonResponse.put("data", vehicleArray);
-            }else{
-                jsonResponse.put("status", "success");
-                jsonResponse.put("message", "No Data");
-            }
-        } catch (JSONException e) {
-            jsonResponse.put("status", "error");
-            jsonResponse.put("message", e);
-
-            throw new RuntimeException(e);
-        }
-
-        out.print(jsonResponse);
-        out.flush();
-    }
-
-    private void getDefaultAmounts(HttpServletRequest request, HttpServletResponse response) throws IOException{
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        PrintWriter out = response.getWriter();
-
-        JSONObject jsonResponse = new JSONObject();
-
-        try {
-//            int vType = Integer.parseInt(request.getParameter("vehicle_type_for_da"));
-            List<DefaultAmount> defaultAmount = bookingService.getDefaultAmount(4);
-
-
-            if(defaultAmount != null){
-                JSONArray defaultAmountArray = new JSONArray();
-                for (DefaultAmount da : defaultAmount) {
-                    defaultAmountArray.put(da.toJson());
-                }
-
-                jsonResponse.put("status", "success");
-                jsonResponse.put("message", "Default Amounts Fetched Successfully");
-                jsonResponse.put("data", defaultAmountArray);
             }else{
                 jsonResponse.put("status", "success");
                 jsonResponse.put("message", "No Data");
@@ -273,8 +233,6 @@ public class BookingController extends HttpServlet {
         JSONObject jsonResponse = new JSONObject();
 
         try{
-            System.out.println("Calling");
-
             Booking booking = new Booking(
                     Integer.parseInt(request.getParameter("update_booking_id")),
                     Integer.parseInt(request.getParameter("update_selected_vehicle")),

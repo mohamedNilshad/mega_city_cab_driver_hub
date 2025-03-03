@@ -24,8 +24,20 @@ public class VehicleDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                vehicleTypesList.add(new VehicleTypes(rs.getInt("id"), rs.getString("vehicleType")));
+                vehicleTypesList.add(
+                        new VehicleTypes(
+                                rs.getInt("id"),
+                                rs.getString("vehicleType"),
+                                rs.getDouble("perOneDay"),
+                                rs.getDouble("discountFullAmount"),
+                                rs.getDouble("discountBalanceAmount"),
+                                rs.getDouble("penaltyExtraKm"),
+                                rs.getDouble("maximumKmPerDay"),
+                                rs.getInt("discountDays")
+                        )
+                );
             }
+
             conn.close();
             return vehicleTypesList;
 
@@ -173,6 +185,81 @@ public class VehicleDAO {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public Boolean addNewVehicleType(VehicleTypes newVehicleType) {
+
+        try {
+            Connection conn = DBConnection.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement(
+                    "INSERT INTO `vehicle_type`(vehicleType,perOneDay,discountFullAmount,discountBalanceAmount,penaltyExtraKm,maximumKmPerDay,discountDays) VALUES (?,?,?,?,?,?,?)");
+
+            stmt.setString(1,newVehicleType.getType());
+            stmt.setDouble(2,newVehicleType.getPerOneDay());
+            stmt.setDouble(3,newVehicleType.getDiscountFullAmount());
+            stmt.setDouble(4,newVehicleType.getDiscountBalanceAmount());
+            stmt.setDouble(5,newVehicleType.getPenaltyExtraKm());
+            stmt.setDouble(6,newVehicleType.getMaximumKmPerDay());
+            stmt.setInt(7, newVehicleType.getDiscountDays());
+
+            int rs = stmt.executeUpdate();
+            conn.close();
+            return (rs > 0);
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public Boolean updateVehicleType(VehicleTypes vehicleType) {
+
+        try {
+            Connection conn = DBConnection.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement(
+                    "UPDATE `vehicle_type` SET vehicleType = ?, perOneDay = ?, discountFullAmount = ?, discountBalanceAmount = ?, penaltyExtraKm = ?, maximumKmPerDay = ?, discountDays = ? WHERE id = ?"
+            );
+
+            stmt.setString(1,vehicleType.getType());
+            stmt.setDouble(2,vehicleType.getPerOneDay());
+            stmt.setDouble(3,vehicleType.getDiscountFullAmount());
+            stmt.setDouble(4,vehicleType.getDiscountBalanceAmount());
+            stmt.setDouble(5,vehicleType.getPenaltyExtraKm());
+            stmt.setDouble(6,vehicleType.getMaximumKmPerDay());
+            stmt.setInt(7, vehicleType.getDiscountDays());
+            stmt.setInt(8, vehicleType.getId());
+
+            int rs = stmt.executeUpdate();
+
+            conn.close();
+            return (rs > 0);
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public Boolean deleteVehicleType(int typeId) {
+
+        try {
+            Connection conn = DBConnection.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM `vehicle_type` WHERE id = ?");
+
+            stmt.setInt(1, typeId);
+
+            int rs = stmt.executeUpdate();
+
+            conn.close();
+            return (rs > 0);
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return false;
     }
 
 }

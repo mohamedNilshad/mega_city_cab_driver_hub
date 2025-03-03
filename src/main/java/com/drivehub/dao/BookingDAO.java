@@ -46,41 +46,6 @@ public class BookingDAO {
         return null;
     }
 
-    public List<DefaultAmount> getDefaultAmount(int vType) {
-
-        try  {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT * FROM default_amounts"
-            );
-//            stmt.setInt(1, vType);
-            ResultSet rs = stmt.executeQuery();
-
-            List<DefaultAmount> defaultAmountList = new ArrayList<>();
-
-            while (rs.next()) {
-                DefaultAmount defaultAmount = new DefaultAmount(
-                        rs.getInt("id"),
-                        rs.getInt("vehicle_type"),
-                        rs.getDouble("per_one_day"),
-                        rs.getDouble("discount_full_amount"),
-                        rs.getDouble("discount_balance_amount"),
-                        rs.getDouble("penalty_extra_km"),
-                        rs.getDouble("maximum_km_per_day"),
-                        rs.getInt("discount_days")
-                );
-                defaultAmountList.add(defaultAmount);
-
-            }
-            conn.close();
-            return defaultAmountList;
-
-        } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
-        }
-        return null;
-    }
-
     public List<Booking> getUserBookings(int customerId) {
         List<Booking> bookingList = new ArrayList<>();
         try  {

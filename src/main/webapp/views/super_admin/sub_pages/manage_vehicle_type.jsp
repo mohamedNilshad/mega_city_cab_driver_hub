@@ -1,22 +1,22 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h3>Vehicle Type</h3>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#vehicleFrom" id="newVehicleBtn">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#vehicleTypeFrom" id="newVehicleBtn">
         <i class="fa fa-spinner fa-spin" id="nv_btn_loading" style="display: none; margin-right: 5px;"></i>Add New Vehicle Type
     </button>
 </div>
 
 
-<table id="vehiclesTable" class="table">
+<table id="vehiclesTypesTable" class="table">
     <thead class="thead-dark">
     <tr>
         <th scope="col" style="width: 3%">#</th>
-        <th scope="col">Vehicle Image</th>
-        <th scope="col">Vehicle Number</th>
-        <th scope="col">Vehicle Name</th>
         <th scope="col">Vehicle Type</th>
-        <th scope="col">Description</th>
-        <th scope="col">Driver Name</th>
-        <th scope="col">Driver Reg. Number</th>
+        <th scope="col">Per One Day</th>
+        <th scope="col">Discount Full Amount</th>
+        <th scope="col">Discount Balance Amount</th>
+        <th scope="col">Penalty Extra Km</th>
+        <th scope="col">Maximum Km PerDay</th>
+        <th scope="col">Discount Days</th>
         <th scope="col" style="width: 5%">Actions</th>
     </tr>
     </thead>
@@ -25,52 +25,51 @@
 </table>
 
 <!--Vehicle insert From-->
-<div class="modal fade" id="vehicleFrom" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
+<div class="modal fade" id="vehicleTypeFrom" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="popupFormLabel">New Vehicle</h5>
+                <h5 class="modal-title" id="popupFormLabel">New Vehicle Type</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
-                <form enctype="multipart/form-data" id="addNewVehicle">
-                    <input type="hidden" name="action" value="vehicle_new" required>
+                <form id="addNewVehicleType">
+                    <input type="hidden" name="action" value="vehicle_type_new" required>
+
                     <div class="mb-3">
-                        <label for="driver" class="form-label">Select Vehicle Type</label>
-                        <select class="form-select" id="v_type" name="v_type">
-                        </select>
+                        <label for="new_v_type_name" class="form-label">Vehicle Type</label>
+                        <input type="text" class="form-control" id="new_v_type_name" name="new_v_type_name" placeholder="Enter Vehicle Type">
                     </div>
 
                     <div class="mb-3">
-                        <label for="v_type" class="form-label">Vehicle Name</label>
-                        <input type="text" class="form-control" id="v_name" name="v_name" placeholder="Enter Vehicle Type">
+                        <label for="new_per_one_day" class="form-label">Per one day amount</label>
+                        <input type="number" min="1" step="0.1" class="form-control" id="new_per_one_day" name="new_per_one_day" placeholder="Enter Amount">
                     </div>
 
                     <div class="mb-3">
-                        <label for="v_number" class="form-label">Vehicle Number</label>
-                        <input type="text" class="form-control" id="v_number" name="v_number" placeholder="Vehicle Number">
+                        <label for="new_discount_full_amount" class="form-label">Discount full amount</label>
+                        <input type="number" min="1" step="0.1" class="form-control" id="new_discount_full_amount" name="new_discount_full_amount" placeholder="Enter Amount">
                     </div>
 
                     <div class="mb-3">
-                        <label for="seat_count" class="form-label">Seat Count</label>
-                        <input type="number" min="2" max="100" class="form-control" id="seat_count" name="seat_count" placeholder="Enter Seat Count">
+                        <label for="new_discount_balance_amount" class="form-label">Discount balance amount</label>
+                        <input type="number" min="1" step="0.1" class="form-control" id="new_discount_balance_amount" name="new_discount_balance_amount" placeholder="Enter Amount">
                     </div>
 
                     <div class="mb-3">
-                        <label for="seat_count" class="form-label">Vehicle Image</label>
-                        <input type="file" min="2" max="100" class="form-control" id="v_image" name="v_image" accept="image/*" placeholder="Select Vehicle Image">
+                        <label for="new_penalty_extra_km" class="form-label">Penalty for extra Km</label>
+                        <input type="number" min="1" step="0.1" class="form-control" id="new_penalty_extra_km" name="new_penalty_extra_km" placeholder="Enter Amount">
                     </div>
 
                     <div class="mb-3">
-                        <label for="v_description" class="form-label">Description</label>
-                        <textarea class="form-control" id="v_description" name="v_description" placeholder="Enter Description"></textarea>
+                        <label for="new_maximum_km_per_day" class="form-label">Maximum Km Per Day</label>
+                        <input type="number" min="1" step="0.1" class="form-control" id="new_maximum_km_per_day" name="new_maximum_km_per_day" placeholder="Enter Km amount">
                     </div>
 
                     <div class="mb-3">
-                        <label for="sdriver" class="form-label">Select an Driver</label>
-                        <select class="form-select" id="sdriver" name="driver">
-                        </select>
+                        <label for="new_discount_days" class="form-label">Discount Days</label>
+                        <input type="number" min="1" class="form-control" id="new_discount_days" name="new_discount_days" placeholder="Enter Days">
                     </div>
 
                     <button type="submit" class="btn btn-success">
@@ -83,7 +82,7 @@
 </div>
 
 <!--Vehicle update From-->
-<div class="modal fade" id="vehicleUpdateFrom" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
+<div class="modal fade" id="vehicleTypeUpdateFrom" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -92,50 +91,44 @@
             </div>
 
             <div class="modal-body">
-                <form enctype="multipart/form-data" id="updateNewVehicle">
-                    <input type="hidden" name="action" value="vehicle_update" required>
-                    <input type="hidden" name="vehicle_id" id="vehicle_id" required>
-                    <input type="hidden" name="old_v_image" id="old_v_image" required>
-                    <input type="hidden" name="old_driver_id" id="old_driver_id" required>
+                <form id="updateVehicleType">
+                    <input type="hidden" name="action" value="vehicle_type_update" required>
+                    <input type="hidden" name="test" value="vehicle_type_update" required>
+                    <input type="hidden" name="update_vehicle_type_id" id="update_vehicle_type_id" required>
+
                     <div class="mb-3">
-                        <label for="driver" class="form-label">Select Vehicle Type</label>
-                        <select class="form-select" id="update_v_type" name="update_v_type">
-                        </select>
+                        <label for="update_v_type_name" class="form-label">Vehicle Type</label>
+                        <input type="text" class="form-control" id="update_v_type_name" name="update_v_type_name" placeholder="Enter Vehicle Type">
                     </div>
 
                     <div class="mb-3">
-                        <label for="v_type" class="form-label">Vehicle Name</label>
-                        <input type="text" class="form-control" id="update_v_name" name="update_v_name" placeholder="Enter Vehicle Type">
+                        <label for="update_per_one_day" class="form-label">Per one day amount</label>
+                        <input type="number" min="1" step="0.1" class="form-control" id="update_per_one_day" name="update_per_one_day" placeholder="Enter Amount">
                     </div>
 
                     <div class="mb-3">
-                        <label for="v_number" class="form-label">Vehicle Number</label>
-                        <input type="text" class="form-control" id="update_v_number" name="update_v_number" placeholder="Vehicle Number">
+                        <label for="update_discount_full_amount" class="form-label">Discount full amount</label>
+                        <input type="number" min="1" step="0.1" class="form-control" id="update_discount_full_amount" name="update_discount_full_amount" placeholder="Enter Amount">
                     </div>
 
                     <div class="mb-3">
-                        <label for="seat_count" class="form-label">Seat Count</label>
-                        <input type="number" min="2" max="100" class="form-control" id="update_seat_count" name="update_seat_count" placeholder="Enter Seat Count">
-                    </div>
-
-                    <div style="margin-bottom:10px;">
-                        <img src="" width="80px;" id="old_image"> <label for="old_image" class="form-label" id="old_image_label"></label>
+                        <label for="update_discount_balance_amount" class="form-label">Discount balance amount</label>
+                        <input type="number" min="1" step="0.1" class="form-control" id="update_discount_balance_amount" name="update_discount_balance_amount" placeholder="Enter Amount">
                     </div>
 
                     <div class="mb-3">
-                        <label for="seat_count" class="form-label">New Vehicle Image</label>
-                        <input type="file" min="2" max="100" class="form-control" id="update_v_image" name="update_v_image" accept="image/*" placeholder="Select Vehicle Image">
+                        <label for="update_penalty_extra_km" class="form-label">Penalty for extra Km</label>
+                        <input type="number" min="1" step="0.1" class="form-control" id="update_penalty_extra_km" name="update_penalty_extra_km" placeholder="Enter Amount">
                     </div>
 
                     <div class="mb-3">
-                        <label for="v_description" class="form-label">Description</label>
-                        <textarea class="form-control" id="update_v_description" name="update_v_description" placeholder="Enter Description"></textarea>
+                        <label for="update_maximum_km_per_day" class="form-label">Maximum Km Per Day</label>
+                        <input type="number" min="1" step="0.1" class="form-control" id="update_maximum_km_per_day" name="update_maximum_km_per_day" placeholder="Enter Km amount">
                     </div>
 
                     <div class="mb-3">
-                        <label for="driver" class="form-label">Select an Driver</label>
-                        <select class="form-select" id="update_driver" name="update_driver">
-                        </select>
+                        <label for="update_discount_days" class="form-label">Discount Days</label>
+                        <input type="number" min="1" class="form-control" id="update_discount_days" name="update_discount_days" placeholder="Enter Days">
                     </div>
 
                     <button type="submit" class="btn btn-success">
@@ -148,7 +141,7 @@
 </div>
 
 <!-- Delete Confirmation-->
-<div class="modal fade" id="deleteVehicleForm" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
+<div class="modal fade" id="deleteVehicleTypeForm" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
         <div class="modal-content">
             <div class="modal-header">
@@ -157,11 +150,9 @@
             </div>
             <p style="margin-left:15px;">Are you sure you want to delete this item?</p>
             <div class="modal-body">
-                <form id="deleteVehicle">
-                    <input type="hidden" name="action" value="vehicle_delete" required>
-                    <input type="hidden" name="d_v_id" id="d_v_id" required>
-                    <input type="hidden" name="d_driver_id" id="d_driver_id" required>
-                    <input type="hidden" name="d_image_name" id="d_image_name" required>
+                <form id="deleteVehicleType">
+                    <input type="hidden" name="action" value="vehicle_type_delete" required>
+                    <input type="hidden" name="delete_vehicle_type_id" id="delete_vehicle_type_id" required>
 
                     <div class="row justify-content-center">
                         <button type="submit" class="btn btn-danger me-2" style="width: 40%;">

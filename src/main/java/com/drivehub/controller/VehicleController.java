@@ -36,6 +36,8 @@ public class VehicleController extends HttpServlet {
         String action = request.getParameter("action");
         if ("vehicle_types".equals(action)) {
             getVehicleTypes( response);
+        }else if ("all_vehicle_types".equals(action)) {
+            getVehicleTypes( response);
         }else if ("vehicle_list".equals(action)) {
             getVehicleList(response);
         }
@@ -115,6 +117,7 @@ public class VehicleController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
         String action = request.getParameter("action");
+
         try {
             if ("vehicle_new".equals(action)) {
                 addNewVehicle(request, response);
@@ -122,6 +125,12 @@ public class VehicleController extends HttpServlet {
                 updateVehicle(request, response);
             } else if ("vehicle_delete".equals(action)) {
                 deleteVehicle(request, response);
+            } else if ("vehicle_type_new".equals(action)) {
+                addNewVehicleType(request, response);
+            } else if ("vehicle_type_update".equals(action)) {
+                updateVehicleType(request, response);
+            } else if ("vehicle_type_delete".equals(action)) {
+                deleteVehicleType(request, response);
             }
         } catch (ParseException e) {
             throw new RuntimeException(e);
@@ -261,6 +270,115 @@ public class VehicleController extends HttpServlet {
             jsonResponse.put("status", "error");
             jsonResponse.put("message", e);
 
+            throw new RuntimeException(e);
+        }
+        out.print(jsonResponse);
+        out.flush();
+    }
+
+    private void addNewVehicleType(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject jsonResponse = new JSONObject();
+
+        try{
+
+            VehicleTypes newVehicleType = new VehicleTypes(
+                    request.getParameter("new_v_type_name"),
+                    Double.parseDouble(request.getParameter("new_per_one_day")),
+                    Double.parseDouble(request.getParameter("new_discount_full_amount")),
+                    Double.parseDouble(request.getParameter("new_discount_balance_amount")),
+                    Double.parseDouble(request.getParameter("new_penalty_extra_km")),
+                    Double.parseDouble(request.getParameter("new_maximum_km_per_day")),
+                    Integer.parseInt(request.getParameter("new_discount_days"))
+            );
+
+            boolean isRegistered = vehicleService.addNewVehicleType(newVehicleType);
+
+            if (isRegistered) {
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "New Vehicle Type Added Successful!");
+
+            } else {
+                jsonResponse.put("status", "error");
+                jsonResponse.put("message", "New Vehicle Type Adding Failed!");
+            }
+
+
+        } catch (Exception e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+            throw new RuntimeException(e);
+        }
+        out.print(jsonResponse);
+        out.flush();
+    }
+
+    private void updateVehicleType(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject jsonResponse = new JSONObject();
+
+        try{
+            VehicleTypes vehicleType = new VehicleTypes(
+                    Integer.parseInt(request.getParameter("update_vehicle_type_id")),
+                    request.getParameter("update_v_type_name"),
+                    Double.parseDouble(request.getParameter("update_per_one_day")),
+                    Double.parseDouble(request.getParameter("update_discount_full_amount")),
+                    Double.parseDouble(request.getParameter("update_discount_balance_amount")),
+                    Double.parseDouble(request.getParameter("update_penalty_extra_km")),
+                    Double.parseDouble(request.getParameter("update_maximum_km_per_day")),
+                    Integer.parseInt(request.getParameter("update_discount_days"))
+            );
+
+            boolean isUpdated = vehicleService.updateVehicleType(vehicleType);
+
+            if (isUpdated) {
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "Vehicle Type Updated Successful!");
+
+            } else {
+                jsonResponse.put("status", "error");
+                jsonResponse.put("message", "Vehicle Type Updating Failed!");
+            }
+
+
+        } catch (Exception e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+            throw new RuntimeException(e);
+        }
+        out.print(jsonResponse);
+        out.flush();
+    }
+
+    private void deleteVehicleType(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject jsonResponse = new JSONObject();
+
+        try{
+
+            int typeId = Integer.parseInt(request.getParameter("delete_vehicle_type_id"));
+
+            boolean isUpdated = vehicleService.deleteVehicleType(typeId);
+
+            if (isUpdated) {
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "Vehicle Type Deleted Successful!");
+
+            } else {
+                jsonResponse.put("status", "error");
+                jsonResponse.put("message", "Vehicle Type Deleting Failed!");
+            }
+
+
+        } catch (Exception e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
             throw new RuntimeException(e);
         }
         out.print(jsonResponse);

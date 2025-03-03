@@ -18,7 +18,7 @@
               fetchVehicleTypes();
               fetchAvailableDrivers();
            }else if(activeTab == "Vehicle Type"){
-              fetchCustomers();
+              fetchAllVehicleType();
            }else if(activeTab == "License Type"){
               fetchAllLicenseType();
 
@@ -30,7 +30,7 @@
     });
 
 
-    //---------------------------------CUSTOMER------------->
+    //---------------------------------CUSTOMER-------------->
     function fetchCustomers(){
         $.ajax({
             type: "GET",
@@ -242,7 +242,7 @@
     }
 
 
-    //---------------------------------Admin------------->
+    //---------------------------------ADMIN----------------->
     function fetchAdmins(){
         $.ajax({
             type: "GET",
@@ -523,7 +523,7 @@
     }
 
 
-    //---------------------------------Driver------------->
+    //---------------------------------DRIVER------------------>
     //fetch license type
     function fetchLicenseType(){
         $.ajax({
@@ -823,7 +823,7 @@
     }
 
 
-    //---------------------------------License Type------------------>
+    //---------------------------------LICENSE TYPE--------------->
     function fetchAllLicenseType(){
         $.ajax({
             type: "GET",
@@ -1083,7 +1083,7 @@
     }
 
 
-//---------------------------------Vehicle---------------------------->
+//---------------------------------VEHICLE------------------------->
     //fetch vehicle
     function fetchVehicles(){
         $.ajax({
@@ -1514,6 +1514,424 @@
          document.getElementById('v_image').value = '';
          document.getElementById('v_description').value = '';
          document.getElementById('sdriver').selectedIndex = 0;
+    }
+
+
+//---------------------------------VEHICLE TYPE------------------------->
+    //fetch vehicle type
+    function fetchAllVehicleType(){
+        $.ajax({
+            type: "GET",
+            url: "../../vehicle",
+            data: { action: "all_vehicle_types" },
+            dataType: "json",
+            beforeSend: function() {
+                let tbody = $("#vehiclesTypesTable tbody");
+                tbody.empty();
+
+                tbody.append(`<tr>
+                   <td scope="row" colspan="9" style="text-align: center;">
+                     <i class="fa fa-spinner fa-spin" id="data_loading" style="display:inline; font-size:32px;"></i>
+                   </td>
+                 </tr>`);
+            },
+            success: function(response) {
+
+                let tbody = $("#vehiclesTypesTable tbody");
+                tbody.empty();
+                if (response.status === "success") {
+
+                    if(response.data.length == 0){
+                        tbody.append(`<tr><td colspan="9" style="text-align:center;">No Data</td></tr>`);
+                    }else{
+
+                        let i = 0;
+                        response.data.forEach((vehicleType) => {
+                            i = i+1;
+                            let jsonVehicleType = JSON.stringify(vehicleType);
+
+                            let newRow = `
+                                <tr>
+                                    <td>${i}</td>
+                                    <td>${vehicleType.type}</td>
+                                    <td>${vehicleType.perOneDay}</td>
+                                    <td>${vehicleType.discountFullAmount}</td>
+                                    <td>${vehicleType.discountBalanceAmount}</td>
+                                    <td>${vehicleType.penaltyExtraKm}</td>
+                                    <td>${vehicleType.maximumKmPerDay}</td>
+                                    <td>${vehicleType.discountDays}</td>
+                                    <td>
+                                        <button type="button" class="icon-btn" onclick='openVehicleTypeEditModal(${jsonVehicleType})'><i class="zmdi zmdi-edit"></i></button>
+                                        <button type="button" class="icon-btn" style="color: red" onclick='openVehicleTypeDeleteModal(${vehicleType.id})'><i class="zmdi zmdi-delete"></i></button>
+                                    </td>
+                                </tr>
+                            `;
+                            tbody.append(newRow);
+                        });
+                    }
+                }else {
+                    tbody.append(`<tr><td colspan="9" style="text-align:center;">No Data</td></tr>`);
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred: "+e;
+                }
+
+                let tbody = $("#vehiclesTypesTable tbody");
+                tbody.empty();
+                tbody.append(`<tr><td colspan="9" style="text-align:center;">No Data</td></tr>`);
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+
+        });
+    }
+
+    //update vehicle type
+    $("#updateVehicleType").submit(function(event) {
+        event.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "../../vehicle",
+            data: $(this).serialize(),
+            dataType: "json",
+            beforeSend: function() {
+                $('#unv_btn_loading').css('display', 'inline');
+                $(":submit").attr("disabled", true);
+            },
+            success: function(response) {
+                if (response.status === "success") {
+                    fetchAllVehicleType();
+                    $("#vehicleTypeUpdateFrom").modal("hide");
+                    $("#success_alert").hide();
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred "+e;
+                }
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#unv_btn_loading').css('display', 'none');
+            }
+        });
+    });
+
+    //add vehicle();
+    $("#addNewVehicleType").submit(function(event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+        $.ajax({
+            type: "POST",
+            url: "../../vehicle",
+            data: formData,
+            dataType: "json",
+            beforeSend: function() {
+                $('#snv_btn_loading').css('display', 'inline');
+                $(":submit").attr("disabled", true);
+            },
+            success: function(response) {
+                if (response.status === "success") {
+                    emptyVehicleTypeFields();
+                    fetchAllVehicleType();
+                    $("#success_alert").hide();
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+                    let responseText = xhr.responseText;
+                    let errorMsg = '';
+                    try {
+                        let errorResponse = JSON.parse(responseText);
+                        errorMsg = errorResponse.message;
+                    } catch (e) {
+                        errorMsg = "Unexpected error occurred";
+                    }
+
+                    $("#success_alert").hide();
+                        $('#error_alert').html(errorMsg);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+            },
+            complete: function(){
+                fetchAvailableDrivers();
+                $(":submit").removeAttr("disabled");
+                $('#snv_btn_loading').css('display', 'none');
+            }
+        });
+    });
+
+    //delete vehicle
+    $("#deleteVehicleType").submit(function(event) {
+        event.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "../../vehicle",
+            data:  $(this).serialize(),
+            dataType: "json",
+            beforeSend: function() {
+                $('#dv_btn_loading').css('display', 'inline');
+                $(":submit").attr("disabled", true);
+            },
+            success: function(response) {
+                if (response.status === "success") {
+                    fetchAllVehicleType();
+                    $("#success_alert").hide();
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+                    let responseText = xhr.responseText;
+                    let errorMsg = '';
+                    try {
+                        let errorResponse = JSON.parse(responseText);
+                        errorMsg = errorResponse.message;
+                    } catch (e) {
+                        errorMsg = "Unexpected error occurred "+e;
+                    }
+
+                    $("#success_alert").hide();
+                        $('#error_alert').html(errorMsg);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#dv_btn_loading').css('display', 'none');
+                $("#deleteVehicleTypeForm").modal("hide");
+            }
+        });
+    });
+
+    //fetch vehicle type
+    function fetchVehicleTypes(){
+        $.ajax({
+           type: "GET",
+           url: "../../vehicle",
+           data: { action: "vehicle_types" },
+           dataType: "json",
+           beforeSend: function() {
+               $('#nv_btn_loading').css('display', 'inline');
+               $("#newVehicleBtn").attr("disabled", true);
+           },
+           success: function(response) {
+               if (response.status === "success") {
+                   vehicleTypes = response.data;
+                   buildVehicleType('v_type', vehicleTypes, -1);
+               }else {
+                   $("#success_alert").hide();
+                       $('#error_alert').html(response.message);
+                       $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                       $("#error_alert").slideUp(500);
+                   });
+               }
+
+           },
+           error: function(xhr) {
+                   let responseText = xhr.responseText;
+                   let errorMsg = '';
+                   try {
+                       let errorResponse = JSON.parse(responseText);
+                       errorMsg = errorResponse.message;
+                   } catch (e) {
+                       errorMsg = "Unexpected error occurred: "+e;
+                   }
+
+                   $("#success_alert").hide();
+                       $('#error_alert').html(errorMsg);
+                       $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                       $("#error_alert").slideUp(500);
+                   });
+           },
+           complete: function(){
+               $("#newVehicleBtn").removeAttr("disabled");
+               $('#nv_btn_loading').css('display', 'none');
+           }
+       });
+    }
+
+    //fetch available drivers
+    function fetchAvailableDrivers(){
+
+        $.ajax({
+            type: "GET",
+            url: "../../driver",
+            data: { action: "available_driver_list" },
+            dataType: "json",
+            beforeSend: function() {
+                $('#nv_btn_loading').css('display', 'inline');
+                $("#newVehicleBtn").attr("disabled", true);
+            },
+            success: function(response) {
+                if (response.status === "success") {
+                    drivers = response.data;
+                    buildDriverList('sdriver', drivers, -1);
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+                    let responseText = xhr.responseText;
+                    let errorMsg = '';
+                    try {
+                        let errorResponse = JSON.parse(responseText);
+                        errorMsg = errorResponse.message;
+                    } catch (e) {
+                        errorMsg = "Unexpected error occurred: "+e;
+                    }
+
+                    $("#success_alert").hide();
+                        $('#error_alert').html(errorMsg);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+            },
+            complete: function(){
+                $("#newVehicleBtn").removeAttr("disabled");
+                $('#nv_btn_loading').css('display', 'none');
+            }
+        });
+    }
+
+    function buildDriverList(idName, driverList, selectId){
+        let dropdown = $("#"+idName);
+        dropdown.empty();
+
+        if(selectId == -1){
+           dropdown.empty().append('<option value="" disabled selected>Select A Driver</option>');
+        } else{
+           dropdown.empty().append('<option value="" disabled>Select A Driver</option>');
+        }
+
+        $.each(driverList, function(index, typeObj) {
+
+            dropdown.append('<option value="' + typeObj.id + '">' + typeObj.name + '</option>');
+        });
+        if(selectId != -1){
+            dropdown.val(selectId);
+        }
+    }
+
+    function buildVehicleType(idName, vTypes, selectId){
+        let dropdown = $("#"+idName);
+        dropdown.empty();
+
+        if(selectId == -1){
+           dropdown.empty().append('<option value="" disabled selected>Select Vehicle Type</option>');
+        } else{
+           dropdown.empty().append('<option value="" disabled>Select Vehicle Type</option>');
+        }
+
+        $.each(vTypes, function(index, typeObj) {
+            dropdown.append('<option value="' + typeObj.id + '">' + typeObj.type + '</option>');
+        });
+        if(selectId != -1){
+            dropdown.val(selectId);
+        }
+    }
+
+    //update vehicle type form
+    function openVehicleTypeEditModal(vehicleType) {
+
+        document.getElementById("update_vehicle_type_id").value = vehicleType.id;
+        document.getElementById("update_v_type_name").value = vehicleType.type;
+        document.getElementById("update_per_one_day").value = vehicleType.perOneDay;
+
+        document.getElementById("update_discount_full_amount").value = vehicleType.discountFullAmount;
+        document.getElementById("update_discount_balance_amount").value = vehicleType.discountBalanceAmount;
+        document.getElementById("update_penalty_extra_km").value = vehicleType.penaltyExtraKm;
+        document.getElementById("update_maximum_km_per_day").value = vehicleType.maximumKmPerDay;
+
+        document.getElementById("update_discount_days").value = vehicleType.discountDays;
+
+        let modal = new bootstrap.Modal(document.getElementById("vehicleTypeUpdateFrom"));
+        modal.show();
+    }
+
+    //delete vehicle type model
+    function openVehicleTypeDeleteModal(vt_id) {
+        document.getElementById("delete_vehicle_type_id").value = vt_id;
+
+        let modal = new bootstrap.Modal(document.getElementById("deleteVehicleTypeForm"));
+        modal.show();
+    }
+
+    function emptyVehicleTypeFields(){
+         document.getElementById("new_v_type_name").value = "";
+         document.getElementById("new_per_one_day").value = "";
+
+         document.getElementById("new_discount_full_amount").value = "";
+         document.getElementById("new_discount_balance_amount").value = "";
+         document.getElementById("new_penalty_extra_km").value = "";
+         document.getElementById("new_maximum_km_per_day").value = "";
+
+         document.getElementById("new_discount_days").value = "";
     }
 
 
