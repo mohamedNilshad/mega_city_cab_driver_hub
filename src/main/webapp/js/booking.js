@@ -260,125 +260,6 @@
         });
     }
 
-    //change status
-    $("#changeStatusForm").submit(function(event) {
-        event.preventDefault();
-        $('#cs_btn_loading').css('display', 'inline');
-        $(":submit").attr("disabled", true);
-
-        $.ajax({
-            type: "POST",
-            url: "../../booking",
-            data: $(this).serialize(),
-            dataType: "json",
-            success: function(response) {
-                if (response.status === "success") {
-                    $("#success_alert").hide();
-                        $('#success_alert').html(response.message);
-                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#success_alert").slideUp(500);
-                    });
-                    fetchUserBookings();
-                }else {
-                    $("#success_alert").hide();
-                        $('#error_alert').html(response.message);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-                }
-            },
-            error: function(xhr) {
-                let responseText = xhr.responseText;
-                let errorMsg = '';
-                try {
-                    let errorResponse = JSON.parse(responseText);
-                    errorMsg = errorResponse.message;
-                } catch (e) {
-                    errorMsg = "Unexpected error occurred "+e;
-                }
-
-                $("#success_alert").hide();
-                    $('#error_alert').html(errorMsg);
-                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                    $("#error_alert").slideUp(500);
-                });
-            },
-            complete: function(){
-                $(":submit").removeAttr("disabled");
-                $('#cs_btn_loading').css('display', 'none');
-                $("#confirmStatusChangeModel").modal("hide");
-            }
-        });
-    });
-
-
-
-    //add new Booking Cash payment
-    $("#paymentType1Form").submit(function(event) {
-        event.preventDefault();
-
-        if(document.getElementById('enable').value == 0){
-            updateBooking();
-            return;
-       }
-
-
-        $('#nb_btn_loading').css('display', 'inline');
-        $(":submit").attr("disabled", true);
-        let payNowAmount = document.getElementById('payNowAmount').value;
-        document.getElementById('payment_type').value = '1';
-        document.getElementById('selected_vehicle').value = readSelectedVehicle("cabSelection");
-        document.getElementById('provided_amount').value = payNowAmount == "" ? 0.0 : payNowAmount;
-        document.getElementById('is_paid').value = ($("#isPayNow").prop('checked') == true) ? 1 : 0;
-        //add all the required values to this
-
-        $.ajax({
-            type: "POST",
-            url: "../../booking",
-            data: $('#newBookingForm').serialize(),
-            dataType: "json",
-            success: function(response) {
-                if (response.status === "success") {
-                    $("#success_alert").hide();
-                        $('#success_alert').html(response.message);
-                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#success_alert").slideUp(500);
-                    });
-                    fetchUserBookings();
-                    emptyFields();
-                    $("#paymentTypeModel").modal("hide");
-                }else {
-                    $("#success_alert").hide();
-                        $('#error_alert').html(response.message);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-                }
-            },
-            error: function(xhr) {
-                let responseText = xhr.responseText;
-                let errorMsg = '';
-                try {
-                    let errorResponse = JSON.parse(responseText);
-                    errorMsg = errorResponse.message;
-                } catch (e) {
-                    errorMsg = "Unexpected error occurred "+e;
-                }
-
-                $("#success_alert").hide();
-                    $('#error_alert').html(errorMsg);
-                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                    $("#error_alert").slideUp(500);
-                });
-            },
-            complete: function(){
-                $(":submit").removeAttr("disabled");
-                $('#nb_btn_loading').css('display', 'none');
-                window.scrollTo(0,0);
-            }
-        });
-    });
-
     function validateVehicle(){
 
         let startDate = document.getElementById("from_date").value;
@@ -491,6 +372,190 @@
         });
     }
 
+
+    //change status
+    $("#changeStatusForm").submit(function(event) {
+        event.preventDefault();
+        $('#cs_btn_loading').css('display', 'inline');
+        $(":submit").attr("disabled", true);
+
+        $.ajax({
+            type: "POST",
+            url: "../../booking",
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function(response) {
+                if (response.status === "success") {
+                    $("#success_alert").hide();
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                    fetchUserBookings();
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+            },
+            error: function(xhr) {
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred "+e;
+                }
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#cs_btn_loading').css('display', 'none');
+                $("#confirmStatusChangeModel").modal("hide");
+            }
+        });
+    });
+
+    //add new Cash payment
+    $("#paymentType1Form").submit(function(event) {
+        event.preventDefault();
+
+        if(document.getElementById('enable').value == 0){
+            updateBooking();
+            return;
+       }
+
+
+        $('#nb_btn_loading').css('display', 'inline');
+        $(":submit").attr("disabled", true);
+        let payNowAmount = document.getElementById('payNowAmount').value;
+        document.getElementById('payment_type').value = '1';
+        document.getElementById('selected_vehicle').value = readSelectedVehicle("cabSelection");
+        document.getElementById('provided_amount').value = payNowAmount == "" ? 0.0 : payNowAmount;
+        document.getElementById('is_paid').value = ($("#isPayNow").prop('checked') == true) ? 1 : 0;
+        //add all the required values to this
+
+        $.ajax({
+            type: "POST",
+            url: "../../booking",
+            data: $('#newBookingForm').serialize(),
+            dataType: "json",
+            success: function(response) {
+                if (response.status === "success") {
+                    $("#success_alert").hide();
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                    fetchUserBookings();
+                    emptyFields();
+                    $("#paymentTypeModel").modal("hide");
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+            },
+            error: function(xhr) {
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred "+e;
+                }
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#nb_btn_loading').css('display', 'none');
+                window.scrollTo(0,0);
+            }
+        });
+    });
+
+    //Card payment
+    $("#cardPaymentTypeForm").submit(function(event) {
+        event.preventDefault();
+
+        if(document.getElementById('enable').value == 0){
+            updateBooking();
+            return;
+       }
+
+
+        $('#nb_btn_loading').css('display', 'inline');
+        $(":submit").attr("disabled", true);
+        let payNowAmount = document.getElementById('payNowAmount').value;
+        document.getElementById('payment_type').value = '2';
+        document.getElementById('selected_vehicle').value = readSelectedVehicle("cabSelection");
+        document.getElementById('provided_amount').value = payNowAmount == "" ? 0.0 : payNowAmount;
+        document.getElementById('is_paid').value =  1 ;
+        //add all the required values to this
+
+        $.ajax({
+            type: "POST",
+            url: "../../booking",
+            data: $('#newBookingForm').serialize(),
+            dataType: "json",
+            success: function(response) {
+                if (response.status === "success") {
+                    $("#success_alert").hide();
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                    fetchUserBookings();
+                    emptyFields();
+                    $("#cardPaymentModel").modal("hide");
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+            },
+            error: function(xhr) {
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred "+e;
+                }
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#nb_btn_loading').css('display', 'none');
+                window.scrollTo(0,0);
+            }
+        });
+    });
+
     //update booking form
     $("#updateBookingForm").submit(function(event) {
         event.preventDefault();
@@ -498,17 +563,17 @@
     });
 
     //updateBooking Cash Payment
-    function updateBooking(){
+    function updateBooking(isCard = false){
         $('#nb_btn_loading').css('display', 'inline');
         $(":submit").attr("disabled", true);
 
-        document.getElementById('update_payment_type').value = '1';
+        document.getElementById('update_payment_type').value = isCard ? '2' : '1';
         let newVehicleId = readSelectedVehicle("cabSelectionUpdate");
 
         document.getElementById('update_selected_vehicle').value = newVehicleId == 0 ? document.getElementById("old_selected_v_type").value : newVehicleId;
         let payNowAmount = document.getElementById('payNowAmount').value;
         document.getElementById('update_provided_amount').value = payNowAmount == "" ? 0.0 : payNowAmount;
-        document.getElementById('update_is_paid').value = ($("#isPayNow").prop('checked') == true) ? 1 : 0;
+        document.getElementById('update_is_paid').value = 1;
         //add all the required values to this
 
         $.ajax({
@@ -525,7 +590,7 @@
                     });
                     fetchUserBookings(true);
                     $("#editBookingModel").modal("hide");
-                    $("#paymentTypeModel").modal("hide");
+                    isCard ? $("#cardPaymentModel").modal("hide"); : $("#paymentTypeModel").modal("hide");
                 }else {
                     $("#success_alert").hide();
                         $('#error_alert').html(response.message);
@@ -558,12 +623,161 @@
     }
 
 
-    function openPaymentFormModel(){
+    function addVehicleList(id, vehicle, isUpdate){
+        $("input:radio").removeAttr("checked");
+
+        let vehicleList = document.getElementById(id);
+
+        vehicleList.innerHTML = "";
+        if(vehicle.length == 0){
+            let element = `
+                <div style="width:100%; text-align:center;">
+                       <div class="card">
+                          <div class="card-body">
+                              <h6 class="card-title">No Vehicle Available!</h6>
+                          </div>
+                       </div>
+                   </div>
+                `;
+            vehicleList.insertAdjacentHTML('beforeend', element);
+        }else{
+            let i=1;
+            let sName = isUpdate ? "cabSelectionUpdate" : "cabSelection";
+            $.each(vehicle, function(index, typeObj) {
+
+                let id = 'cb'+i;
+                let titleId = 'title'+i;
+                i = i+1;
+                let element = `
+                    <div style="width:50%;" class="cimg">
+                            <input type="radio" id="${id}" name="${sName}" value="${typeObj.id}">
+                            <label for="${id}">
+                                <div class="card">
+                                    <img class="card-img-top" src="${contextPath}${typeObj.vehicleImage}" alt="${typeObj.vehicleName} Image">
+                                    <div class="card-body">
+                                        <h5 class="card-title hide-text" style="font-size: 15px;" id="${titleId}"
+                                            onmouseover="onMouseOver(this.id)" onmouseleave="onMouseLeave(this.id)">
+                                            ${typeObj.vehicleName}
+                                        </h5>
+                                        <h6 id="description${id}" class="card-title hide-text" onmouseover="onMouseOver(this.id)" onmouseleave="onMouseLeave(this.id)">${typeObj.description}</h6>
+                                        <p class="card-text">${typeObj.seatCount} Seats</p>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    `;
+                vehicleList.insertAdjacentHTML('beforeend', element);
+            });
+            if(isUpdate){
+                $(`input[name='${sName}']`).prop("checked", false).first().prop("checked", true);
+            }
+        }
+
+
+    }
+
+    function calculateTotalAmount(value, isUpdate = false){
+
+        let v_type = "v_type";
+        let from_date = "from_date";
+        let to_date = "to_date";
+        let total_distance = "total_distance";
+        let total_amount = "total_amount";
+
+        if(isUpdate){
+            v_type = "update_v_type";
+            from_date = "update_from_date";
+            to_date = "update_to_date";
+            total_distance = "update_total_distance";
+            total_amount = "update_total_amount";
+        }
+
+        let vType = document.getElementById(v_type).value;
+
+        let fromDate = document.getElementById(from_date).value;
+        let toDate = document.getElementById(to_date).value;
+
+
+        let totalDistance = document.getElementById(total_distance).value;
+
+        if((value != "") && (vType != "") && (fromDate != "") && (toDate != "") && (totalDistance != "")){
+
+            let dAmount = vehicleTypes.find(item => item.id == vType);
+
+            let perOneDay = dAmount.perOneDay;
+            let discountFullAmount = dAmount.discountFullAmount;
+            let discountBalanceAmount = dAmount.discountBalanceAmount;
+            let penaltyExtraKm = dAmount.penaltyExtraKm;
+            let maximumKmPerDay = dAmount.maximumKmPerDay;
+            let discountDays = dAmount.discountDays;
+
+            let totalAmount = 0.0;
+
+//            const days = calculateDays(fromDate, toDate);
+            let def = calculateDaysAndHour(fromDate, toDate);
+            let days = def.days == 0 ? 1 : def.days;
+
+            if(days != 0 && def.hours > 2){
+                days +=1;
+            }
+
+            let avgDistance = (totalDistance / days);
+            let extraKmAmount = (avgDistance > maximumKmPerDay) ? ((avgDistance-100) * penaltyExtraKm * days) : 0.0;
+
+            if(days >= discountDays){
+                let discountDays = Math.floor(days/discountDays);
+                let balanceDiscountDays = days % discountDays;
+
+                totalAmount = (discountDays * discountFullAmount) + (balanceDiscountDays * discountBalanceAmount);
+            }else {
+                totalAmount = perOneDay * days;
+            }
+            totalAmount += extraKmAmount;
+
+            document.getElementById(total_amount).value = Math.floor(totalAmount);
+            if(isUpdate){
+                let providedAmount = document.getElementById("update_provided_amount").value;
+
+                let updateBtnDiv = document.getElementById("update_btn");
+                updateBtnDiv.innerHTML = "";
+                let button = ``;
+
+                if(providedAmount < totalAmount){
+                    document.getElementById("balance_amount").value = totalAmount - providedAmount
+                    button = `<button type="button" class="btn btn-primary" onclick="openPaymentFormModel()">
+                                    Next
+                              </button>`;
+                }else{
+                    document.getElementById("balance_amount").value = "-1";
+                    button = `<button type="submit" class="btn btn-success">Submit</button>`;
+                }
+
+                updateBtnDiv.insertAdjacentHTML('beforeend', button);
+            }
+        }
+    }
+
+    function openPaymentFormModel(isNew = false){
+        if(!isNew){
+            $("#editBookingModel").modal("hide");
+        }
+
         $("#pt2").prop("checked", true);
         document.getElementById("isPayNow").checked = false;
-
         document.getElementById('payNow').style.display = 'none';
-        document.getElementById("payNowAmountField").style.display = "none";
+
+//        document.getElementById("payNowAmountField").style.display = "none";
+
+        let total_amount = "total_amount";
+        let is_update = document.getElementById("is_update").value
+        if(is_update == "true"){
+            total_amount = "update_total_amount";
+        }
+        let amount = document.getElementById(total_amount).value;
+        let balanceAmount = document.getElementById("balance_amount").value;
+
+        document.getElementById("payNowAmount").value = balanceAmount == "-1" ? amount : balanceAmount;
+
 
         let modal = new bootstrap.Modal(document.getElementById("paymentTypeModel"));
         modal.show();
@@ -632,59 +846,6 @@
         document.getElementById('subtitle').innerHTML = subtitle;
         let modal = new bootstrap.Modal(document.getElementById("confirmStatusChangeModel"));
         modal.show();
-    }
-
-    function addVehicleList(id, vehicle, isUpdate){
-        $("input:radio").removeAttr("checked");
-
-        let vehicleList = document.getElementById(id);
-
-        vehicleList.innerHTML = "";
-        if(vehicle.length == 0){
-            let element = `
-                <div style="width:100%; text-align:center;">
-                       <div class="card">
-                          <div class="card-body">
-                              <h6 class="card-title">No Vehicle Available!</h6>
-                          </div>
-                       </div>
-                   </div>
-                `;
-            vehicleList.insertAdjacentHTML('beforeend', element);
-        }else{
-            let i=1;
-            let sName = isUpdate ? "cabSelectionUpdate" : "cabSelection";
-            $.each(vehicle, function(index, typeObj) {
-
-                let id = 'cb'+i;
-                let titleId = 'title'+i;
-                i = i+1;
-                let element = `
-                    <div style="width:50%;" class="cimg">
-                            <input type="radio" id="${id}" name="${sName}" value="${typeObj.id}">
-                            <label for="${id}">
-                                <div class="card">
-                                    <img class="card-img-top" src="${contextPath}${typeObj.vehicleImage}" alt="${typeObj.vehicleName} Image">
-                                    <div class="card-body">
-                                        <h5 class="card-title hide-text" style="font-size: 15px;" id="${titleId}"
-                                            onmouseover="onMouseOver(this.id)" onmouseleave="onMouseLeave(this.id)">
-                                            ${typeObj.vehicleName}
-                                        </h5>
-                                        <h6 id="description${id}" class="card-title hide-text" onmouseover="onMouseOver(this.id)" onmouseleave="onMouseLeave(this.id)">${typeObj.description}</h6>
-                                        <p class="card-text">${typeObj.seatCount} Seats</p>
-                                    </div>
-                                </div>
-                            </label>
-                        </div>
-                    `;
-                vehicleList.insertAdjacentHTML('beforeend', element);
-            });
-            if(isUpdate){
-                $(`input[name='${sName}']`).prop("checked", false).first().prop("checked", true);
-            }
-        }
-
-
     }
 
     function validateChange(id, value, isUpdate = false){
@@ -764,10 +925,10 @@
             let balanceAmount = document.getElementById("balance_amount").value;
 
             document.getElementById("payNowAmount").value = balanceAmount == "-1" ? amount : balanceAmount;
-            payNowField.style.display = "block";
+//            payNowField.style.display = "block";
         }else{
-            document.getElementById("payNowAmount").value = "";
-            payNowField.style.display = "none";
+//            document.getElementById("payNowAmount").value = "";
+//            payNowField.style.display = "none";
         }
     }
 
@@ -791,86 +952,24 @@
 
     }
 
-    function calculateTotalAmount(value, isUpdate = false){
-
-        let v_type = "v_type";
-        let from_date = "from_date";
-        let to_date = "to_date";
-        let total_distance = "total_distance";
-        let total_amount = "total_amount";
-
-        if(isUpdate){
-            v_type = "update_v_type";
-            from_date = "update_from_date";
-            to_date = "update_to_date";
-            total_distance = "update_total_distance";
-            total_amount = "update_total_amount";
-        }
-
-        let vType = document.getElementById(v_type).value;
-
-        let fromDate = document.getElementById(from_date).value;
-        let toDate = document.getElementById(to_date).value;
-
-        let totalDistance = document.getElementById(total_distance).value;
-
-        if((value != "") && (vType != "") && (fromDate != "") && (toDate != "") && (totalDistance != "")){
-
-            let dAmount = vehicleTypes.find(item => item.id == vType);
-
-            let perOneDay = dAmount.perOneDay;
-            let discountFullAmount = dAmount.discountFullAmount;
-            let discountBalanceAmount = dAmount.discountBalanceAmount;
-            let penaltyExtraKm = dAmount.penaltyExtraKm;
-            let maximumKmPerDay = dAmount.maximumKmPerDay;
-            let discountDays = dAmount.discountDays;
-
-            let totalAmount = 0.0;
-
-            const days = calculateDays(fromDate, toDate);
-
-            let avgDistance = (totalDistance / days);
-            let extraKmAmount = (avgDistance > maximumKmPerDay) ? ((avgDistance-100) * penaltyExtraKm * days) : 0.0;
-
-            if(days >= discountDays){
-                let discountDays = Math.floor(days/discountDays);
-                let balanceDiscountDays = days % discountDays;
-
-                totalAmount = (discountDays * discountFullAmount) + (balanceDiscountDays * discountBalanceAmount);
-            }else {
-                totalAmount = perOneDay * days;
-            }
-            totalAmount += extraKmAmount;
-
-            document.getElementById(total_amount).value = Math.floor(totalAmount);
-            if(isUpdate){
-                let providedAmount = document.getElementById("update_provided_amount").value;
-
-                let updateBtnDiv = document.getElementById("update_btn");
-                updateBtnDiv.innerHTML = "";
-                let button = ``;
-
-                if(providedAmount < totalAmount){
-                    document.getElementById("balance_amount").value = totalAmount - providedAmount
-                    button = `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentTypeModel">
-                                    Next
-                              </button>`;
-                }else{
-                    document.getElementById("balance_amount").value = "-1";
-                    button = `<button type="submit" class="btn btn-success">Submit</button>`;
-                }
-
-                updateBtnDiv.insertAdjacentHTML('beforeend', button);
-            }
-        }
-    }
-
     function calculateDays(fromDate, toDate){
          const date1 = new Date(fromDate);
          const date2 = new Date(toDate);
 
          const diffInMs = date2 - date1;
          return diffInMs / (1000 * 60 * 60 * 24);
+    }
+
+    function calculateDaysAndHour(fromDate, toDate) {
+        const date1 = new Date(fromDate);
+        const date2 = new Date(toDate);
+
+        const diffInMs = date2 - date1;
+
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+        const diffInHours = Math.floor((diffInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+        return { days: diffInDays, hours: diffInHours };
     }
 
     function disableAllFields(){
@@ -908,7 +1007,7 @@
         document.getElementById("isPayNow").checked = false;
         document.getElementById("pt2").checked = true;
         document.getElementById("payNow").style.display = "none";
-        document.getElementById("payNowAmountField").style.display = "none";
+//        document.getElementById("payNowAmountField").style.display = "none";
 
         fetchVehicleType(true, booking.vehicle.vehicleTypeId);
 

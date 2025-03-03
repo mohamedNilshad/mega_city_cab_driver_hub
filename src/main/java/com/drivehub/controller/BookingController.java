@@ -180,7 +180,7 @@ public class BookingController extends HttpServlet {
             Booking newBooking = new Booking(
                     Integer.parseInt(request.getParameter("customerId")),
                     Integer.parseInt(request.getParameter("selected_vehicle")),
-                    1,//from payment form
+                    1,//from form instant or schedule
                     Formats.dateTimeFormat(request.getParameter("from_date")),
                     Formats.dateTimeFormat(request.getParameter("to_date")),
                     Double.parseDouble(request.getParameter("total_amount")),
@@ -189,10 +189,7 @@ public class BookingController extends HttpServlet {
                     request.getParameter("phone"),
                     0
             );
-            System.out.println(request.getParameter("provided_amount"));
-            System.out.println(request.getParameter("is_paid"));
-            System.out.println(request.getParameter("payment_type"));
-            System.out.println(request.getParameter("total_amount"));
+
             PaymentInfo paymentInfo = new PaymentInfo(
                     Integer.parseInt(request.getParameter("customerId")),
                     Integer.parseInt(request.getParameter("payment_type")),
