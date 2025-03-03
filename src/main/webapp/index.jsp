@@ -40,8 +40,6 @@
           <div id="error"></div>
         </div>
 
-            <a href="pdf.jsp"> PDF</a>
-
             <!-- Sing in  Form -->
             <section class="sign-in">
                 <div class="container">

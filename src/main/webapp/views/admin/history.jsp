@@ -18,9 +18,6 @@
 <html lang="en">
     <head>
         <jsp:include page="includes/admin_header.jsp" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
-
 
         <style>
 
@@ -171,7 +168,7 @@
         <div class="modal fade" id="invoiceModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content" style="padding-top: 15px;padding-bottom: 15px;">
-                    <button type="button" onclick="generateInvoicePDF()" class="btn btn-primary btn-sm" style="width: 10%;margin-bottom: 5px; margin-left: 15px; float: left;">
+                    <button type="button" onclick="printInvoice()" class="btn btn-primary btn-sm" style="width: 10%;margin-bottom: 5px; margin-left: 15px; float: left;">
                         <i class="zmdi zmdi-download"></i>
                     </button>
 
@@ -259,9 +256,9 @@
                                         </tbody>
                                     </table>
                                 </div>
+
                                 <div class="row">
                                     <div class="rubber_stamp">Paid</div>
-
                                     <div class="col-lg-5 col-sm-5 ml-auto">
                                         <table class="table table-clear">
                                             <tbody>
@@ -301,7 +298,6 @@
                                         </table>
 
                                     </div>
-
                                 </div>
 
                             </div>
@@ -318,7 +314,16 @@
             var contextPath = '${pageContext.request.contextPath}' + '/uploads/';
         </script>
         <jsp:include page="../../js/history.js" />
+        <jsp:include page="../../js/invoice/invoice.js" />
         <script>
+            function printInvoice() {
+                var printWindow = window.open('', '', 'width=800,height=600');
+
+                printWindow.document.write(getContent("Complete"));
+                printWindow.document.close();
+                printWindow.print();
+            }
+
             function onMouseOver(id) {
              document.getElementById(id).style.whiteSpace = "wrap";
              document.getElementById(id).style.overflow = "visible";
