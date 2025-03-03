@@ -11,19 +11,19 @@
     });
 
     document.addEventListener("change", function () {
-        if(document.getElementById("seat_count").value != ""){
-            if (event.target.name === "cabSelection") {
-                document.getElementById("total_distance").disabled = false;
-            }else{
-                let result = readSelectedVehicle("cabSelection");
-                if(result == ""){
-                    document.getElementById("total_distance").disabled = true;
-                }
+
+        if (event.target.name === "cabSelection") {
+            document.getElementById("total_distance").disabled = false;
+        }else{
+            let result = readSelectedVehicle("cabSelection");
+            if(result == ""){
+                document.getElementById("total_distance").disabled = true;
             }
         }
+
     });
 
-    //-------------------------common from db-----------------------------
+
     function fetchVehicleType(isUpdate = false, selectId = -1){
         $.ajax({
             type: "GET",
@@ -124,7 +124,7 @@
                 tbody.empty();
 
                 tbody.append(`<tr>
-                   <td scope="row" colspan="12" style="text-align: center;">
+                   <td scope="row" colspan="10" style="text-align: center;">
                      <i class="fa fa-spinner fa-spin" id="data_loading" style="display:inline; font-size:32px;"></i>
                    </td>
                  </tr>`);
@@ -135,7 +135,7 @@
 
                 if (response.status === "success") {
                      if(response.data.length == 0){
-                        tbody.append(`<tr><td colspan="12" style="text-align:center;">No Data</td></tr>`);
+                        tbody.append(`<tr><td colspan="10" style="text-align:center;">No Data</td></tr>`);
                      }else{
 
 
@@ -206,8 +206,6 @@
                                       <td style="vertical-align: middle;">${bookingType}</td>
                                       <td style="vertical-align: middle;">${booking.passengerName}</td>
                                       <td style="vertical-align: middle;">${booking.vehicle.vehicleNumber}</td>
-                                      <td style="vertical-align: middle;">${booking.fromDestination}</td>
-                                      <td style="vertical-align: middle;">${booking.toDestination}</td>
                                       <td style="vertical-align: middle;">${booking.startDate}</td>
                                       <td style="vertical-align: middle;">${booking.endDate}</td>
                                       <td style="vertical-align: middle;">${booking.totalAmount}</td>
@@ -245,7 +243,7 @@
 
                 let tbody = $("#userBookingTable tbody");
                 tbody.empty();
-                tbody.append(`<tr><td colspan="12" style="text-align:center;">No Data</td></tr>`);
+                tbody.append(`<tr><td colspan="10" style="text-align:center;">No Data</td></tr>`);
 
                 $("#success_alert").hide();
                     $('#error_alert').html(errorMsg);
@@ -314,7 +312,7 @@
     });
 
 
-    //-----------------------------add new bookings from db----------------
+
     //add new Booking Cash payment
     $("#paymentType1Form").submit(function(event) {
         event.preventDefault();
@@ -383,13 +381,6 @@
 
     function validateVehicle(){
 
-        let seatCount = document.getElementById("seat_count").value;
-
-        if(seatCount == ""){
-            document.getElementById("selectVehicle").style.display = 'none';
-            return;
-        }
-
         let startDate = document.getElementById("from_date").value;
         let endDate = document.getElementById("to_date").value;
         let v_type = document.getElementById("v_type").value;
@@ -397,7 +388,7 @@
         $.ajax({
             type: "GET",
             url: "../../booking",
-            data: { action: "vehicle_list_by_seat", vehicle_type: v_type, seat_count: seatCount, start_date: startDate, end_date: endDate},
+            data: { action: "vehicle_list_by_seat", vehicle_type: v_type, start_date: startDate, end_date: endDate},
             dataType: "json",
             beforeSend: function() {
 
@@ -439,16 +430,7 @@
         });
     }
 
-
-    //-----------------------------update bookings from db------------------
     function updateValidateVehicle(svTypeId = "", isUpdate = false){
-
-        let seatCount = document.getElementById('update_seat_count').value;
-
-        if(seatCount == ""){
-            document.getElementById("updateSelectVehicle").style.display = 'none';
-            return;
-        }
 
         let startDate = document.getElementById('update_from_date').value;
         let endDate = document.getElementById('update_to_date').value;
@@ -457,7 +439,7 @@
         $.ajax({
             type: "GET",
             url: "../../booking",
-            data: { action: "vehicle_list_by_seat", vehicle_type: v_type, seat_count: seatCount, start_date: startDate, end_date: endDate},
+            data: { action: "vehicle_list_by_seat", vehicle_type: v_type, start_date: startDate, end_date: endDate},
             dataType: "json",
             beforeSend: function() {
 
@@ -468,9 +450,7 @@
                     let vehicles = response.data;
                     let temp = document.getElementById("old_selected_v_type").value == v_type;
 
-                    let seatCountMatch = (seatCount == selectedVehicle.seatCount + 1) || (seatCount == selectedVehicle.seatCount - 1) || (seatCount == selectedVehicle.seatCount);
-
-                    if(temp && seatCountMatch){
+                    if(temp){
                         vehicles = [...response.data];
                         vehicles.unshift(selectedVehicle);
                         vehicles = removeDuplicateVehicle(vehicles, "id");
@@ -578,7 +558,17 @@
     }
 
 
-    //-----------------------------common other------------------------------
+    function openPaymentFormModel(){
+        $("#pt2").prop("checked", true);
+        document.getElementById("isPayNow").checked = false;
+
+        document.getElementById('payNow').style.display = 'none';
+        document.getElementById("payNowAmountField").style.display = "none";
+
+        let modal = new bootstrap.Modal(document.getElementById("paymentTypeModel"));
+        modal.show();
+    }
+
     function removeDuplicateVehicle(arr, key) {
         let seen = new Set();
 
@@ -698,31 +688,25 @@
     }
 
     function validateChange(id, value, isUpdate = false){
-        let seat_count = "seat_count";
+
         let v_type = "v_type";
         let from_date = "from_date";
         let to_date = "to_date";
-        let from = "from";
-        let to = "to";
         let selectVehicle = "selectVehicle";
         let total_distance = "total_distance";
 
         document.getElementById("is_update").value = isUpdate;
 
         if(isUpdate){
-            seat_count = "update_seat_count";
             v_type = "update_v_type";
             from_date = "update_from_date";
             to_date = "update_to_date";
-            from = "update_from";
-            to = "update_to";
             selectVehicle = "updateSelectVehicle";
             total_distance = "update_total_distance";
         }
 
-
         if(value != ""){
-            let seatCount = document.getElementById(seat_count).value;
+
             if(!isUpdate){document.getElementById("enable").value = 1}
             if(id == v_type){
                 document.getElementById(from_date).disabled = false;
@@ -731,21 +715,14 @@
                 calculateTotalAmount(value, isUpdate);
 
             }else if(id == from_date){
-                if(seatCount != ""){
-                    isUpdate ? updateValidateVehicle() : validateVehicle(seatCount);
-                    calculateTotalAmount(value, isUpdate);
-                }
+                isUpdate ? updateValidateVehicle() : validateVehicle();
+                calculateTotalAmount(value, isUpdate);
+
                 document.getElementById(to_date).disabled = false;
             }else if(id == to_date){
-                if(seatCount != ""){
-                    isUpdate ? updateValidateVehicle() : validateVehicle(seatCount);
-                    calculateTotalAmount(value, isUpdate);
-                }
-                document.getElementById(from).disabled = false;
-            }else if(id == from){
-                document.getElementById(to).disabled = false;
-            }else if(id == to){
-                document.getElementById(seat_count).disabled = false;
+                isUpdate ? updateValidateVehicle() : validateVehicle();
+                calculateTotalAmount(value, isUpdate);
+
             }
         }else{
             if(!isUpdate){document.getElementById("enable").value = 0}
@@ -754,12 +731,6 @@
             }else if(id == from_date){
                 document.getElementById(to_date).disabled = true;
             }else if(id == to_date){
-                document.getElementById(from).disabled = true;
-            }else if(id == from){
-                document.getElementById(to).disabled = true;
-            }else if(id == to){
-                document.getElementById(seat_count).disabled = true;
-            }else if(id == seat_count){
                 document.getElementById(selectVehicle).style.display = 'none';
             }
         }
@@ -825,7 +796,6 @@
         let v_type = "v_type";
         let from_date = "from_date";
         let to_date = "to_date";
-        let seat_count = "seat_count";
         let total_distance = "total_distance";
         let total_amount = "total_amount";
 
@@ -833,7 +803,6 @@
             v_type = "update_v_type";
             from_date = "update_from_date";
             to_date = "update_to_date";
-            seat_count = "update_seat_count";
             total_distance = "update_total_distance";
             total_amount = "update_total_amount";
         }
@@ -843,10 +812,9 @@
         let fromDate = document.getElementById(from_date).value;
         let toDate = document.getElementById(to_date).value;
 
-        let seatCount = document.getElementById(seat_count).value;
         let totalDistance = document.getElementById(total_distance).value;
 
-        if((value != "") && (vType != "") && (fromDate != "") && (toDate != "") && (seatCount != "") && (totalDistance != "")){
+        if((value != "") && (vType != "") && (fromDate != "") && (toDate != "") && (totalDistance != "")){
 
             let dAmount = vehicleTypes.find(item => item.id == vType);
 
@@ -867,6 +835,7 @@
             if(days >= discountDays){
                 let discountDays = Math.floor(days/discountDays);
                 let balanceDiscountDays = days % discountDays;
+
                 totalAmount = (discountDays * discountFullAmount) + (balanceDiscountDays * discountBalanceAmount);
             }else {
                 totalAmount = perOneDay * days;
@@ -907,9 +876,6 @@
     function disableAllFields(){
         document.getElementById("to_date").disabled = true;
         document.getElementById("from_date").disabled = true;
-        document.getElementById("from").disabled = true;
-        document.getElementById("to").disabled = true;
-        document.getElementById("seat_count").disabled = true;
         document.getElementById("total_distance").disabled = true;
     }
 
@@ -917,9 +883,6 @@
         document.getElementById('v_type').selectedIndex = 0;
         setDate("from_date");
         setDate("to_date");
-        document.getElementById('from').value = '';
-        document.getElementById('to').value = '';
-        document.getElementById('seat_count').value = '';
         document.getElementById('total_amount').value = '';
         document.getElementById('total_distance').value = '';
         document.getElementById('selectVehicle').style.display = 'none';
@@ -953,10 +916,6 @@
         let eDate = convertToISOFormat(booking.endDate);
         setDate("update_from_date", sDate);
         setDate("update_to_date", eDate);
-
-        document.getElementById("update_from").value = booking.fromDestination;
-        document.getElementById("update_to").value = booking.toDestination;
-        document.getElementById("update_seat_count").value = booking.requestedSeatCount;
 
         selectedVehicle = booking.vehicle;
         updateValidateVehicle(booking.vehicle.vehicleTypeId);
@@ -992,111 +951,5 @@
         return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
 
-    ///old
-
-    //add new customer
-    $("#newBookingForm").submit(function(event) {
-            event.preventDefault();
-            $('#nb_btn_loading').css('display', 'inline');
-            $(":submit").attr("disabled", true);
-
-            $.ajax({
-                type: "POST",
-                url: "../../booking",
-                data: $(this).serialize(),
-                dataType: "json",
-                success: function(response) {
-                    if (response.status === "success") {
-                        $("#success_alert").hide();
-                            $('#success_alert').html(response.message);
-                            $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
-                            $("#success_alert").slideUp(500);
-                        });
-                        emptyFields();
-                    }else {
-                        $("#success_alert").hide();
-                            $('#error_alert').html(response.message);
-                            $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                            $("#error_alert").slideUp(500);
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    let responseText = xhr.responseText;
-                    let errorMsg = '';
-                    try {
-                        let errorResponse = JSON.parse(responseText);
-                        errorMsg = errorResponse.message;
-                    } catch (e) {
-                        errorMsg = "Unexpected error occurred "+e;
-                    }
-
-                    $("#success_alert").hide();
-                        $('#error_alert').html(errorMsg);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-                },
-                complete: function(){
-                    $(":submit").removeAttr("disabled");
-                    $('#nb_btn_loading').css('display', 'none');
-                    window.scrollTo(0,0);
-                }
-            });
-        });
-
-    //update customer
-    $("#editCustomerForm").submit(function(event) {
-        event.preventDefault();
-        $.ajax({
-            type: "POST",
-            url: "../../customer",
-            data: $(this).serialize(),
-            dataType: "json",
-            beforeSend: function() {
-                $('#uc_btn_loading').css('display', 'inline');
-                $(":submit").attr("disabled", true);
-            },
-            success: function(response) {
-                if (response.status === "success") {
-                    fetchCustomers();
-                    $("#success_alert").hide();
-                        $('#success_alert').html(response.message);
-                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#success_alert").slideUp(500);
-                    });
-                    $("#editCustomerModel").modal("hide");
-                }else {
-                    $("#success_alert").hide();
-                        $('#error_alert').html(response.message);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-                }
-
-            },
-            error: function(xhr) {
-                    let responseText = xhr.responseText;
-                    let errorMsg = '';
-                    try {
-                        let errorResponse = JSON.parse(responseText);
-                        errorMsg = errorResponse.message;
-                    } catch (e) {
-                        errorMsg = "Unexpected error occurred "+e;
-                    }
-
-                    $("#success_alert").hide();
-                        $('#error_alert').html(errorMsg);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-            },
-            complete: function(){
-                $(":submit").removeAttr("disabled");
-                $('#uc_btn_loading').css('display', 'none');
-
-            }
-        });
-    });
 
 </script>

@@ -106,7 +106,7 @@
                 <h5 class="modal-title" id="popupFormLabel4">New Booking</h5>
             </div>
             <div class="modal-body position-relative">
-                <!-- Overlay (Hidden Initially) -->
+
                 <div id="formOverlay" class="overlay d-none">
                     <i class="fa fa-spinner fa-spin" style="font-size:35px;"></i>
                 </div>
@@ -136,22 +136,7 @@
 
                             <div class="mb-3">
                                 <label for="to_date" class="form-label">To Date</label>
-                                <input type="datetime-local" class="form-control" id="to_date" name="to_date" onchange="validateChange(this.id ,this.value)">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="from" class="form-label">From Destination</label>
-                                <input type="text" class="form-control" id="from" name="from" placeholder="Enter From Destination" oninput="validateChange(this.id ,this.value)">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="to" class="form-label">To Destination</label>
-                                <input type="text" class="form-control" id="to" name="to" placeholder="Enter To Destination" oninput="validateChange(this.id ,this.value)">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="seat_count" class="form-label">Seat Count</label>
-                                <input type="number" min="2" max="100" class="form-control" id="seat_count" name="seat_count" placeholder="Enter seat count" oninput="validateVehicle()">
+                                <input type="datetime-local" class="form-control" id="to_date" name="to_date" onchange="validateChange(this.id ,this.value)" oninput="validateVehicle()">
                             </div>
 
                             <div class="mb-3" id="selectVehicle" style="display:none;">
@@ -193,12 +178,106 @@
                     </div>
 
                     <div class="text-center mt-3">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentTypeModel">Next</button>
+<!--                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentTypeModel">Next</button>-->
+                        <button type="button" class="btn btn-primary" onclick="openPaymentFormModel()">Next</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <!--Booking update From-->
+    <div class="modal fade" id="editBookingModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="popupFormLabel5">Update Booking</h5>
+                </div>
+                <div class="modal-body position-relative">
+                    <!-- Overlay (Hidden Initially) -->
+                    <div id="formOverlay1" class="overlay d-none">
+                        <i class="fa fa-spinner fa-spin" style="font-size:35px;"></i>
+                    </div>
+                    <form id="updateBookingForm">
+                        <input type="hidden" name="action" value="update_booking">
+                        <input type="hidden" name="update_booking_id" id="update_booking_id">
+                        <input type="hidden" name="update_payment_type" id="update_payment_type">
+                        <input type="hidden" name="update_selected_vehicle" id="update_selected_vehicle">
+
+                        <input type="hidden" name="selected_vehicle" id="old_selected_vehicle">
+                        <input type="hidden" name="selected_v_type" id="old_selected_v_type">
+
+                        <input type="hidden" name="update_provided_amount" id="update_provided_amount">
+                        <input type="hidden" name="update_is_paid" id="update_is_paid">
+
+                        <div class="row">
+                            <!-- Booking Details (Left Side) -->
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Booking Details</h5>
+
+                                <div class="mb-3">
+                                    <label for="update_v_type" class="form-label">Select Vehicle Type</label>
+                                    <select class="form-select" id="update_v_type" name="v_type" onchange="validateChange(this.id ,this.value, true)" oninput="updateValidateVehicle(this.value , true)">
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="update_from_date" class="form-label">From Date</label>
+                                    <input type="datetime-local" class="form-control" id="update_from_date" name="update_from_date" onchange="validateChange(this.id ,this.value, true)" oninput="updateValidateVehicle('' ,true)">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="update_to_date" class="form-label">To Date</label>
+                                    <input type="datetime-local" class="form-control" id="update_to_date" name="update_to_date" onchange="validateChange(this.id ,this.value, true)" oninput="updateValidateVehicle('' ,true)">
+                                </div>
+
+                                <div class="mb-3" id="updateSelectVehicle" style="display:block;">
+                                    <label for="updateVehicleList" class="form-label">Select a Vehicle</label>
+                                    <div class="row g-4 crb" id="updateVehicleList"></div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="update_total_distance" class="form-label">Total Distance (Approximately) (KM)</label>
+                                    <input type="number" min="5" class="form-control" id="update_total_distance" step="0.1" name="update_total_distance" placeholder="Enter Distance(KM)" oninput="calculateTotalAmount(this.value, true)">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="update_total_distance" class="form-label">Total Amount(LKR)</label>
+                                    <input type="text" class="form-control" id="update_total_amount" name="update_total_amount" placeholder="Total Amount (LKR)" readonly>
+                                </div>
+                            </div>
+
+                            <!-- Customer Details (Right Side) -->
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Passenger Details</h5>
+
+                                <input type="hidden" id="updateCustomerId" name="customerId">
+                                <div class="mb-3">
+                                    <label for="update_customer_name" class="form-label">Passenger Name</label>
+                                    <input type="text" class="form-control" id="update_customer_name" name="update_customer_name" placeholder="Enter customer name">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="update_customer_nic" class="form-label">User NIC Number</label>
+                                    <input type="text" class="form-control" id="update_customer_nic" name="customer_nic" placeholder="Enter NIC" readonly>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Passenger Phone</label>
+                                    <input type="text" class="form-control" id="update_phone" name="update_phone" placeholder="Enter phone number">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-3" id="update_btn">
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Choose payment Type / Cash payment-->
     <div class="modal fade" id="paymentTypeModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
@@ -211,9 +290,8 @@
                 <div class="modal-body">
                     <form id="paymentType1Form">
                         <input type="hidden" name="action" value="cash_payment" required>
-                        <input type="hidden" name="action" id="balance_amount" value="-1" required>
+                        <input type="hidden" name="balance_amount" id="balance_amount" value="-1" required>
                         <input type="hidden" id="is_update" value="false" required>
-
 
                         <div class="row justify-content-center">
                             <div class="mb-3" id="selectPaymentType">
@@ -284,6 +362,7 @@
         </div>
     </div>
 
+    <!-- Table -->
     <table id="userBookingTable" class="ctable table" style="text-align: center;">
         <thead class="thead-dark">
         <tr>
@@ -292,8 +371,6 @@
             <th scope="col" style="vertical-align: middle;">Booking Type</th>
             <th scope="col" style="vertical-align: middle;">Customer Name</th>
             <th scope="col" style="vertical-align: middle;">Vehicle Number</th>
-            <th scope="col" style="vertical-align: middle;">From</th>
-            <th scope="col" style="vertical-align: middle;">To</th>
             <th scope="col" style="vertical-align: middle;">Start Date</th>
             <th scope="col" style="vertical-align: middle;">End Date</th>
             <th scope="col" style="vertical-align: middle;">Total Amount (LKR)</th>
@@ -306,113 +383,6 @@
 
         </tbody>
     </table>
-
-    <!--Booking update From-->
-    <div class="modal fade" id="editBookingModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="popupFormLabel5">Update Booking</h5>
-                </div>
-                <div class="modal-body position-relative">
-                    <!-- Overlay (Hidden Initially) -->
-                    <div id="formOverlay1" class="overlay d-none">
-                        <i class="fa fa-spinner fa-spin" style="font-size:35px;"></i>
-                    </div>
-                    <form id="updateBookingForm">
-                        <input type="hidden" name="action" value="update_booking">
-                        <input type="hidden" name="update_booking_id" id="update_booking_id">
-                        <input type="hidden" name="update_payment_type" id="update_payment_type">
-                        <input type="hidden" name="update_selected_vehicle" id="update_selected_vehicle">
-
-                        <input type="hidden" name="selected_vehicle" id="old_selected_vehicle">
-                        <input type="hidden" name="selected_v_type" id="old_selected_v_type">
-
-                        <input type="hidden" name="update_provided_amount" id="update_provided_amount">
-                        <input type="hidden" name="update_is_paid" id="update_is_paid">
-
-                        <div class="row">
-                            <!-- Booking Details (Left Side) -->
-                            <div class="col-md-6">
-                                <h5 class="mb-3">Booking Details</h5>
-
-                                <div class="mb-3">
-                                    <label for="update_v_type" class="form-label">Select Vehicle Type</label>
-                                    <select class="form-select" id="update_v_type" name="v_type" onchange="validateChange(this.id ,this.value, true)">
-                                    </select>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="update_from_date" class="form-label">From Date</label>
-                                    <input type="datetime-local" class="form-control" id="update_from_date" name="update_from_date" onchange="validateChange(this.id ,this.value, true)">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="update_to_date" class="form-label">To Date</label>
-                                    <input type="datetime-local" class="form-control" id="update_to_date" name="update_to_date" onchange="validateChange(this.id ,this.value, true)">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="update_from" class="form-label">From Destination</label>
-                                    <input type="text" class="form-control" id="update_from" name="update_from" placeholder="Enter From Destination" oninput="validateChange(this.id ,this.value, true)">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="update_to" class="form-label">To Destination</label>
-                                    <input type="text" class="form-control" id="update_to" name="update_to" placeholder="Enter To Destination" oninput="validateChange(this.id ,this.value, true)">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="update_seat_count" class="form-label">Seat Count</label>
-                                    <input type="number" min="2" max="100" class="form-control" id="update_seat_count" name="update_seat_count" placeholder="Enter seat count" oninput="updateValidateVehicle()">
-                                </div>
-
-                                <div class="mb-3" id="updateSelectVehicle" style="display:block;">
-                                    <label for="updateVehicleList" class="form-label">Select a Vehicle</label>
-                                    <div class="row g-4 crb" id="updateVehicleList"></div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="update_total_distance" class="form-label">Total Distance (Approximately) (KM)</label>
-                                    <input type="number" min="5" class="form-control" id="update_total_distance" step="0.1" name="update_total_distance" placeholder="Enter Distance(KM)" oninput="calculateTotalAmount(this.value, true)">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="update_total_distance" class="form-label">Total Amount(LKR)</label>
-                                    <input type="text" class="form-control" id="update_total_amount" name="update_total_amount" placeholder="Total Amount (LKR)" readonly>
-                                </div>
-                            </div>
-
-                            <!-- Customer Details (Right Side) -->
-                            <div class="col-md-6">
-                                <h5 class="mb-3">Passenger Details</h5>
-
-                                <input type="hidden" id="updateCustomerId" name="customerId">
-                                <div class="mb-3">
-                                    <label for="update_customer_name" class="form-label">Passenger Name</label>
-                                    <input type="text" class="form-control" id="update_customer_name" name="update_customer_name" placeholder="Enter customer name">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="update_customer_nic" class="form-label">User NIC Number</label>
-                                    <input type="text" class="form-control" id="update_customer_nic" name="customer_nic" placeholder="Enter NIC" readonly>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="phone" class="form-label">Passenger Phone</label>
-                                    <input type="text" class="form-control" id="update_phone" name="update_phone" placeholder="Enter phone number">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="text-center mt-3" id="update_btn">
-                            <button type="submit" class="btn btn-success">Submit</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Status Change Confirmation-->
     <div class="modal fade" id="confirmStatusChangeModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">

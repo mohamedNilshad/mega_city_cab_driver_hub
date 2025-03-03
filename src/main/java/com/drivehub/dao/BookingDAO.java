@@ -11,21 +11,17 @@ import java.util.List;
 
 public class BookingDAO {
 
-    public List<Vehicle> getVehicleListBySeat(int vType, int seatCount, Timestamp startDate, Timestamp endDate) {
+    public List<Vehicle> getVehicleListBySeat(int vType, Timestamp startDate, Timestamp endDate) {
         List<Vehicle> VehicleList = new ArrayList<>();
         try  {
             Connection conn = DBConnection.getConnection();
+
             PreparedStatement stmt = conn.prepareStatement(
                     "SELECT id, vehicleName, seatCount, vehicleImage, vehicleDescription FROM vehicles "+
-                            "WHERE vehicleTypeId = ? AND (seatCount IN (?, ?, ?))"
+                            "WHERE vehicleTypeId = ?"
             );
 
-            //(seatCount <= selectedVehicle.seatCount + 1) && (seatCount >= selectedVehicle.seatCount - 3)
             stmt.setInt(1, vType);
-            stmt.setInt(2, seatCount);
-            stmt.setInt(3, seatCount + 1);
-            stmt.setInt(4, seatCount - 1);
-
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -38,7 +34,7 @@ public class BookingDAO {
                 VehicleList.add(v);
             }
             conn.close();
-            return getSortedVehicleList(VehicleList, seatCount, startDate, endDate);
+            return getSortedVehicleList(VehicleList, startDate, endDate);
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -82,8 +78,6 @@ public class BookingDAO {
                         customer,
                         v,
                         rs.getInt("vehicle_id"),
-                        rs.getString("from_destination"),
-                        rs.getString("to_destination"),
                         rs.getTimestamp("start_date"),
                         rs.getTimestamp("to_date"),
                         rs.getDouble("total_amount"),
@@ -139,8 +133,6 @@ public class BookingDAO {
                         customer,
                         v,
                         rs.getInt("vehicle_id"),
-                        rs.getString("from_destination"),
-                        rs.getString("to_destination"),
                         rs.getTimestamp("start_date"),
                         rs.getTimestamp("to_date"),
                         rs.getDouble("total_amount"),
@@ -171,9 +163,8 @@ public class BookingDAO {
 
             PreparedStatement stmt = conn.prepareStatement(
                     "INSERT INTO `bookings`(`booking_number`, `booking_type`, `customer_id`, `vehicle_id`, "+
-                            "`from_destination`, `to_destination`, `start_date`, `to_date`, `total_amount`, "+
-                            " `requested_seat_count`, `total_requested_distance`, `passenger_name`, `passenger_phone`, `status`)"+
-                            " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                            "`start_date`, `to_date`, `total_amount`, `total_requested_distance`, `passenger_name`, "+
+                            "`passenger_phone`, `status`) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
                     Statement.RETURN_GENERATED_KEYS
             );
 
@@ -182,17 +173,14 @@ public class BookingDAO {
             stmt.setInt(3, newBooking.getCustomerId());
             stmt.setInt(4, newBooking.getVehicleId());
 
-            stmt.setString(5, newBooking.getFromDestination());
-            stmt.setString(6, newBooking.getToDestination());
-            stmt.setTimestamp(7, newBooking.getStartDate());
-            stmt.setTimestamp(8, newBooking.getEndDate());
-            stmt.setDouble(9, newBooking.getTotalAmount());
+            stmt.setTimestamp(5, newBooking.getStartDate());
+            stmt.setTimestamp(6, newBooking.getEndDate());
+            stmt.setDouble(7, newBooking.getTotalAmount());
 
-            stmt.setInt(10, newBooking.getRequestedSeatCount());
-            stmt.setDouble(11, newBooking.getTotalRequestedDistance());
-            stmt.setString(12, newBooking.getPassengerName());
-            stmt.setString(13, newBooking.getPassengerPhone());
-            stmt.setInt(14, newBooking.getStatus());
+            stmt.setDouble(8, newBooking.getTotalRequestedDistance());
+            stmt.setString(9, newBooking.getPassengerName());
+            stmt.setString(10, newBooking.getPassengerPhone());
+            stmt.setInt(11, newBooking.getStatus());
 
             int rs = stmt.executeUpdate();
             if (rs > 0) {
@@ -218,23 +206,20 @@ public class BookingDAO {
             Connection conn = DBConnection.getConnection();
 
             PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE `bookings` SET `vehicle_id` = ? , `from_destination` = ? , `to_destination` = ? , `start_date` = ? , "+
-                            "`to_date` = ? , `total_amount` = ? , `requested_seat_count` = ? , `total_requested_distance` = ? , `passenger_name` = ? , "+
+                    "UPDATE `bookings` SET `vehicle_id` = ? , `start_date` = ? , `to_date` = ? , "+
+                            "`total_amount` = ? , `total_requested_distance` = ? , `passenger_name` = ? , "+
                             " `passenger_phone` = ? "+
                             " WHERE id = ?"
             );
 
             stmt.setInt(1,booking.getVehicleId());
-            stmt.setString(2, booking.getFromDestination());
-            stmt.setString(3, booking.getToDestination());
-            stmt.setTimestamp(4, booking.getStartDate());
-            stmt.setTimestamp(5, booking.getEndDate());
-            stmt.setDouble(6, booking.getTotalAmount());
-            stmt.setInt(7, booking.getRequestedSeatCount());
-            stmt.setDouble(8, booking.getTotalRequestedDistance());
-            stmt.setString(9, booking.getPassengerName());
-            stmt.setString(10, booking.getPassengerPhone());
-            stmt.setInt(11, booking.getId());
+            stmt.setTimestamp(2, booking.getStartDate());
+            stmt.setTimestamp(3, booking.getEndDate());
+            stmt.setDouble(4, booking.getTotalAmount());
+            stmt.setDouble(5, booking.getTotalRequestedDistance());
+            stmt.setString(6, booking.getPassengerName());
+            stmt.setString(7, booking.getPassengerPhone());
+            stmt.setInt(8, booking.getId());
 
             int rs = stmt.executeUpdate();
             if (rs > 0) {
@@ -311,21 +296,17 @@ public class BookingDAO {
         return String.valueOf(bookingNum);
     }
 
-    private List<Vehicle> getSortedVehicleList(List<Vehicle> list, int seatCount, Timestamp start_date, Timestamp to_date) throws SQLException {
+    private List<Vehicle> getSortedVehicleList(List<Vehicle> list, Timestamp start_date, Timestamp to_date) throws SQLException {
         Connection conn = DBConnection.getConnection();
+
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT DISTINCT v.id AS v_id FROM bookings AS b "+
                         "INNER JOIN vehicles AS v ON b.vehicle_id = v.id "+
                         "WHERE (? <= b.to_date AND ? >= b.start_date) "+
-                        "AND b.status = 0 "+
-                        "AND (v.seatCount IN (?, ?, ?))"
+                        "AND (b.status = 0 OR b.status = 3)"
         );
         stmt.setTimestamp(1, start_date);
         stmt.setTimestamp(2, to_date);
-        stmt.setInt(3, seatCount);
-        stmt.setInt(4, seatCount + 1);
-        stmt.setInt(5, seatCount - 1);
-
 
         ResultSet rs = stmt.executeQuery();
 

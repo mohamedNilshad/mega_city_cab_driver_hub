@@ -47,11 +47,10 @@ public class BookingController extends HttpServlet {
 
         try {
             int vType = Integer.parseInt(request.getParameter("vehicle_type"));
-            int seatCount = Integer.parseInt(request.getParameter("seat_count"));
             Timestamp startDate = Formats.dateTimeFormat(request.getParameter("start_date"));
             Timestamp endDate = Formats.dateTimeFormat(request.getParameter("end_date"));
 
-            List<Vehicle> vehicles = bookingService.getVehiclesBySeat(vType, seatCount, startDate, endDate);
+            List<Vehicle> vehicles = bookingService.getVehiclesBySeat(vType, startDate, endDate);
 
             if(vehicles != null){
 
@@ -182,12 +181,9 @@ public class BookingController extends HttpServlet {
                     Integer.parseInt(request.getParameter("customerId")),
                     Integer.parseInt(request.getParameter("selected_vehicle")),
                     1,//from payment form
-                    request.getParameter("from"),
-                    request.getParameter("to"),
                     Formats.dateTimeFormat(request.getParameter("from_date")),
                     Formats.dateTimeFormat(request.getParameter("to_date")),
                     Double.parseDouble(request.getParameter("total_amount")),
-                    Integer.parseInt(request.getParameter("seat_count")),
                     Double.parseDouble(request.getParameter("total_distance")),
                     request.getParameter("customer_name"),
                     request.getParameter("phone"),
@@ -236,12 +232,9 @@ public class BookingController extends HttpServlet {
             Booking booking = new Booking(
                     Integer.parseInt(request.getParameter("update_booking_id")),
                     Integer.parseInt(request.getParameter("update_selected_vehicle")),
-                    request.getParameter("update_from"),
-                    request.getParameter("update_to"),
                     Formats.dateTimeFormat(request.getParameter("update_from_date")),
                     Formats.dateTimeFormat(request.getParameter("update_to_date")),
                     Double.parseDouble(request.getParameter("update_total_amount")),
-                    Integer.parseInt(request.getParameter("update_seat_count")),
                     Double.parseDouble(request.getParameter("update_total_distance")),
                     request.getParameter("update_customer_name"),
                     request.getParameter("update_phone"),

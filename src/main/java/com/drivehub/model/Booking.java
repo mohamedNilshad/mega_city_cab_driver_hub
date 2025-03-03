@@ -27,7 +27,7 @@ public class Booking {
 
 
     //select
-    public Booking(int id, String bookingNumber, List<PaymentInfo> paymentInfoList, int bookingType, int customerId, User customer, Vehicle vehicle, int vehicleId, String fromDestination, String toDestination, Timestamp startDate, Timestamp endDate, double totalAmount, int requestedSeatCount, double totalRequestedDistance, String passengerName, String passengerPhone, int status) {
+    public Booking(int id, String bookingNumber, List<PaymentInfo> paymentInfoList, int bookingType, int customerId, User customer, Vehicle vehicle, int vehicleId, Timestamp startDate, Timestamp endDate, double totalAmount, int requestedSeatCount, double totalRequestedDistance, String passengerName, String passengerPhone, int status) {
         this.id = id;
         this.bookingNumber = bookingNumber;
         this.paymentInfoList = paymentInfoList;
@@ -36,8 +36,6 @@ public class Booking {
         this.customer = customer;
         this.vehicle = vehicle;
         this.vehicleId = vehicleId;
-        this.fromDestination = fromDestination;
-        this.toDestination = toDestination;
         this.startDate = startDate;
         this.endDate = endDate;
         this.requestedSeatCount = requestedSeatCount;
@@ -49,16 +47,13 @@ public class Booking {
     }
 
     //insert
-    public Booking(int customerId, int vehicleId, int bookingType, String fromDestination, String toDestination, Timestamp startDate, Timestamp endDate, double totalAmount, int requestedSeatCount, double totalRequestedDistance, String passengerName, String passengerPhone, int status) {
+    public Booking(int customerId, int vehicleId, int bookingType, Timestamp startDate, Timestamp endDate, double totalAmount, double totalRequestedDistance, String passengerName, String passengerPhone, int status) {
         this.customerId = customerId;
         this.vehicleId = vehicleId;
         this.bookingType = bookingType;
-        this.fromDestination = fromDestination;
-        this.toDestination = toDestination;
         this.startDate = startDate;
         this.endDate = endDate;
         this.totalAmount = totalAmount;
-        this.requestedSeatCount = requestedSeatCount;
         this.totalRequestedDistance = totalRequestedDistance;
         this.passengerName = passengerName;
         this.passengerPhone = passengerPhone;
@@ -66,15 +61,12 @@ public class Booking {
     }
 
     //update
-    public Booking(int id,int vehicleId, String fromDestination, String toDestination, Timestamp startDate, Timestamp endDate, double totalAmount, int requestedSeatCount, double totalRequestedDistance, String passengerName, String passengerPhone, int status) {
+    public Booking(int id,int vehicleId, Timestamp startDate, Timestamp endDate, double totalAmount, double totalRequestedDistance, String passengerName, String passengerPhone, int status) {
         this.id = id;
         this.vehicleId = vehicleId;
-        this.fromDestination = fromDestination;
-        this.toDestination = toDestination;
         this.startDate = startDate;
         this.endDate = endDate;
         this.totalAmount = totalAmount;
-        this.requestedSeatCount = requestedSeatCount;
         this.totalRequestedDistance = totalRequestedDistance;
         this.passengerName = passengerName;
         this.passengerPhone = passengerPhone;

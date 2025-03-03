@@ -11,8 +11,8 @@ public class BookingService {
 
     private final BookingDAO bookingDAO = new BookingDAO();
 
-    public List<Vehicle> getVehiclesBySeat(int vType, int seatCount, Timestamp startDate, Timestamp endDate) {
-        return bookingDAO.getVehicleListBySeat(vType, seatCount, startDate, endDate);
+    public List<Vehicle> getVehiclesBySeat(int vType, Timestamp startDate, Timestamp endDate) {
+        return bookingDAO.getVehicleListBySeat(vType, startDate, endDate);
     }
 
     public List<Booking> getUserBookings(int customerId) {
