@@ -168,16 +168,14 @@
         <div class="modal fade" id="invoiceModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content" style="padding-top: 15px;padding-bottom: 15px;">
-                    <button type="button" onclick="printInvoice()" class="btn btn-primary btn-sm" style="width: 10%;margin-bottom: 5px; margin-left: 15px; float: left;">
-                        <i class="zmdi zmdi-download"></i>
-                    </button>
+                    <div id="downloadBtn"></div>
 
                     <div class="container">
                         <div class="card">
                             <div class="card-header">
                                 Invoice
-                                <strong>01/01/01/2018</strong>
-                                <span class="float-right"> <strong>Status:</strong> Pending</span>
+                                <strong><span id="currentDate"></span></strong>
+                                <span class="float-right"> <strong>Status: </strong><span id="rideStatus"></span></span>
 
                             </div>
                             <div class="card-body">
@@ -185,39 +183,36 @@
                                     <div class="col-sm-6">
                                         <h6 class="mb-3">From:</h6>
                                         <div>
-                                            <strong>Webz Poland</strong>
+                                            <strong><span id="companyName"></span></strong>
                                         </div>
-                                        <div>Madalinskiego 8</div>
-                                        <div>71-101 Szczecin, Poland</div>
-                                        <div>Email: info@webz.com.pl</div>
-                                        <div>Phone: +48 444 666 3333</div>
+                                        <div id="companyAddress"></div>
+                                        <div id="companyEmail"></div>
+                                        <div id="companyPhone"></div>
                                     </div>
 
                                     <div class="col-sm-6"  style="text-align: right;">
                                         <h6 class="mb-3">To:</h6>
                                         <div>
-                                            <strong>Bob Mart</strong>
+                                            <strong><span id="customerName"></span></strong>
                                         </div>
-                                        <div>Attn: Daniel Marek</div>
-                                        <div>43-190 Mikolow, Poland</div>
-                                        <div>Email: marek@daniel.com</div>
-                                        <div>Phone: +48 123 456 789</div>
+                                        <div id="customerAddress"></div>
+                                        <div id="customerEmail"></div>
+                                        <div id="customerPhone"></div>
                                     </div>
                                 </div>
                                 <hr>
                                 <div class="col-sm-6">
-                                    <h6 class="mb-3">From:</h6>
                                     <div>
-                                        <strong>Webz Poland</strong>
+                                        <span style="font-weight: 600;">Booking No :</span><strong><span id="bookingNo"></span></strong>
                                     </div>
-                                    <div>Madalinskiego 8</div>
-                                    <div>71-101 Szczecin, Poland</div>
-                                    <div>Email: info@webz.com.pl</div>
-                                    <div>Phone: +48 444 666 3333</div>
+                                    <div><span style="font-weight: 600;">Booking Type :</span> <span id="iBookingType"></span></div>
+                                    <div><span style="font-weight: 600;">Start Date : </span><span id="iStartDate"></span></div>
+                                    <div><span style="font-weight: 600;">End Date : </span><span id="iEndDate"></span></div>
+                                    <div><span style="font-weight: 600;">Total Amount : </span><span id="iTotalAmount"></span></div>
                                 </div>
 
                                 <div class="table-responsive-sm">
-                                    <table class="table table-striped">
+                                    <table class="table table-striped" id="invoiceListTable">
                                         <thead>
                                         <tr>
                                             <th class="center">#</th>
@@ -229,37 +224,13 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <td class="center">1</td>
-                                            <td class="left strong">11111</td>
-                                            <td class="left">Cash</td>
-                                            <td class="center">2025-03-03 21:35:54</td>
-
-                                            <td class="right" style="text-align: right;">20,000.00</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="center">2</td>
-                                            <td class="left strong">556125</td>
-                                            <td class="left">Card</td>
-                                            <td class="center">2025-03-02 21:35:54</td>
-
-                                            <td class="right" style="text-align: right;">10,000.00</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="center">3</td>
-                                            <td class="left strong">556125</td>
-                                            <td class="left">Card</td>
-                                            <td class="center">2025-03-02 21:35:54</td>
-
-                                            <td class="right" style="text-align: right;">5,000.00</td>
-                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
 
                                 <div class="row">
-                                    <div class="rubber_stamp">Paid</div>
-                                    <div class="col-lg-5 col-sm-5 ml-auto">
+                                    <div class="rubber_stamp" id="rubberStamp"></div>
+                                    <div class="col-lg-6 col-sm-5 ml-auto">
                                         <table class="table table-clear">
                                             <tbody>
                                             <tr style="text-align: right;">
@@ -267,7 +238,7 @@
                                                     Total Amount To Pay
                                                 </td>
                                                 <td class="right">
-                                                    <strong>35,000.00</strong>
+                                                    <strong id="iTotalAmountToPay"></strong>
                                                 </td>
                                             </tr>
                                             <tr style="text-align: right;">
@@ -275,7 +246,7 @@
                                                     Paid Amount
                                                 </td>
                                                 <td class="right">
-                                                    <strong>35,000.00</strong>
+                                                    <strong id="iTotalPaidAmount"></strong>
                                                 </td>
                                             </tr>
                                             <tr style="text-align: right;">
@@ -283,7 +254,7 @@
                                                     Balance Amount
                                                 </td>
                                                 <td class="right">
-                                                    <strong>00.00</strong>
+                                                    <strong id="iTotalBalAmount"></strong>
                                                 </td>
                                             </tr>
                                             <tr style="text-align: right;">
@@ -291,12 +262,11 @@
                                                     Return Amount
                                                 </td>
                                                 <td class="right">
-                                                    <strong>00.00</strong>
+                                                    <strong id="iReturnAmount"></strong>
                                                 </td>
                                             </tr>
                                             </tbody>
                                         </table>
-
                                     </div>
                                 </div>
 
@@ -313,16 +283,10 @@
             let customerId = <%= userId %>;
             var contextPath = '${pageContext.request.contextPath}' + '/uploads/';
         </script>
-        <jsp:include page="../../js/history.js" />
         <jsp:include page="../../js/invoice/invoice.js" />
-        <script>
-            function printInvoice() {
-                var printWindow = window.open('', '', 'width=800,height=600');
 
-                printWindow.document.write(getContent("Complete"));
-                printWindow.document.close();
-                printWindow.print();
-            }
+        <jsp:include page="../../js/history.js" />
+        <script>
 
             function onMouseOver(id) {
              document.getElementById(id).style.whiteSpace = "wrap";

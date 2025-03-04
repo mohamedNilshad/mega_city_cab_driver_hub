@@ -101,6 +101,56 @@ public class BookingDAO {
         return null;
     }
 
+    public Booking getBookingInvoice(int bookingId) {
+
+        try  {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT b.*, c.* FROM bookings b INNER JOIN users c ON b.customer_id = c.id WHERE b.id = ?"
+            );
+            stmt.setInt(1, bookingId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+
+                User customer = new User();
+                customer.setAddress(rs.getString("userAddress"));
+                customer.setPhone(rs.getString("userPhone"));
+                customer.setEmail(rs.getString("userEmail"));
+
+                Vehicle v = new Vehicle();
+
+                List<PaymentInfo> paymentList = getPaymentList(rs.getInt("id"));
+
+                Booking bookingDetails = new Booking(
+                        rs.getInt("id"),
+                        rs.getString("booking_number"),
+                        paymentList,
+                        rs.getInt("booking_type"),
+                        rs.getInt("customer_id"),
+                        customer,
+                        v,
+                        rs.getInt("vehicle_id"),
+                        rs.getTimestamp("start_date"),
+                        rs.getTimestamp("to_date"),
+                        rs.getDouble("total_amount"),
+                        rs.getInt("requested_seat_count"),
+                        rs.getDouble("total_requested_distance"),
+                        rs.getString("passenger_name"),
+                        rs.getString("passenger_phone"),
+                        rs.getInt("status")
+                );
+
+                conn.close();
+                return bookingDetails;
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
     public List<Booking> getScheduledBookings() {
         List<Booking> bookingList = new ArrayList<>();
         try  {
@@ -403,6 +453,9 @@ public class BookingDAO {
             p.setId(rs.getInt("id"));
             p.setProvidedAmount(rs.getDouble("provided_amount"));
             p.setIsPaid(rs.getInt("is_paid"));
+            p.setReferenceNumber(rs.getString("reference_number"));
+            p.setPaymentType(rs.getInt("payment_type"));
+            p.setCreatedDate(rs.getTimestamp("created_date"));
             paymentList.add(p);
         }
         conn.close();

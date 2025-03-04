@@ -36,6 +36,8 @@ public class BookingController extends HttpServlet {
             getScheduledBookings(response);
         }else if ("get_all_bookings".equals(action)) {
             getAllBookings(response);
+        }else if ("get_invoice_data".equals(action)) {
+            getBookingInvoice(request, response);
         }
     }
 
@@ -104,6 +106,39 @@ public class BookingController extends HttpServlet {
                 jsonResponse.put("status", "success");
                 jsonResponse.put("message", "User Bookings Fetched Successfully");
                 jsonResponse.put("data", bookingArray);
+            }else{
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "No Data");
+            }
+        } catch (JSONException e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+
+            throw new RuntimeException(e);
+        }
+
+        out.print(jsonResponse);
+        out.flush();
+    }
+
+    private void getBookingInvoice(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
+        JSONObject jsonResponse = new JSONObject();
+
+        try {
+            int bookingId = Integer.parseInt(request.getParameter("bookingId"));
+
+            Booking bookingDetails = bookingService.getBookingInvoice(bookingId);
+
+            if(bookingDetails != null){
+
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "Booking Invoice Fetched Successfully");
+                jsonResponse.put("data", bookingDetails.toJson());
             }else{
                 jsonResponse.put("status", "success");
                 jsonResponse.put("message", "No Data");

@@ -19,6 +19,10 @@ public class BookingService {
         return bookingDAO.getUserBookings(customerId);
     }
 
+    public Booking getBookingInvoice(int bookingId) {
+        return bookingDAO.getBookingInvoice(bookingId);
+    }
+
     public List<Booking> getScheduledBookings() {
         return bookingDAO.getScheduledBookings();
     }

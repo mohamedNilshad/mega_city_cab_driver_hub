@@ -1,22 +1,24 @@
 package com.drivehub.model;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
 public class PaymentInfo {
 
     private int id;
-    private int referenceNumber;
+    private String referenceNumber;
     private int customerId;
     private User customer;
     private int paymentType; //1<-Cash on the spot, 2<- online payment
     private double totalAmount;
     private double providedAmount;
     private int isPaid; //0,1
+    private Timestamp createdDate; //0,1
 
 
     //select
-    public PaymentInfo(int id, int referenceNumber, int customerId, User customer, int paymentType, double totalAmount, double providedAmount, int isPaid) {
+    public PaymentInfo(int id, String referenceNumber, int customerId, User customer, int paymentType, double totalAmount, double providedAmount, int isPaid) {
         this.id = id;
         this.referenceNumber = referenceNumber;
         this.customerId = customerId;
@@ -52,7 +54,11 @@ public class PaymentInfo {
         return id;
     }
 
-    public int getReferenceNumber() {
+    public Timestamp getCreatedDate() {
+        return createdDate;
+    }
+
+    public String getReferenceNumber() {
         return referenceNumber;
     }
 
@@ -105,8 +111,12 @@ public class PaymentInfo {
         this.customerId = customerId;
     }
 
-    public void setReferenceNumber(int referenceNumber) {
+    public void setReferenceNumber(String referenceNumber) {
         this.referenceNumber = referenceNumber;
+    }
+
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate;
     }
 
     public void setId(int id) {
@@ -124,6 +134,7 @@ public class PaymentInfo {
         jsonMap.put("totalAmount", totalAmount);
         jsonMap.put("providedAmount", providedAmount);
         jsonMap.put("isPaid", isPaid);
+        jsonMap.put("createdDate", createdDate);
         return jsonMap;
     }
 

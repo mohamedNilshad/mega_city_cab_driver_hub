@@ -1,10 +1,10 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         fetchAllBookings();
+        fetchCompanyProfile();
     });
 
     function fetchAllBookings(){
-
         $.ajax({
             type: "GET",
             url: "../../booking",
@@ -100,7 +100,7 @@
                                       <td style="vertical-align: middle;">${isPaid}</td>
                                       ${status}
                                       <td style="vertical-align: middle;">
-                                            <button type="button" class="icon-btn" onclick="openInvoiceModel(${booking.id})"><i class="zmdi zmdi-receipt"></i></button>
+                                            <button type="button" class="icon-btn" onclick="fetchInvoiceData(${booking.id})"><i class="zmdi zmdi-receipt"></i></button>
                                       </td>
                                   </tr>
                               `;
@@ -143,10 +143,180 @@
         });
     }
 
-    function openInvoiceModel(bookingId){
+    function fetchCompanyProfile(){
+
+        $.ajax({
+            type: "GET",
+            url: "../../company",
+            data: { action: "get_company_profile", companyId: 1},
+            dataType: "json",
+            success: function(response) {
+                if (response.status === "success") {
+                  companyProfile = response.data;
+                }else {
+
+                    $("#success_alert").hide();
+                        $('#error_alert').html(errorMsg);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+
+        });
+    }
+
+    function fetchInvoiceData(bId){
+
+        $.ajax({
+            type: "GET",
+            url: "../../booking",
+            data: { action: "get_invoice_data", bookingId: bId},
+            dataType: "json",
+            beforeSend: function() {
+                console.log("Loading");
+            },
+            success: function(response) {
+
+                if (response.status === "success") {
+                     if(response.data.length != 0){
+
+                          let currentDate = {
+                            currentDate: new Date().toISOString().split('T')[0],
+                          };
+                          let invoiceData = Object.assign(currentDate, response.data);
+
+                          openInvoiceModel(invoiceData);
+                     }
+                }else {
+
+                    $("#success_alert").hide();
+                        $('#error_alert').html(errorMsg);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+
+        });
+    }
+
+    function openInvoiceModel(invoiceData){
+        let jsonInvoice= JSON.stringify(invoiceData);
+        console.log(invoiceData);
+
+        document.getElementById("downloadBtn").innerHTML = `
+            <button type="button" onclick='printInvoice(${jsonInvoice})' class="btn btn-primary btn-sm" style="width: 10%;margin-bottom: 5px; margin-left: 15px; float: left;">
+                <i class="zmdi zmdi-download"></i>
+            </button>
+        `;
+
+        document.getElementById("currentDate").innerHTML = invoiceData.currentDate;
+        document.getElementById("rideStatus").innerHTML = getStatusByCode(invoiceData.status);
+
+        document.getElementById("companyName").innerHTML = companyProfile.companyName;
+        document.getElementById("companyAddress").innerHTML = companyProfile.companyAddress;
+        document.getElementById("companyEmail").innerHTML = "Email: " + companyProfile.companyEmail;
+        document.getElementById("companyPhone").innerHTML = "Phone: " + companyProfile.companyPhone;
+
+        document.getElementById("customerName").innerHTML = invoiceData.passengerName;
+        document.getElementById("customerAddress").innerHTML = invoiceData.customer.address;
+        document.getElementById("customerEmail").innerHTML = "Email: " + invoiceData.customer.email;
+        document.getElementById("customerPhone").innerHTML = "Phone: " + invoiceData.passengerPhone;
+
+        document.getElementById("bookingNo").innerHTML = invoiceData.bookingNumber;
+        document.getElementById("iBookingType").innerHTML = invoiceData.bookingType == 1 ? "Schedule Booking" : "Instant Booking";
+        document.getElementById("iStartDate").innerHTML = invoiceData.startDate;
+        document.getElementById("iEndDate").innerHTML = invoiceData.endDate;
+        let totalAmount = invoiceData.totalAmount;
+        document.getElementById("iTotalAmount").innerHTML = formatCurrency(totalAmount);
+
+        document.getElementById("iTotalAmountToPay").innerHTML = formatCurrency(totalAmount);
+
+        let paidAmount = 0.0;
+
+        let tbody = $("#invoiceListTable tbody");
+        tbody.empty();
+        let i = 0;
+        invoiceData.paymentInfoList.forEach((payment) => {
+            i += 1;
+            paidAmount += payment.providedAmount;
+            let paymentType = payment.paymentType == 1 ? "Cash" : "Card";
+
+            let newRow = `
+              <tr>
+                  <td class="center">${i}</td>
+                  <td class="left strong">${payment.referenceNumber}</td>
+                  <td class="left">${paymentType}</td>
+                  <td class="center">${payment.createdDate}</td>
+
+                  <td class="right" style="text-align: right;">${payment.providedAmount}</td>
+              </tr>
+          `;
+          tbody.append(newRow);
+        });
+
+        let balanceAmount = (totalAmount - paidAmount) <= 0 ? 0.0 : (totalAmount - paidAmount);
+        let returnAmount = (paidAmount > totalAmount) ? paidAmount - totalAmount : 0.0;
+        let isPaid = (paidAmount >= totalAmount);
+
+        document.getElementById("iTotalPaidAmount").innerHTML = formatCurrency(paidAmount);
+        document.getElementById("iTotalBalAmount").innerHTML = formatCurrency(balanceAmount);
+        document.getElementById("iReturnAmount").innerHTML = formatCurrency(returnAmount);
+
+        let rubberStamp = document.getElementById("rubberStamp");
+        if(isPaid){
+            rubberStamp.innerHTML = "Paid";
+            rubberStamp.style.color = "green";
+            rubberStamp.style.borderColor  = "green";
+        }else{
+            rubberStamp.innerHTML = "Not Paid";
+            rubberStamp.style.color = "red";
+            rubberStamp.style.borderColor  = "red";
+        }
+
 
         let modal = new bootstrap.Modal(document.getElementById("invoiceModel"));
         modal.show();
+    }
+
+    function getStatusByCode(value){
+        if(value == 0){
+            return "Schedule";
+        }else if(value == 1){
+            return "Completed";
+        }else if(value == 2){
+            return "Cancelled";
+        }else if(value == 3){
+            return "On Going";
+        }
+    }
+
+    function printInvoice(invoiceData) {
+
+        var printWindow = window.open('', '_blank', 'width=800,height=600');
+
+        printWindow.document.write(getContent(invoiceData, companyProfile));
+        printWindow.document.close();
+        printWindow.print();
     }
 
     function changeStatus(bid, value, label){
@@ -220,71 +390,17 @@
         });
     });
 
-
-    function downloadInvoice(){
-        const { jsPDF } = window.jspdf;
-
-        let element = document.querySelector("#invoiceModel .modal-content"); // Select the invoice content
-
-        html2canvas(element, { scale: 2 }).then(canvas => {
-            let imgData = canvas.toDataURL("image/png");
-            let pdf = new jsPDF("p", "mm", "a4");
-
-            let imgWidth = 210; // A4 width in mm
-            let imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
-
-            pdf.addImage(imgData, "PNG", 0, 10, imgWidth, imgHeight);
-            pdf.save("invoice.pdf");
+    function formatCurrency(amount){
+        return amount.toLocaleString('en-LK', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
         });
-
+//        return  amount.toLocaleString('en-LK', {
+//            style: 'currency',
+//            currency: 'LKR'
+//        });
     }
 
-    function generateInvoicePDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        // Title
-        doc.setFontSize(18);
-        doc.text("Invoice", 14, 20);
-
-        // Company Info
-        doc.setFontSize(12);
-        doc.text("Webz Poland", 14, 30);
-        doc.text("Madalinskiego 8, 71-101 Szczecin, Poland", 14, 35);
-        doc.text("Email: info@webz.com.pl | Phone: +48 444 666 3333", 14, 40);
-
-        // Customer Info
-        doc.text("To: Bob Mart", 140, 30);
-        doc.text("Attn: Daniel Marek", 140, 35);
-        doc.text("43-190 Mikolow, Poland", 140, 40);
-        doc.text("Email: marek@daniel.com | Phone: +48 123 456 789", 140, 45);
-
-        // Table Data
-        const tableColumn = ["#", "Ref. No", "Payment Type", "Date", "Amount (LKR)"];
-        const tableRows = [
-            [1, "11111", "Cash", "2025-03-03 21:35:54", "20,000.00"],
-            [2, "556125", "Card", "2025-03-02 21:35:54", "10,000.00"],
-            [3, "556125", "Card", "2025-03-02 21:35:54", "5,000.00"]
-        ];
-
-        // AutoTable for structured tables
-        doc.autoTable({
-            startY: 50,
-            head: [tableColumn],
-            body: tableRows,
-            theme: "grid",
-            styles: { fontSize: 10 }
-        });
-
-        // Totals
-        doc.text("Total Amount To Pay: 35,000.00 LKR", 120, doc.autoTable.previous.finalY + 10);
-        doc.text("Paid Amount: 35,000.00 LKR", 120, doc.autoTable.previous.finalY + 15);
-        doc.text("Balance Amount: 00.00 LKR", 120, doc.autoTable.previous.finalY + 20);
-        doc.text("Return Amount: 00.00 LKR", 120, doc.autoTable.previous.finalY + 25);
-
-        // Save PDF
-        doc.save("invoice.pdf");
-    }
 
 
 </script>
