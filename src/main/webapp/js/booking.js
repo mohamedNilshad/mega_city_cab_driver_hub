@@ -8,6 +8,7 @@
         setDate("from_date");
         setDate("to_date");
         fetchUserBookings();
+        fetchCompanyProfile();
     });
 
     document.addEventListener("change", function () {
@@ -213,7 +214,7 @@
                                       ${status}
                                       <td style="vertical-align: middle;">
                                             ${editButton}
-                                            <button type="button" class="icon-btn" ><i class="zmdi zmdi-receipt"></i></button>
+                                            <button type="button" class="icon-btn" onclick="fetchInvoiceData(${booking.id})"><i class="zmdi zmdi-receipt"></i></button>
                                       </td>
                                   </tr>
                               `;
@@ -1056,6 +1057,192 @@
 
         return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
+
+
+    //------------------------------------INVOICE----------->
+    function fetchCompanyProfile(){
+
+        $.ajax({
+            type: "GET",
+            url: "../../company",
+            data: { action: "get_company_profile", companyId: 1},
+            dataType: "json",
+            success: function(response) {
+                if (response.status === "success") {
+                  companyProfile = response.data;
+                }else {
+
+                    $("#success_alert").hide();
+                        $('#error_alert').html(errorMsg);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+
+        });
+    }
+
+    function fetchInvoiceData(bId){
+
+        $.ajax({
+            type: "GET",
+            url: "../../booking",
+            data: { action: "get_invoice_data", bookingId: bId},
+            dataType: "json",
+            beforeSend: function() {
+                console.log("Loading");
+            },
+            success: function(response) {
+
+                if (response.status === "success") {
+                     if(response.data.length != 0){
+
+                          let currentDate = {
+                            currentDate: new Date().toISOString().split('T')[0],
+                          };
+                          let invoiceData = Object.assign(currentDate, response.data);
+
+                          openInvoiceModel(invoiceData);
+                     }
+                }else {
+
+                    $("#success_alert").hide();
+                        $('#error_alert').html(errorMsg);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+
+        });
+    }
+
+    function openInvoiceModel(invoiceData){
+        let jsonInvoice= JSON.stringify(invoiceData);
+        console.log(invoiceData);
+
+        document.getElementById("downloadBtn").innerHTML = `
+            <button type="button" onclick='printInvoice(${jsonInvoice})' class="btn btn-primary btn-sm" style="width: 10%;margin-bottom: 5px; margin-left: 15px; float: left;">
+                <i class="zmdi zmdi-download"></i>
+            </button>
+        `;
+
+        document.getElementById("currentDate").innerHTML = invoiceData.currentDate;
+        document.getElementById("rideStatus").innerHTML = getStatusByCode(invoiceData.status);
+
+        document.getElementById("companyName").innerHTML = companyProfile.companyName;
+        document.getElementById("companyAddress").innerHTML = companyProfile.companyAddress;
+        document.getElementById("companyEmail").innerHTML = "Email: " + companyProfile.companyEmail;
+        document.getElementById("companyPhone").innerHTML = "Phone: " + companyProfile.companyPhone;
+
+        document.getElementById("customerName").innerHTML = invoiceData.passengerName;
+        document.getElementById("customerAddress").innerHTML = invoiceData.customer.address;
+        document.getElementById("customerEmail").innerHTML = "Email: " + invoiceData.customer.email;
+        document.getElementById("customerPhone").innerHTML = "Phone: " + invoiceData.passengerPhone;
+
+        document.getElementById("bookingNo").innerHTML = invoiceData.bookingNumber;
+        document.getElementById("iBookingType").innerHTML = invoiceData.bookingType == 1 ? "Schedule Booking" : "Instant Booking";
+        document.getElementById("iStartDate").innerHTML = invoiceData.startDate;
+        document.getElementById("iEndDate").innerHTML = invoiceData.endDate;
+        let totalAmount = invoiceData.totalAmount;
+        document.getElementById("iTotalAmount").innerHTML = formatCurrency(totalAmount);
+
+        document.getElementById("iTotalAmountToPay").innerHTML = formatCurrency(totalAmount);
+
+        let paidAmount = 0.0;
+
+        let tbody = $("#invoiceListTable tbody");
+        tbody.empty();
+        let i = 0;
+        invoiceData.paymentInfoList.forEach((payment) => {
+            i += 1;
+            paidAmount += payment.providedAmount;
+            let paymentType = payment.paymentType == 1 ? "Cash" : "Card";
+
+            let newRow = `
+              <tr>
+                  <td class="center">${i}</td>
+                  <td class="left strong">${payment.referenceNumber}</td>
+                  <td class="left">${paymentType}</td>
+                  <td class="center">${payment.createdDate}</td>
+
+                  <td class="right" style="text-align: right;">${payment.providedAmount}</td>
+              </tr>
+          `;
+          tbody.append(newRow);
+        });
+
+        let balanceAmount = (totalAmount - paidAmount) <= 0 ? 0.0 : (totalAmount - paidAmount);
+        let returnAmount = (paidAmount > totalAmount) ? paidAmount - totalAmount : 0.0;
+        let isPaid = (paidAmount >= totalAmount);
+
+        document.getElementById("iTotalPaidAmount").innerHTML = formatCurrency(paidAmount);
+        document.getElementById("iTotalBalAmount").innerHTML = formatCurrency(balanceAmount);
+        document.getElementById("iReturnAmount").innerHTML = formatCurrency(returnAmount);
+
+        let rubberStamp = document.getElementById("rubberStamp");
+        if(isPaid){
+            rubberStamp.innerHTML = "Paid";
+            rubberStamp.style.color = "green";
+            rubberStamp.style.borderColor  = "green";
+        }else{
+            rubberStamp.innerHTML = "Not Paid";
+            rubberStamp.style.color = "red";
+            rubberStamp.style.borderColor  = "red";
+        }
+
+
+        let modal = new bootstrap.Modal(document.getElementById("invoiceModel"));
+        modal.show();
+    }
+
+    function printInvoice(invoiceData) {
+
+            var printWindow = window.open('', '_blank', 'width=800,height=600');
+
+            printWindow.document.write(getContent(invoiceData, companyProfile));
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+    function formatCurrency(amount){
+                return amount.toLocaleString('en-LK', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+    function getStatusByCode(value){
+        if(value == 0){
+            return "Schedule";
+        }else if(value == 1){
+            return "Completed";
+        }else if(value == 2){
+            return "Cancelled";
+        }else if(value == 3){
+            return "On Going";
+        }
+    }
+    //------------------------------------INVOICE----------->
 
 
 </script>

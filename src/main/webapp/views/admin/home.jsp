@@ -81,9 +81,123 @@
             </div>
         </div>
 
+        <!--Invoice Model-->
+        <div class="modal fade" id="invoiceModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content" style="padding-top: 15px;padding-bottom: 15px;">
+                    <div id="downloadBtn"></div>
+
+                    <div class="container">
+                        <div class="card">
+                            <div class="card-header">
+                                Invoice
+                                <strong><span id="currentDate"></span></strong>
+                                <span class="float-right"> <strong>Status: </strong><span id="rideStatus"></span></span>
+
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-4">
+                                    <div class="col-sm-6">
+                                        <h6 class="mb-3">From:</h6>
+                                        <div>
+                                            <strong><span id="companyName"></span></strong>
+                                        </div>
+                                        <div id="companyAddress"></div>
+                                        <div id="companyEmail"></div>
+                                        <div id="companyPhone"></div>
+                                    </div>
+
+                                    <div class="col-sm-6"  style="text-align: right;">
+                                        <h6 class="mb-3">To:</h6>
+                                        <div>
+                                            <strong><span id="customerName"></span></strong>
+                                        </div>
+                                        <div id="customerAddress"></div>
+                                        <div id="customerEmail"></div>
+                                        <div id="customerPhone"></div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="col-sm-6">
+                                    <div>
+                                        <span style="font-weight: 600;">Booking No :</span><strong><span id="bookingNo"></span></strong>
+                                    </div>
+                                    <div><span style="font-weight: 600;">Booking Type :</span> <span id="iBookingType"></span></div>
+                                    <div><span style="font-weight: 600;">Start Date : </span><span id="iStartDate"></span></div>
+                                    <div><span style="font-weight: 600;">End Date : </span><span id="iEndDate"></span></div>
+                                    <div><span style="font-weight: 600;">Total Amount : </span><span id="iTotalAmount"></span></div>
+                                </div>
+
+                                <div class="table-responsive-sm">
+                                    <table class="table table-striped" id="invoiceListTable">
+                                        <thead>
+                                        <tr>
+                                            <th class="center">#</th>
+                                            <th>Ref. No</th>
+                                            <th>Payment Type</th>
+                                            <th class="center">Date</th>
+                                            <th class="right" style="text-align: right;">Amount(LKR)</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="row">
+                                    <div class="rubber_stamp" id="rubberStamp"></div>
+                                    <div class="col-lg-6 col-sm-5 ml-auto">
+                                        <table class="table table-clear">
+                                            <tbody>
+                                            <tr style="text-align: right;">
+                                                <td class="left">
+                                                    Total Amount To Pay
+                                                </td>
+                                                <td class="right">
+                                                    <strong id="iTotalAmountToPay"></strong>
+                                                </td>
+                                            </tr>
+                                            <tr style="text-align: right;">
+                                                <td class="left">
+                                                    Paid Amount
+                                                </td>
+                                                <td class="right">
+                                                    <strong id="iTotalPaidAmount"></strong>
+                                                </td>
+                                            </tr>
+                                            <tr style="text-align: right;">
+                                                <td class="left">
+                                                    Balance Amount
+                                                </td>
+                                                <td class="right">
+                                                    <strong id="iTotalBalAmount"></strong>
+                                                </td>
+                                            </tr>
+                                            <tr style="text-align: right;">
+                                                <td class="left">
+                                                    Return Amount
+                                                </td>
+                                                <td class="right">
+                                                    <strong id="iReturnAmount"></strong>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <jsp:include page="../../WEB-INF/includes/footer.jsp" />
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <jsp:include page="../../js/invoice/invoice.js" />
         <jsp:include page="../../js/home.js" />
         
     </body>

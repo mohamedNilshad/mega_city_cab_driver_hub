@@ -143,6 +143,8 @@
         });
     }
 
+
+    //------------------------------------INVOICE----------->
     function fetchCompanyProfile(){
 
         $.ajax({
@@ -298,6 +300,22 @@
         modal.show();
     }
 
+    function printInvoice(invoiceData) {
+
+            var printWindow = window.open('', '_blank', 'width=800,height=600');
+
+            printWindow.document.write(getContent(invoiceData, companyProfile));
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+    function formatCurrency(amount){
+                return amount.toLocaleString('en-LK', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
     function getStatusByCode(value){
         if(value == 0){
             return "Schedule";
@@ -309,15 +327,7 @@
             return "On Going";
         }
     }
-
-    function printInvoice(invoiceData) {
-
-        var printWindow = window.open('', '_blank', 'width=800,height=600');
-
-        printWindow.document.write(getContent(invoiceData, companyProfile));
-        printWindow.document.close();
-        printWindow.print();
-    }
+    //------------------------------------INVOICE----------->
 
     function changeStatus(bid, value, label){
         let subtitle = value == 2 ? "Cancel": label
@@ -389,17 +399,6 @@
             }
         });
     });
-
-    function formatCurrency(amount){
-        return amount.toLocaleString('en-LK', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-//        return  amount.toLocaleString('en-LK', {
-//            style: 'currency',
-//            currency: 'LKR'
-//        });
-    }
 
 
 

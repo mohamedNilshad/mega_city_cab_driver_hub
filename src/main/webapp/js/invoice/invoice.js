@@ -42,7 +42,6 @@
     }
 
 
-
     function getHeader(){
         return `
             <meta charset="UTF-8">
@@ -171,7 +170,6 @@
             </table>
         `;
     }
-
 
     function getInvoiceFooter(invoiceData){
         let paidAmount = 0.0;
