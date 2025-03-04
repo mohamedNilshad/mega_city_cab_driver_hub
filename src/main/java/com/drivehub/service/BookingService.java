@@ -23,6 +23,10 @@ public class BookingService {
         return bookingDAO.getBookingInvoice(bookingId);
     }
 
+    public Booking getAllReadings(int bookingId) {
+        return bookingDAO.getAllReadings(bookingId);
+    }
+
     public List<Booking> getScheduledBookings() {
         return bookingDAO.getScheduledBookings();
     }
@@ -37,6 +41,10 @@ public class BookingService {
 
     public Boolean updateBooking(Booking booking, PaymentInfo paymentInfo) {
         return bookingDAO.updateBooking(booking, paymentInfo);
+    }
+
+    public Boolean updateFinalAmount(int bookingId, double finalAmount) {
+        return bookingDAO.updateFinalAmount(bookingId, finalAmount);
     }
 
     public Boolean changeBookingStatus(int status, int bookingId, String meterReading) {

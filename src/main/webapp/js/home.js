@@ -218,7 +218,6 @@
         modal.show();
     }
 
-
     //------------------------------------INVOICE----------->
     function fetchCompanyProfile(){
 

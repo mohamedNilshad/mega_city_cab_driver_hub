@@ -1,6 +1,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         fetchAllBookings();
+        fetchVehicleType();
         fetchCompanyProfile();
     });
 
@@ -142,6 +143,256 @@
 
         });
     }
+
+    function fetchVehicleType(){
+            $.ajax({
+                type: "GET",
+                url: "../../vehicle",
+                data: { action: "vehicle_types" },
+                dataType: "json",
+
+                success: function(response) {
+                    if (response.status === "success") {
+                        vehicleTypes = response.data;
+                    }else {
+                        $("#success_alert").hide();
+                            $('#error_alert').html(response.message);
+                            $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                            $("#error_alert").slideUp(500);
+                        });
+                    }
+
+                },
+                error: function(xhr) {
+                        let responseText = xhr.responseText;
+                        let errorMsg = '';
+                        try {
+                            let errorResponse = JSON.parse(responseText);
+                            errorMsg = errorResponse.message;
+                        } catch (e) {
+                            errorMsg = "Unexpected error occurred: "+e;
+                        }
+
+                        $("#success_alert").hide();
+                            $('#error_alert').html(errorMsg);
+                            $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                            $("#error_alert").slideUp(500);
+                        });
+                },
+
+            });
+        }
+
+
+    //------------------------------CF AMOUNT---------------------->
+    function calculateFinalAmount(bookId){
+
+        $.ajax({
+            type: "GET",
+            url: "../../booking",
+            data: { action: "get_all_readings", book_id: bookId},
+            dataType: "json",
+
+            success: function(response) {
+
+                if (response.status === "success") {
+                    let b = response.data;
+
+                    let vType = b.vehicle.vehicleTypeId;
+                    let fromDate = b.finalStartDate;
+                    let toDate = b.finalEndDate;
+                    let totalDistance = b.endMeterReading - b.startMeterReading;
+                    console.log(totalDistance);
+                    let dAmount = vehicleTypes.find(item => item.id == vType);
+
+                    let perOneDay = dAmount.perOneDay;
+                    let discountFullAmount = dAmount.discountFullAmount;
+                    let discountBalanceAmount = dAmount.discountBalanceAmount;
+                    let penaltyExtraKm = dAmount.penaltyExtraKm;
+                    let maximumKmPerDay = dAmount.maximumKmPerDay;
+                    let discountDays = dAmount.discountDays;
+
+                    let totalAmount = 0.0;
+
+                    let def = calculateDaysAndHour(fromDate, toDate);
+                    let days = def.days == 0 ? 1 : def.days;
+
+
+                    if(days != 0 && def.hours > 2){
+                        days +=1;
+                    }
+
+                    let avgDistance = (totalDistance / days);
+                    let extraKmAmount = (avgDistance > maximumKmPerDay) ? ((avgDistance-100) * penaltyExtraKm * days) : 0.0;
+
+                    if(days >= discountDays){
+                        let discountDays = Math.floor(days/discountDays);
+                        let balanceDiscountDays = days % discountDays;
+
+                        totalAmount = (discountDays * discountFullAmount) + (balanceDiscountDays * discountBalanceAmount);
+                    }else {
+                        totalAmount = perOneDay * days;
+                    }
+
+                    totalAmount += extraKmAmount;
+
+                    updateFinalAmount(bookId, Math.floor(totalAmount));
+
+                }else {
+
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred: "+e;
+                }
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+        });
+    }
+
+    function updateFinalAmount(bookingId, amount){
+        $.ajax({
+            type: "POST",
+            url: "../../booking",
+            data: {action: "update_final_amount", bookingId: bookingId, finalAmount: amount},
+            dataType: "json",
+            success: function(response) {
+                if (response.status === "success") {
+
+                    fetchAllBookings();
+
+                    $("#success_alert").hide();
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+            },
+            error: function(xhr) {
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred "+e;
+                }
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#cs_btn_loading').css('display', 'none');
+                $("#confirmStatusChangeModel").modal("hide");
+            }
+        });
+    }
+
+    function changeStatus(bid, value, label){
+        let subtitle = value == 2 ? "Cancel": label
+
+        document.getElementById('meter_reading').value = "";
+
+        if(value == 1 || value == 3){
+            document.getElementById('meter_reading_div').style.display = "block";
+        }else{
+            document.getElementById('meter_reading_div').style.display = "none";
+        }
+        document.getElementById('booking_id').value = bid;
+        document.getElementById('status').value = value;
+
+        document.getElementById('statusLabel').innerHTML = "";
+        document.getElementById('statusLabel').innerHTML = 'Confirm '+label;
+        document.getElementById('subtitle').innerHTML = subtitle;
+        let modal = new bootstrap.Modal(document.getElementById("confirmStatusChangeModel"));
+        modal.show();
+    }
+
+    //change status
+    $("#changeStatusForm").submit(function(event) {
+        event.preventDefault();
+        $('#cs_btn_loading').css('display', 'inline');
+        $(":submit").attr("disabled", true);
+
+        $.ajax({
+            type: "POST",
+            url: "../../booking",
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function(response) {
+                if (response.status === "success") {
+                    if(document.getElementById("status").value == 1){
+                        calculateFinalAmount(document.getElementById("booking_id").value);
+                    }else{
+                        fetchAllBookings();
+                        $("#success_alert").hide();
+                            $('#success_alert').html(response.message);
+                            $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                            $("#success_alert").slideUp(500);
+                        });
+                    }
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+            },
+            error: function(xhr) {
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred "+e;
+                }
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#cs_btn_loading').css('display', 'none');
+                $("#confirmStatusChangeModel").modal("hide");
+            }
+        });
+    });
+
+    //------------------------------CF AMOUNT---------------------->
+
 
 
     //------------------------------------INVOICE----------->
@@ -329,76 +580,18 @@
     }
     //------------------------------------INVOICE----------->
 
-    function changeStatus(bid, value, label){
-        let subtitle = value == 2 ? "Cancel": label
 
-        document.getElementById('meter_reading').value = "";
+    function calculateDaysAndHour(fromDate, toDate) {
+        const date1 = new Date(fromDate);
+        const date2 = new Date(toDate);
 
-        if(value == 1 || value == 3){
-            document.getElementById('meter_reading_div').style.display = "block";
-        }else{
-            document.getElementById('meter_reading_div').style.display = "none";
-        }
-        document.getElementById('booking_id').value = bid;
-        document.getElementById('status').value = value;
+        const diffInMs = date2 - date1;
 
-        document.getElementById('statusLabel').innerHTML = "";
-        document.getElementById('statusLabel').innerHTML = 'Confirm '+label;
-        document.getElementById('subtitle').innerHTML = subtitle;
-        let modal = new bootstrap.Modal(document.getElementById("confirmStatusChangeModel"));
-        modal.show();
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+        const diffInHours = Math.floor((diffInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+        return { days: diffInDays, hours: diffInHours };
     }
-
-    //change status
-    $("#changeStatusForm").submit(function(event) {
-        event.preventDefault();
-        $('#cs_btn_loading').css('display', 'inline');
-        $(":submit").attr("disabled", true);
-
-        $.ajax({
-            type: "POST",
-            url: "../../booking",
-            data: $(this).serialize(),
-            dataType: "json",
-            success: function(response) {
-                if (response.status === "success") {
-                    $("#success_alert").hide();
-                        $('#success_alert').html(response.message);
-                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#success_alert").slideUp(500);
-                    });
-                    fetchAllBookings();
-                }else {
-                    $("#success_alert").hide();
-                        $('#error_alert').html(response.message);
-                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error_alert").slideUp(500);
-                    });
-                }
-            },
-            error: function(xhr) {
-                let responseText = xhr.responseText;
-                let errorMsg = '';
-                try {
-                    let errorResponse = JSON.parse(responseText);
-                    errorMsg = errorResponse.message;
-                } catch (e) {
-                    errorMsg = "Unexpected error occurred "+e;
-                }
-
-                $("#success_alert").hide();
-                    $('#error_alert').html(errorMsg);
-                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                    $("#error_alert").slideUp(500);
-                });
-            },
-            complete: function(){
-                $(":submit").removeAttr("disabled");
-                $('#cs_btn_loading').css('display', 'none');
-                $("#confirmStatusChangeModel").modal("hide");
-            }
-        });
-    });
 
 
 

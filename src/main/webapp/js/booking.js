@@ -125,7 +125,7 @@
                 tbody.empty();
 
                 tbody.append(`<tr>
-                   <td scope="row" colspan="10" style="text-align: center;">
+                   <td scope="row" colspan="11" style="text-align: center;">
                      <i class="fa fa-spinner fa-spin" id="data_loading" style="display:inline; font-size:32px;"></i>
                    </td>
                  </tr>`);
@@ -136,7 +136,7 @@
 
                 if (response.status === "success") {
                      if(response.data.length == 0){
-                        tbody.append(`<tr><td colspan="10" style="text-align:center;">No Data</td></tr>`);
+                        tbody.append(`<tr><td colspan="11" style="text-align:center;">No Data</td></tr>`);
                      }else{
 
 
@@ -167,6 +167,8 @@
                               cancelBtn = (booking.status == 0) ? cancelBtn : ``;
                               completedBtn = (booking.status == 3) ? completedBtn : ``;
 
+                              let payBtn = ``;
+
                               let payment = booking.paymentInfoList;
                               let isPaid = "Yes";
 
@@ -177,6 +179,9 @@
 
                                if(tempTotalProAmount < booking.totalAmount){
                                   isPaid = "No";
+                                  payBtn = `<button type="button" class="icon-btn" onclick="openPaymentFormModel(${booking.id}, ${booking.totalAmount})" style="color: green;">
+                                                  <i class="fas fa-hand-holding-usd"></i>
+                                          </button>`;
                                }
 
 
@@ -215,6 +220,7 @@
                                       <td style="vertical-align: middle;">
                                             ${editButton}
                                             <button type="button" class="icon-btn" onclick="fetchInvoiceData(${booking.id})"><i class="zmdi zmdi-receipt"></i></button>
+                                            ${payBtn}
                                       </td>
                                   </tr>
                               `;
@@ -222,6 +228,8 @@
                           });
                      }
                 }else {
+                    tbody.empty();
+                    tbody.append(`<tr><td colspan="11" style="text-align:center;">No Data</td></tr>`);
 
                     $("#success_alert").hide();
                         $('#error_alert').html(response.message);
@@ -244,7 +252,7 @@
 
                 let tbody = $("#userBookingTable tbody");
                 tbody.empty();
-                tbody.append(`<tr><td colspan="10" style="text-align:center;">No Data</td></tr>`);
+                tbody.append(`<tr><td colspan="11" style="text-align:center;">No Data</td></tr>`);
 
                 $("#success_alert").hide();
                     $('#error_alert').html(errorMsg);
@@ -372,27 +380,108 @@
 
         });
     }
+    //------------------------------CFAMOUNT----------------------------------------->
+    function calculateFinalAmount(bookId){
+
+        $.ajax({
+            type: "GET",
+            url: "../../booking",
+            data: { action: "get_all_readings", book_id: bookId},
+            dataType: "json",
+
+            success: function(response) {
+
+                if (response.status === "success") {
+                    let b = response.data;
+
+                    let vType = b.vehicle.vehicleTypeId;
+                    let fromDate = b.finalStartDate;
+                    let toDate = b.finalEndDate;
+                    let totalDistance = b.endMeterReading - b.startMeterReading;
+                    console.log(totalDistance);
+                    let dAmount = vehicleTypes.find(item => item.id == vType);
+
+                    let perOneDay = dAmount.perOneDay;
+                    let discountFullAmount = dAmount.discountFullAmount;
+                    let discountBalanceAmount = dAmount.discountBalanceAmount;
+                    let penaltyExtraKm = dAmount.penaltyExtraKm;
+                    let maximumKmPerDay = dAmount.maximumKmPerDay;
+                    let discountDays = dAmount.discountDays;
+
+                    let totalAmount = 0.0;
+
+                    let def = calculateDaysAndHour(fromDate, toDate);
+                    let days = def.days == 0 ? 1 : def.days;
 
 
-    //change status
-    $("#changeStatusForm").submit(function(event) {
-        event.preventDefault();
-        $('#cs_btn_loading').css('display', 'inline');
-        $(":submit").attr("disabled", true);
+                    if(days != 0 && def.hours > 2){
+                        days +=1;
+                    }
 
+                    let avgDistance = (totalDistance / days);
+                    let extraKmAmount = (avgDistance > maximumKmPerDay) ? ((avgDistance-100) * penaltyExtraKm * days) : 0.0;
+
+                    if(days >= discountDays){
+                        let discountDays = Math.floor(days/discountDays);
+                        let balanceDiscountDays = days % discountDays;
+
+                        totalAmount = (discountDays * discountFullAmount) + (balanceDiscountDays * discountBalanceAmount);
+                    }else {
+                        totalAmount = perOneDay * days;
+                    }
+
+                    totalAmount += extraKmAmount;
+
+                    console.log(Math.floor(totalAmount));
+
+                    updateFinalAmount(bookId, Math.floor(totalAmount));
+
+                }else {
+
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred: "+e;
+                }
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+        });
+    }
+
+    function updateFinalAmount(bookingId, amount){
         $.ajax({
             type: "POST",
             url: "../../booking",
-            data: $(this).serialize(),
+            data: {action: "update_final_amount", bookingId: bookingId, finalAmount: amount},
             dataType: "json",
             success: function(response) {
                 if (response.status === "success") {
+
+                    fetchUserBookings();
+
                     $("#success_alert").hide();
                         $('#success_alert').html(response.message);
                         $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
                         $("#success_alert").slideUp(500);
                     });
-                    fetchUserBookings();
                 }else {
                     $("#success_alert").hide();
                         $('#error_alert').html(response.message);
@@ -423,7 +512,111 @@
                 $("#confirmStatusChangeModel").modal("hide");
             }
         });
+    }
+
+    $("#changeStatusForm").submit(function(event) {
+        event.preventDefault();
+        $('#cs_btn_loading').css('display', 'inline');
+        $(":submit").attr("disabled", true);
+
+        $.ajax({
+            type: "POST",
+            url: "../../booking",
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function(response) {
+                if (response.status === "success") {
+
+                    if(document.getElementById("status").value == 1){
+                        calculateFinalAmount(document.getElementById("booking_id").value);
+                    }else{
+                        fetchUserBookings();
+
+                        $("#success_alert").hide();
+                            $('#success_alert').html(response.message);
+                            $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                            $("#success_alert").slideUp(500);
+                        });
+                    }
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+            },
+            error: function(xhr) {
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred "+e;
+                }
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#cs_btn_loading').css('display', 'none');
+                $("#confirmStatusChangeModel").modal("hide");
+            }
+        });
+
     });
+    //------------------------------CFAMOUNT----------------------------------------->
+    function updateStatus(){
+        $.ajax({
+            type: "POST",
+            url: "../../booking",
+            data: $("#changeStatusForm").serialize(),
+            dataType: "json",
+            success: function(response) {
+                if (response.status === "success") {
+                    fetchUserBookings();
+
+                    $("#success_alert").hide();
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+            },
+            error: function(xhr) {
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred "+e;
+                }
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#cs_btn_loading').css('display', 'none');
+                $("#confirmStatusChangeModel").modal("hide");
+            }
+        });
+    }
 
     //add new Cash payment
     $("#paymentType1Form").submit(function(event) {
@@ -432,7 +625,7 @@
         if(document.getElementById('enable').value == 0){
             updateBooking();
             return;
-       }
+        }
 
 
         $('#nb_btn_loading').css('display', 'inline');
@@ -1243,6 +1436,23 @@
         }
     }
     //------------------------------------INVOICE----------->
+
+
+
+    //------------------------------------CUSTOM PAYMENT----------->
+    function openPaymentFormModel(bookingId, balanceAmount){
+
+        $("#pt2").prop("checked", true);
+        document.getElementById("isPayNow").checked = false;
+        document.getElementById('payNow').style.display = 'none';
+
+        document.getElementById("payNowAmount").value = balanceAmount;
+        document.getElementById("bookingIdForCustomPay").value = bookingId;
+
+
+        let modal = new bootstrap.Modal(document.getElementById("paymentTypeModel"));
+        modal.show();
+    }
 
 
 </script>

@@ -292,6 +292,7 @@
                     <input type="hidden" name="action" value="cash_payment" required>
                     <input type="hidden" name="balance_amount" id="balance_amount" value="-1" required>
                     <input type="hidden" id="is_update" value="false" required>
+                    <input type="hidden" id="bookingIdForCustomPay" name="bookingIdForCustomPay" required>
 
                     <div class="row justify-content-center">
                         <div class="mb-3" id="selectPaymentType">

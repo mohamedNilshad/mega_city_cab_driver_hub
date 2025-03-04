@@ -23,11 +23,16 @@ public class Booking {
     private double totalRequestedDistance;
     private String passengerName;
     private String passengerPhone;
+    private int startMeterReading;
+    private int endMeterReading;
+    private Timestamp finalStartDate;
+    private Timestamp finalEndDate;
+    private double finalTotalAmount;
     private int status; // 0<-scheduled 1<-completed 2<-canceled 3<-ongoing
 
 
     //select
-    public Booking(int id, String bookingNumber, List<PaymentInfo> paymentInfoList, int bookingType, int customerId, User customer, Vehicle vehicle, int vehicleId, Timestamp startDate, Timestamp endDate, double totalAmount, int requestedSeatCount, double totalRequestedDistance, String passengerName, String passengerPhone, int status) {
+    public Booking(int id, String bookingNumber, List<PaymentInfo> paymentInfoList, int bookingType, int customerId, User customer, Vehicle vehicle, int vehicleId, Timestamp startDate, Timestamp endDate, double totalAmount, int requestedSeatCount, double totalRequestedDistance, String passengerName, String passengerPhone, double finalTotalAmount, int status) {
         this.id = id;
         this.bookingNumber = bookingNumber;
         this.paymentInfoList = paymentInfoList;
@@ -43,6 +48,7 @@ public class Booking {
         this.totalAmount = totalAmount;
         this.passengerName = passengerName;
         this.passengerPhone = passengerPhone;
+        this.finalTotalAmount = finalTotalAmount;
         this.status = status;
     }
 
@@ -145,6 +151,30 @@ public class Booking {
         return status;
     }
 
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
+
+    public void setPaymentInfoList(List<PaymentInfo> paymentInfoList) {
+        this.paymentInfoList = paymentInfoList;
+    }
+
+    public void setFinalEndDate(Timestamp finalEndDate) {
+        this.finalEndDate = finalEndDate;
+    }
+
+    public void setFinalStartDate(Timestamp finalStartDate) {
+        this.finalStartDate = finalStartDate;
+    }
+
+    public void setEndMeterReading(int endMeterReading) {
+        this.endMeterReading = endMeterReading;
+    }
+
+    public void setStartMeterReading(int startMeterReading) {
+        this.startMeterReading = startMeterReading;
+    }
+
     public Map<String, Object> toJson() {
 
         Map<String, Object> jsonMap = new HashMap<>();
@@ -165,6 +195,11 @@ public class Booking {
         jsonMap.put("totalAmount", totalAmount);
         jsonMap.put("passengerPhone", passengerPhone);
         jsonMap.put("passengerName", passengerName);
+        jsonMap.put("endMeterReading", endMeterReading);
+        jsonMap.put("startMeterReading", startMeterReading);
+        jsonMap.put("finalStartDate", finalStartDate);
+        jsonMap.put("finalEndDate", finalEndDate);
+        jsonMap.put("finalTotalAmount", finalTotalAmount);
         jsonMap.put("status", status);
         return jsonMap;
     }

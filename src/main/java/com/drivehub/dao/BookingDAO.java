@@ -5,6 +5,7 @@ import com.drivehub.util.DBConnection;
 import com.drivehub.util.Formats;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,6 +86,7 @@ public class BookingDAO {
                         rs.getDouble("total_requested_distance"),
                         rs.getString("passenger_name"),
                         rs.getString("passenger_phone"),
+                        rs.getDouble("finalTotalAmount"),
                         rs.getInt("status")
                 );
 
@@ -138,11 +140,47 @@ public class BookingDAO {
                         rs.getDouble("total_requested_distance"),
                         rs.getString("passenger_name"),
                         rs.getString("passenger_phone"),
+                        rs.getDouble("finalTotalAmount"),
                         rs.getInt("status")
                 );
 
                 conn.close();
                 return bookingDetails;
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public Booking getAllReadings(int bookingId) {
+
+        try  {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT b.*, v.vehicleTypeId FROM bookings b INNER JOIN vehicles v ON b.vehicle_id = v.id WHERE b.id = ?"
+            );
+            stmt.setInt(1, bookingId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+
+                Vehicle vehicle = new Vehicle();
+                vehicle.setVehicleTypeId(rs.getInt("vehicleTypeId"));
+
+                List<PaymentInfo> paymentInfo = new ArrayList<>();
+
+                Booking booking = new Booking();
+                booking.setVehicle(vehicle);
+                booking.setStartMeterReading(rs.getInt("startMeterReading"));
+                booking.setEndMeterReading(rs.getInt("endMeterReading"));
+                booking.setFinalStartDate(rs.getTimestamp("finalStartDate"));
+                booking.setFinalEndDate(rs.getTimestamp("finalEndDate"));
+                booking.setPaymentInfoList(paymentInfo);
+
+                conn.close();
+                return booking;
             }
 
         } catch (Exception e) {
@@ -190,6 +228,7 @@ public class BookingDAO {
                         rs.getDouble("total_requested_distance"),
                         rs.getString("passenger_name"),
                         rs.getString("passenger_phone"),
+                        rs.getDouble("finalTotalAmount"),
                         rs.getInt("status")
                 );
 
@@ -243,6 +282,7 @@ public class BookingDAO {
                         rs.getDouble("total_requested_distance"),
                         rs.getString("passenger_name"),
                         rs.getString("passenger_phone"),
+                        rs.getDouble("finalTotalAmount"),
                         rs.getInt("status")
                 );
 
@@ -337,6 +377,29 @@ public class BookingDAO {
         return false;
     }
 
+    public Boolean updateFinalAmount(int bookingId, double finalAmount) {
+
+        try {
+            Connection conn = DBConnection.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement(
+                    "UPDATE `bookings` SET `finalTotalAmount` = ?, `total_amount` = ? WHERE id = ?"
+            );
+
+            stmt.setDouble(1,finalAmount);
+            stmt.setDouble(2, finalAmount);
+            stmt.setInt(3, bookingId);
+
+            int rs = stmt.executeUpdate();
+            conn.close();
+            return (rs > 0);
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
     public Boolean changeBookingStatus(int status, int bookingId, String meterReading)  {
 
         try {
@@ -345,16 +408,24 @@ public class BookingDAO {
             PreparedStatement stmt;
 
             if(status == 3){
-                stmt = conn.prepareStatement("UPDATE `bookings` SET status = ?, startMeterReading = ? WHERE id = ?");
+                LocalDateTime lt = LocalDateTime.now();
+                Timestamp finalDate = Formats.dateTimeFormat(String.valueOf(lt));
+
+                stmt = conn.prepareStatement("UPDATE `bookings` SET status = ?, startMeterReading = ?, finalStartDate = ? WHERE id = ?");
                 stmt.setInt(1, status);
                 stmt.setInt(2, Integer.parseInt(meterReading));
-                stmt.setInt(3, bookingId);
+                stmt.setTimestamp(3, finalDate);
+                stmt.setInt(4, bookingId);
 
             }else if(status == 1){
-                stmt = conn.prepareStatement("UPDATE `bookings` SET status = ?, endMeterReading = ? WHERE id = ?");
+                LocalDateTime lt = LocalDateTime.now();
+                Timestamp finalDate = Formats.dateTimeFormat(String.valueOf(lt));
+
+                stmt = conn.prepareStatement("UPDATE `bookings` SET status = ?, endMeterReading = ?, finalEndDate = ? WHERE id = ?");
                 stmt.setInt(1, status);
                 stmt.setInt(2, Integer.parseInt(meterReading));
-                stmt.setInt(3, bookingId);
+                stmt.setTimestamp(3, finalDate);
+                stmt.setInt(4, bookingId);
 
             }else{
                 stmt = conn.prepareStatement("UPDATE `bookings` SET status = ? WHERE id = ?");

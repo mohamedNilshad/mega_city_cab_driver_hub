@@ -399,6 +399,7 @@
                         <input type="hidden" name="status" id="status" required>
                         <input type="hidden" name="booking_id" id="booking_id" required>
 
+
                         <div class="row justify-content-center">
                             <button type="submit" class="btn btn-success me-2" style="width: 40%;">
                                 <i class="fa fa-spinner fa-spin" id="cs_btn_loading" style="display: none; margin-right: 5px;"></i>Confirm
