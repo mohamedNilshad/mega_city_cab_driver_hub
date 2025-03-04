@@ -42,6 +42,30 @@
 
 <style>
 
+    .rubber_stamp {
+      font-family: 'Vollkorn', serif;
+      font-size: 39px;
+      line-height: 45px;
+      text-transform: uppercase;
+      font-weight: bold;
+      color: green;
+      border: 7px solid green;
+      float: left;
+      padding: 10px 20px;
+      border-radius: 10px;
+      width: auto;
+      height: auto;
+
+      opacity: 0.8;
+      -webkit-transform: rotate(-10deg);
+      -o-transform: rotate(-10deg);
+      -moz-transform: rotate(-10deg);
+      -ms-transform: rotate(-10deg);
+      position:absolute;
+      bottom:10%;
+      left: 10%;
+    }
+
     .custom-alert {
         position: fixed;
         bottom: 20px;

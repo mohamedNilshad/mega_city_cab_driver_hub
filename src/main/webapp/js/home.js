@@ -77,15 +77,17 @@
                                 </td>`;
                               }
 
-                              let payment = booking.paymentInfoList;
-                              let isPaid = "Yes";
+                               let payment = booking.paymentInfoList;
+                               let isPaid = "Yes";
 
-                              for(let i=0; i<payment.length; i++){
-                                  if(payment[i].isPaid == 0){
-                                      isPaid = "No";
-                                      break;
-                                  }
-                              }
+                               let tempTotalProAmount = 0.0;
+                               for(let i=0; i<payment.length; i++){
+                                   tempTotalProAmount += payment[i].providedAmount;
+                               }
+
+                               if(tempTotalProAmount < booking.totalAmount){
+                                   isPaid = "No";
+                               }
 
                               let newRow = `
                                   <tr>
