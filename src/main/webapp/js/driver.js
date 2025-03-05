@@ -14,7 +14,14 @@
 
         $("#newDriverForm").submit(function(event) {
             event.preventDefault();
+            $(":submit").attr("disabled", true);
+            $('#submit_loading').css('display', 'inline');
 
+            if(validNewDriverForm(new FormData(this))){
+                $(":submit").removeAttr("disabled");
+                $('#submit_loading').css('display', 'none');
+                return;
+            }
             $.ajax({
                 type: "POST",
                 url: "../../driver",
@@ -115,6 +122,9 @@
     //update drivers
     $("#updateDriverForm").submit(function(event) {
         event.preventDefault();
+        let formData = new FormData(this);
+        if(validUpdateDriverForm(formData)) return;
+
         $.ajax({
             type: "POST",
             url: "../../driver",
@@ -212,6 +222,7 @@
                             `;
                             tbody.append(newRow);
                         });
+
                     }
                 }else {
                     tbody.append(`<tr><td colspan="10" style="text-align:center;">No Data</td></tr>`);
@@ -248,6 +259,8 @@
     }
 
     function openEditModal(driver) {
+        $("#updateDriverBtn").attr("disabled", true);
+        setOldValues(driver);
         document.getElementById("driver_id").value = driver.id;
         document.getElementById("reg_num").value = driver.regNumber;
         document.getElementById("update_name").value = driver.name;
@@ -260,6 +273,7 @@
         buildLicenseType('update_license_type', licenseTypes, driver.licenseTypeId);
 
         document.getElementById("update_license_expire").value = driver.licenseExpireDate;
+
 
         let modal = new bootstrap.Modal(document.getElementById("driverUpdateForm"));
         modal.show();
@@ -291,5 +305,50 @@
          document.getElementById('address').value = '';
          document.getElementById('license_type').selectedIndex = 0;
     }
+
+
+    //---------------------VALIDATE SUBMIT BUTTON----------------------------------->
+    let originalValues;
+
+    function setOldValues(driver){
+        originalValues = {
+            name: driver.name,
+            nic: driver.nic,
+            phone: driver.phone,
+            email: driver.email,
+            address: driver.address,
+            licenseType: driver.licenseTypeId,
+            licenseExpire: driver.licenseExpireDate,
+        };
+    }
+
+    function enableSubmitButton(){
+        let name = document.getElementById("update_name").value;
+        let nic = document.getElementById("update_nic").value;
+        let phone = document.getElementById("update_phone").value;
+        let email = document.getElementById("update_email").value;
+        let address = document.getElementById("update_address").value;
+        let licenseType = document.getElementById("update_license_type").value;
+        let licenseExpire = document.getElementById("update_license_expire").value;
+
+        if(name != originalValues.name){
+            $("#updateDriverBtn").attr("disabled", false);
+        }else if(email != originalValues.email){
+            $("#updateDriverBtn").attr("disabled", false);
+        }else if(phone != originalValues.phone){
+            $("#updateDriverBtn").attr("disabled", false);
+        }else if(address != originalValues.address){
+            $("#updateDriverBtn").attr("disabled", false);
+        }else if(nic != originalValues.nic){
+            $("#updateDriverBtn").attr("disabled", false);
+        }else if(licenseType != originalValues.licenseType){
+            $("#updateDriverBtn").attr("disabled", false);
+        }else if(licenseExpire != originalValues.licenseExpire){
+            $("#updateDriverBtn").attr("disabled", false);
+        }else{
+            $("#updateDriverBtn").attr("disabled", true);
+        }
+    }
+    //---------------------VALIDATE SUBMIT BUTTON----------------------------------->
 
 </script>

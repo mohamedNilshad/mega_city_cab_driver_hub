@@ -132,6 +132,82 @@
         return (error>0);
     }
 
+    //New Driver
+    function validNewDriverForm(formData){
+        const fields = Array.from(formData.keys());
+        fields.shift();
+
+        let error = 0;
+
+        //empty check
+        error += validateEmptyCheck("admin_new_driver", fields, formData);
+
+        //nic validation
+        if(formData.get("driver_nic")){
+             if(!isValidNIC(formData.get("driver_nic"))){
+                error++;
+                document.getElementById("admin_new_driver_error_1").innerHTML = "Please enter a valid NIC";
+             }
+        }
+
+        //phone validation
+        if(formData.get("phone")){
+             if(!isValidPhoneNumber(formData.get("phone"))){
+                error++;
+                document.getElementById("admin_new_driver_error_2").innerHTML = "Please enter a valid Phone Number";
+             }
+        }
+
+        //email validation
+        if(formData.get("email")){
+             if(!validateEmail(formData.get("email"))){
+                error++;
+                document.getElementById("admin_new_driver_error_3").innerHTML = "Please enter a valid Email";
+             }
+        }
+
+        return (error>0);
+    }
+
+    //update Driver
+    function validUpdateDriverForm(formData){
+        const allFields = Array.from(formData.keys());
+
+        let remove = [0, 1, 2];
+        let fields = allFields.filter((item, index) => !remove.includes(index));
+
+        let error = 0;
+
+        //empty check
+        error += validateEmptyCheck("admin_update_driver", fields, formData);
+
+        //nic validation
+        if(formData.get("update_driver_nic")){
+             if(!isValidNIC(formData.get("update_driver_nic"))){
+                error++;
+                document.getElementById("admin_update_driver_error_1").innerHTML = "Please enter a valid NIC";
+             }
+        }
+
+        //phone validation
+        if(formData.get("update_phone")){
+             if(!isValidPhoneNumber(formData.get("update_phone"))){
+                error++;
+                document.getElementById("admin_update_driver_error_2").innerHTML = "Please enter a valid Phone Number";
+             }
+        }
+
+        //email validation
+        if(formData.get("update_email")){
+             if(!validateEmail(formData.get("update_email"))){
+                error++;
+                document.getElementById("admin_update_driver_error_3").innerHTML = "Please enter a valid Email";
+             }
+        }
+
+        return (error>0);
+    }
+
     //----------------------------------VALIDATIONS---------------------------->
     //email validation
     function validateEmail(email) {
