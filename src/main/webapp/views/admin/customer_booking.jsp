@@ -181,7 +181,7 @@
                                 <span class="error_text" id="admin_new_customer_error_6"></span>
                             </div>
 
-                            <button type="submit" class="btn btn-success">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="fa fa-spinner fa-spin" id="submit_loading" style="display: none;"></i> Submit
                             </button>
                         </form>

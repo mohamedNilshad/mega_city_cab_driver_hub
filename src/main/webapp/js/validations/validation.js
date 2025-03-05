@@ -260,7 +260,7 @@
         return (error>0);
     }
 
-   //New Customer
+    //New Customer
     function validNewCustomerForm(formData){
         const fields = Array.from(formData.keys());
         fields.shift();
@@ -322,7 +322,6 @@
         return (error>0);
     }
 
-
    //Update Customer
     function validUpdateCustomerForm(formData){
         const allFields = Array.from(formData.keys());
@@ -370,6 +369,54 @@
 
         return (error>0);
     }
+
+    //New Bookings
+    function validNewBookingForm(formData){
+
+        let error = 0;
+
+        document.getElementById(`admin_new_booking_error_5`).innerHTML = "";
+        //phone validation
+        if(formData.get("phone")){
+             if(!isValidPhoneNumber(formData.get("phone"))){
+                error++;
+                document.getElementById(`admin_new_booking_error_5`).innerHTML = "Please enter a valid Phone Number";
+             }
+        }
+        return (error>0);
+    }
+
+    //Update Bookings
+    function validUpdateBookingForm(formData){
+
+        let error = 0;
+
+        document.getElementById(`admin_new_booking_error_5`).innerHTML = "";
+        //phone validation
+        if(formData.get("update_phone")){
+             if(!isValidPhoneNumber(formData.get("update_phone"))){
+                error++;
+                document.getElementById(`admin_new_booking_error_5`).innerHTML = "Please enter a valid Phone Number";
+             }
+        }
+        return (error>0);
+    }
+
+    //Payment Choose
+    function validPaymentChooseForm(formData){
+
+        let error = 0;
+
+        document.getElementById(`pay_now_amount_error`).innerHTML = "";
+        //phone validation
+        if(!formData.get("payNowAmount")){
+            error++;
+            document.getElementById(`pay_now_amount_error`).innerHTML =  "This Field is Required";
+        }
+        return (error>0);
+    }
+
+
 
     //----------------------------------VALIDATIONS---------------------------->
     //email validation

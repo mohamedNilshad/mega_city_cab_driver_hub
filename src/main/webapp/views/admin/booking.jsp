@@ -125,32 +125,35 @@
 
                         <div class="mb-3">
                             <label for="v_type" class="form-label">Select Vehicle Type</label>
-                            <select class="form-select" id="v_type" name="v_type"  onchange="validateChange(this.id ,this.value)">
-                            </select>
+                            <select class="form-select" id="v_type" name="v_type" onchange="validateChange(this.id ,this.value)" required></select>
                         </div>
 
                         <div class="mb-3">
                             <label for="from_date" class="form-label">From Date</label>
                             <input type="datetime-local" class="form-control" id="from_date" name="from_date" onchange="validateChange(this.id ,this.value)">
+                            <span class="error_text" id="admin_new_booking_error_0"></span>
                         </div>
 
                         <div class="mb-3">
                             <label for="to_date" class="form-label">To Date</label>
                             <input type="datetime-local" class="form-control" id="to_date" name="to_date" onchange="validateChange(this.id ,this.value)" oninput="validateVehicle()">
+                            <span class="error_text" id="admin_new_booking_error_1"></span>
                         </div>
 
                         <div class="mb-3" id="selectVehicle" style="display:none;">
                             <label for="vehicleList" class="form-label">Select a Vehicle</label>
                             <div class="row g-4 crb" id="vehicleList"></div>
+                            <span class="error_text" id="admin_new_booking_error_2"></span>
                         </div>
 
                         <div class="mb-3">
                             <label for="total_distance" class="form-label">Total Distance (Approximately) (KM)</label>
                             <input type="number" min="5" class="form-control" id="total_distance" step="0.1" name="total_distance" placeholder="Enter Distance(KM)" oninput="calculateTotalAmount(this.value)">
+                            <span class="error_text" id="admin_new_booking_error_3"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label for="total_distance" class="form-label">Total Amount(LKR)</label>
+                            <label for="total_amount" class="form-label">Total Amount(LKR)</label>
                             <input type="text" class="form-control" id="total_amount" name="total_amount" placeholder="Total Amount (LKR)" readonly>
                         </div>
                     </div>
@@ -162,7 +165,8 @@
                         <input type="hidden" id="customerId" name="customerId">
                         <div class="mb-3">
                             <label for="customer_name" class="form-label">Passenger Name</label>
-                            <input type="text" class="form-control" id="customer_name" name="customer_name" placeholder="Enter customer name">
+                            <input type="text" class="form-control" id="customer_name" name="customer_name" placeholder="Enter customer name" oninput="enableSubmitButton()">
+                            <span class="error_text" id="admin_new_booking_error_4"></span>
                         </div>
 
                         <div class="mb-3">
@@ -172,14 +176,14 @@
 
                         <div class="mb-3">
                             <label for="phone" class="form-label">Passenger Phone</label>
-                            <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter phone number">
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter phone number"oninput="enableSubmitButton()">
+                            <span class="error_text" id="admin_new_booking_error_5"></span>
                         </div>
                     </div>
                 </div>
 
                 <div class="text-center mt-3">
-                    <!--                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentTypeModel">Next</button>-->
-                    <button type="button" class="btn btn-primary" onclick="openPaymentFormModel(true)">Next</button>
+                    <button type="button" class="btn btn-primary" onclick="openPaymentFormModel(true)" id="newBookingBtn">Next</button>
                 </div>
             </form>
         </div>
@@ -239,10 +243,11 @@
                             <div class="mb-3">
                                 <label for="update_total_distance" class="form-label">Total Distance (Approximately) (KM)</label>
                                 <input type="number" min="5" class="form-control" id="update_total_distance" step="0.1" name="update_total_distance" placeholder="Enter Distance(KM)" oninput="calculateTotalAmount(this.value, true)">
+                                <span class="error_text" id="admin_update_booking_error_0"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="update_total_distance" class="form-label">Total Amount(LKR)</label>
+                                <label for="update_total_amount" class="form-label">Total Amount(LKR)</label>
                                 <input type="text" class="form-control" id="update_total_amount" name="update_total_amount" placeholder="Total Amount (LKR)" readonly>
                             </div>
                         </div>
@@ -254,7 +259,8 @@
                             <input type="hidden" id="updateCustomerId" name="customerId">
                             <div class="mb-3">
                                 <label for="update_customer_name" class="form-label">Passenger Name</label>
-                                <input type="text" class="form-control" id="update_customer_name" name="update_customer_name" placeholder="Enter customer name">
+                                <input type="text" class="form-control" id="update_customer_name" name="update_customer_name" placeholder="Enter customer name" oninput="enableSubmitButton(true)">
+                                <span class="error_text" id="admin_update_booking_error_1"></span>
                             </div>
 
                             <div class="mb-3">
@@ -263,14 +269,15 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="phone" class="form-label">Passenger Phone</label>
-                                <input type="text" class="form-control" id="update_phone" name="update_phone" placeholder="Enter phone number">
+                                <label for="update_phone" class="form-label">Passenger Phone</label>
+                                <input type="text" class="form-control" id="update_phone" name="update_phone" placeholder="Enter phone number" oninput="enableSubmitButton(true)">
+                                <span class="error_text" id="admin_update_booking_error_2"></span>
                             </div>
                         </div>
                     </div>
 
                     <div class="text-center mt-3" id="update_btn">
-                        <button type="submit" class="btn btn-success">Submit</button>
+                        <button type="submit" class="btn btn-success" id="updateBookingBtn" disabled>Submit</button>
                     </div>
                 </form>
             </div>
@@ -328,12 +335,13 @@
                             </div>
                         </div>
                         <div class="mb-3" id="payNowAmountField" style="display: block;">
-                            <label for="phone" class="form-label">Enter Amount(LKR)</label>
-                            <input type="number" step="0.1" min="1" class="form-control" id="payNowAmount" name="payNowAmount" placeholder="Enter Amount">
+                            <label for="payNowAmount" class="form-label">Enter Amount(LKR)</label>
+                            <input type="number" step="0.1" min="1" class="form-control" id="payNowAmount" name="payNowAmount" placeholder="Enter Amount" oninput="enablePaymentButtons()">
+                            <span class="error_text" id="pay_now_amount_error"></span>
                         </div>
                     </div>
                     <div class="row justify-content-center" id="paymentTypeBtn">
-                        <button type="button" class="btn btn-primary" style="width: 40%;"  data-bs-toggle="modal" data-bs-target="#cardPaymentModel">Next</button>
+                        <button type="button" class="btn btn-primary" style="width: 40%;"  data-bs-toggle="modal" data-bs-target="#cardPaymentModel" id="cardPaymentNextBtn">Next</button>
                     </div>
                 </form>
             </div>
@@ -537,6 +545,7 @@
 
 <jsp:include page="../../js/invoice/invoice.js" />
 <jsp:include page="../../js/booking.js" />
+<jsp:include page="../../js/validations/validation.js" />
 
 <script>
     function onMouseOver(id) {

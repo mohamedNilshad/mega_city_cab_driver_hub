@@ -6,9 +6,11 @@
         disableAllFields();
 
         setDate("from_date");
-        setDate("to_date");
+//        setDate("to_date");
+        setToDate("to_date");
         fetchUserBookings();
         fetchCompanyProfile();
+        $("#newBookingBtn").attr("disabled", true);
     });
 
     document.addEventListener("change", function () {
@@ -380,7 +382,8 @@
 
         });
     }
-    //------------------------------CFAMOUNT----------------------------------------->
+
+    //------------------------------CF AMOUNT----------------------------------------->
     function calculateFinalAmount(bookId){
 
         $.ajax({
@@ -570,7 +573,8 @@
         });
 
     });
-    //------------------------------CFAMOUNT----------------------------------------->
+    //------------------------------CF AMOUNT----------------------------------------->
+
     function updateStatus(){
         $.ajax({
             type: "POST",
@@ -621,6 +625,12 @@
     //add new Cash payment
     $("#paymentType1Form").submit(function(event) {
         event.preventDefault();
+
+        $(":submit").attr("disabled", true);
+        if(validPaymentChooseForm(new FormData(this))){
+            $(":submit").attr("disabled", false);
+            return;
+        }
 
         if(document.getElementById('enable').value == 0){
             updateBooking();
@@ -753,6 +763,11 @@
     //update booking form
     $("#updateBookingForm").submit(function(event) {
         event.preventDefault();
+        $(":submit").attr("disabled", true);
+        if(validUpdateBookingForm(new FormData(this))){
+            $(":submit").attr("disabled", false);
+            return;
+        }
         updateBooking();
     });
 
@@ -844,7 +859,7 @@
                 i = i+1;
                 let element = `
                     <div style="width:50%;" class="cimg">
-                            <input type="radio" id="${id}" name="${sName}" value="${typeObj.id}">
+                            <input type="radio" id="${id}" name="${sName}" value="${typeObj.id}" onclick="enableSubmitButton(${isUpdate})">
                             <label for="${id}">
                                 <div class="card">
                                     <img class="card-img-top" src="${contextPath}${typeObj.vehicleImage}" alt="${typeObj.vehicleName} Image">
@@ -871,7 +886,7 @@
     }
 
     function calculateTotalAmount(value, isUpdate = false){
-
+        enableSubmitButton(isUpdate);
         let v_type = "v_type";
         let from_date = "from_date";
         let to_date = "to_date";
@@ -943,18 +958,34 @@
                               </button>`;
                 }else{
                     document.getElementById("balance_amount").value = "-1";
-                    button = `<button type="submit" class="btn btn-success">Submit</button>`;
+
+                    button = `<button type="submit" class="btn btn-success" id="updateBookingBtn">Submit</button>`;
+                    if(totalDistance == originalValues.totalDistance){
+                        button = `<button type="submit" class="btn btn-success" id="updateBookingBtn" disabled>Submit</button>`;
+                    }
                 }
 
                 updateBtnDiv.insertAdjacentHTML('beforeend', button);
+
             }
         }
     }
 
     function openPaymentFormModel(isNew = false){
+
         if(!isNew){
             $("#editBookingModel").modal("hide");
         }
+
+        let formData = new FormData(document.getElementById("newBookingForm"));
+        if(validNewBookingForm(formData)){
+            return;
+        }
+
+        let buttonDiv = document.getElementById("paymentTypeBtn");
+        buttonDiv.innerHTML = "";
+        let button = `<button type="button" class="btn btn-primary" style="width: 40%;" data-bs-toggle="modal" data-bs-target="#cardPaymentModel" id="cardPaymentNextBtn"> Next </button>`;
+        buttonDiv.insertAdjacentHTML('beforeend', button);
 
         $("#pt2").prop("checked", true);
         document.getElementById("isPayNow").checked = false;
@@ -1029,6 +1060,26 @@
         dateTimeInput.min = currentDateTime; // Disable past date & time
     }
 
+    function setToDate(id, updateDate = ""){
+        let now = new Date();
+        let currentDateTime = "";
+
+        if (updateDate == "") {
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); // Adjust for timezone
+            let tomorrow = new Date(now); // Create a copy of 'now'
+            tomorrow.setDate(now.getDate() + 1); // Add 1 day
+
+            currentDateTime = tomorrow.toISOString().slice(0, 16); // Format as 'YYYY-MM-DDTHH:MM'
+        } else {
+            currentDateTime = updateDate;
+        }
+
+        let dateTimeInput = document.getElementById(id);
+        dateTimeInput.value = currentDateTime; // Set tomorrow's date & time
+        dateTimeInput.min = currentDateTime; // Set as minimum selectable date
+
+    }
+
     function changeStatus(bid, value, label){
         let subtitle = value == 2 ? "Cancel": label
 
@@ -1050,6 +1101,8 @@
     }
 
     function validateChange(id, value, isUpdate = false){
+
+        enableSubmitButton(isUpdate);
 
         let v_type = "v_type";
         let from_date = "from_date";
@@ -1099,9 +1152,10 @@
     }
 
     function paymentTypeChanged(value){
+
         let buttonDiv = document.getElementById("paymentTypeBtn");
         buttonDiv.innerHTML = "";
-        let button = `<button type="submit" class="btn btn-success" style="width: 40%;">
+        let button = `<button type="submit" class="btn btn-success" style="width: 40%;" id="cashPaymentSubmitBtn">
                             <i class="fa fa-spinner fa-spin" id="nb_btn_loading" style="display: none; margin-right: 5px;"></i>Submit
                       </button>`;
         if(value == "1"){
@@ -1109,9 +1163,10 @@
         }
         if(value == "2"){
             document.getElementById('payNow').style.display = 'none';
-            button = `<button type="button" class="btn btn-primary" style="width: 40%;" data-bs-toggle="modal" data-bs-target="#cardPaymentModel"> Next </button>`;
+            button = `<button type="button" class="btn btn-primary" style="width: 40%;" data-bs-toggle="modal" data-bs-target="#cardPaymentModel" id="cardPaymentNextBtn"> Next </button>`;
         }
         buttonDiv.insertAdjacentHTML('beforeend', button);
+        enablePaymentButtons();
     }
 
     function payNowValidation(){
@@ -1190,6 +1245,7 @@
     }
 
     function openEditModal(booking){
+        $("#updateBookingBtn").attr("disabled", true);
         let totalProvidedAmount = 0;
         for(let i=0; i<booking.paymentInfoList.length; i++){
             totalProvidedAmount += booking.paymentInfoList[i].providedAmount;
@@ -1226,6 +1282,8 @@
         document.getElementById("update_customer_nic").value = booking.customer.nic;
         document.getElementById("update_customer_name").value = booking.passengerName;
         document.getElementById("update_phone").value = booking.passengerPhone;
+
+        setOldValues(booking);
 
         let modal = new bootstrap.Modal(document.getElementById("editBookingModel"));
         modal.show();
@@ -1435,12 +1493,11 @@
             return "On Going";
         }
     }
-    //------------------------------------INVOICE----------->
-
 
 
     //------------------------------------CUSTOM PAYMENT----------->
-    function openPaymentFormModel(bookingId, balanceAmount){
+
+    function openPaymentFormModel1(bookingId, balanceAmount){
 
         $("#pt2").prop("checked", true);
         document.getElementById("isPayNow").checked = false;
@@ -1452,6 +1509,103 @@
 
         let modal = new bootstrap.Modal(document.getElementById("paymentTypeModel"));
         modal.show();
+    }
+
+
+
+    //------------------------------------VALIDATIONS----------->
+    let originalValues;
+
+    function setOldValues(booking){
+        originalValues = {
+            vType: booking.vehicle.vehicleTypeId,
+            name: booking.passengerName,
+            phone: booking.passengerPhone,
+            totalDistance: booking.totalRequestedDistance,
+            selectedVehicle: booking.vehicle.id
+        };
+    }
+
+    function enableSubmitButton(isUpdate){
+
+        if(isUpdate){
+            let v_type = document.getElementById("update_v_type").value;
+            let customer_name = document.getElementById("update_customer_name").value;
+            let phone = document.getElementById("update_phone").value;
+            let total_distance = document.getElementById("update_total_distance").value;
+            let selectedVehicle = document.querySelector('input[name="cabSelectionUpdate"]:checked')?.value;
+
+
+            let btnId = "#updateBookingBtn";
+            if(v_type != originalValues.vType){
+                $(btnId).attr("disabled", false);
+            }else if(customer_name != originalValues.name){
+                $(btnId).attr("disabled", false);
+            }else if(phone != originalValues.phone){
+                $(btnId).attr("disabled", false);
+            }else if(total_distance != originalValues.totalDistance){
+                $(btnId).attr("disabled", false);
+            }else if(selectedVehicle != originalValues.selectedVehicle){
+                $(btnId).attr("disabled", false);
+            }else{
+                $(btnId).attr("disabled", true);
+            }
+
+            if(!v_type){
+                $(btnId).attr("disabled", true);
+            }else if(!selectedVehicle){
+                $(btnId).attr("disabled", true);
+            }else if(!total_distance){
+                $(btnId).attr("disabled", true);
+            }else if(!customer_name){
+                $(btnId).attr("disabled", true);
+            }else if(!phone){
+                $(btnId).attr("disabled", true);
+            }else{
+                $(btnId).attr("disabled", false);
+            }
+
+        }else{
+            let v_type = document.getElementById("v_type").value;
+            let customer_name = document.getElementById("customer_name").value;
+            let phone = document.getElementById("phone").value;
+            let total_distance = document.getElementById("total_distance").value;
+            let selectedVehicle = document.querySelector('input[name="cabSelection"]:checked')?.value;
+
+            let btnId = "#newBookingBtn";
+            if(!v_type){
+                $(btnId).attr("disabled", true);
+            }else if(!selectedVehicle){
+                $(btnId).attr("disabled", true);
+            }else if(!total_distance){
+                $(btnId).attr("disabled", true);
+            }else if(!customer_name){
+                $(btnId).attr("disabled", true);
+            }else if(!phone){
+                $(btnId).attr("disabled", true);
+            }else{
+                $(btnId).attr("disabled", false);
+            }
+
+        }
+
+
+
+    }
+
+    function enablePaymentButtons(){
+        let payNowAmount = document.getElementById("payNowAmount").value;
+
+        let btnId1 = "#cardPaymentNextBtn";
+        let btnId2 = "#cashPaymentSubmitBtn";
+
+        if(!payNowAmount){
+            $(btnId1).attr("disabled", true);
+            $(btnId2).attr("disabled", true);
+        }else{
+            $(btnId1).attr("disabled", false);
+            $(btnId2).attr("disabled", false);
+        }
     }
 
 
