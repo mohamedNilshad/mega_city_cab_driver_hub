@@ -85,7 +85,7 @@
                         <form enctype="multipart/form-data" id="addNewVehicle">
                             <input type="hidden" name="action" value="vehicle_new" required>
                             <div class="mb-3">
-                                <label for="driver" class="form-label">Select Vehicle Type</label>
+                                <label for="v_type" class="form-label">Select Vehicle Type</label>
                                 <select class="form-select" id="v_type" name="v_type" required> </select>
                                 <span class="error_text" id="admin_new_vehicle_error_0"></span>
                             </div>

@@ -78,21 +78,21 @@
                                     <input type="text" name="nic" id="nic" placeholder="Your NIC" />
                                     <span class="error_text" id="reg_error_3"></span>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="phone"><i class="zmdi zmdi-phone"></i></label>
                                     <input type="text" name="phone" id="phone" placeholder="Your Phone Number" />
                                     <span class="error_text" id="reg_error_4"></span>
                                 </div>
+
                                 <div class="form-group">
                                     <div style="display: flex; align-items: center; gap: 10px;">
                                         <label for="uname"><i class="zmdi zmdi-account-circle"></i></label>
                                         <input type="text" name="uname" id="uname" placeholder="Username for login" />
                                         <i class="fa fa-refresh fa-spin" id="check_username" style="color: blue;"></i>
                                     </div>
-
                                     <span class="error_text" id="reg_error_5"></span>
                                 </div>
-
 
                                 <div class="form-group">
                                     <label for="pass"><i class="zmdi zmdi-lock"></i></label>

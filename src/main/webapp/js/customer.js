@@ -27,6 +27,7 @@
                     }else{
 
                         let i = 0;
+
                         response.data.forEach((customer) => {
                             i = i+1;
                             let jsonCustomer = JSON.stringify(customer);
@@ -82,7 +83,8 @@
     }
 
     function openEditModal(customer){
-         console.log(customer);
+        $("#updateCustomerBtn").attr("disabled", true);
+         setOldValues(customer);
          document.getElementById("customer_id").value = customer.id;
          document.getElementById("update_customer_name").value = customer.name;
          document.getElementById("update_customer_nic").value = customer.nic;
@@ -98,6 +100,15 @@
     //update customer
     $("#editCustomerForm").submit(function(event) {
         event.preventDefault();
+        $('#uc_btn_loading').css('display', 'inline');
+        $(":submit").attr("disabled", true);
+
+        if(validUpdateCustomerForm(new FormData(this))){
+            $(":submit").attr("disabled", false);
+            $('#uc_btn_loading').css('display', 'none');
+            return;
+        }
+
         $.ajax({
             type: "POST",
             url: "../../customer",
@@ -155,6 +166,12 @@
         $('#submit_loading').css('visibility', 'visible');
         $(":submit").attr("disabled", true);
 
+        if(validNewCustomerForm(new FormData(this))){
+            $(":submit").attr("disabled", false);
+            $('#submit_loading').css('visibility', 'hidden');
+            return;
+        }
+
         $.ajax({
             type: "POST",
             url: "../../customer",
@@ -210,4 +227,46 @@
          document.getElementById('username').value = '';
          document.getElementById('password').value = '';
     }
+
+
+    //---------------------VALIDATE SUBMIT BUTTON----------------------------------->
+    let originalValues;
+
+    function setOldValues(customer){
+        originalValues = {
+            name: customer.name,
+            nic: customer.nic,
+            phone: customer.phone,
+            email: customer.email,
+            address: customer.address
+        };
+    }
+
+    function enableSubmitButton(){
+        let name = document.getElementById("update_customer_name").value;
+        let nic = document.getElementById("update_customer_nic").value;
+        let phone = document.getElementById("update_phone").value;
+        let email = document.getElementById("update_email").value;
+        let address = document.getElementById("update_address").value;
+        let password = document.getElementById("update_password").value;
+
+        let btnId = "#updateCustomerBtn";
+
+        if(name != originalValues.name){
+            $(btnId).attr("disabled", false);
+        }else if(email != originalValues.email){
+            $(btnId).attr("disabled", false);
+        }else if(phone != originalValues.phone){
+            $(btnId).attr("disabled", false);
+        }else if(address != originalValues.address){
+            $(btnId).attr("disabled", false);
+        }else if(nic != originalValues.nic){
+            $(btnId).attr("disabled", false);
+        }else if(password != ""){
+            $(btnId).attr("disabled", false);
+        }else{
+            $(btnId).attr("disabled", true);
+        }
+    }
+    //---------------------VALIDATE SUBMIT BUTTON----------------------------------->
 </script>
