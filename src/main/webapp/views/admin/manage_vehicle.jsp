@@ -14,7 +14,6 @@
     }
 %>
 
-<!DOCTYPE html>
 <html lang="en">
     <head>
         <jsp:include page="includes/admin_header.jsp" />
@@ -87,42 +86,47 @@
                             <input type="hidden" name="action" value="vehicle_new" required>
                             <div class="mb-3">
                                 <label for="driver" class="form-label">Select Vehicle Type</label>
-                                <select class="form-select" id="v_type" name="v_type">
-                                </select>
+                                <select class="form-select" id="v_type" name="v_type" required> </select>
+                                <span class="error_text" id="admin_new_vehicle_error_0"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="v_type" class="form-label">Vehicle Name</label>
+                                <label for="v_name" class="form-label">Vehicle Name</label>
                                 <input type="text" class="form-control" id="v_name" name="v_name" placeholder="Enter Vehicle Type">
+                                <span class="error_text" id="admin_new_vehicle_error_1"></span>
                             </div>
 
                             <div class="mb-3">
                                 <label for="v_number" class="form-label">Vehicle Number</label>
                                 <input type="text" class="form-control" id="v_number" name="v_number" placeholder="Vehicle Number">
+                                <span class="error_text" id="admin_new_vehicle_error_2"></span>
                             </div>
 
                             <div class="mb-3">
                                 <label for="seat_count" class="form-label">Seat Count</label>
                                 <input type="number" min="2" max="100" class="form-control" id="seat_count" name="seat_count" placeholder="Enter Seat Count">
+                                <span class="error_text" id="admin_new_vehicle_error_3"></span>
                             </div>
 
                             <div class="mb-3">
                                 <label for="seat_count" class="form-label">Vehicle Image</label>
                                 <input type="file" min="2" max="100" class="form-control" id="v_image" name="v_image" accept="image/*" placeholder="Select Vehicle Image">
+                                <span class="error_text" id="admin_new_vehicle_error_6"></span>
                             </div>
 
                             <div class="mb-3">
                                 <label for="v_description" class="form-label">Description</label>
                                 <textarea class="form-control" id="v_description" name="v_description" placeholder="Enter Description"></textarea>
+                                <span class="error_text" id="admin_new_vehicle_error_4"></span>
                             </div>
                             
                             <div class="mb-3">
                                 <label for="driver" class="form-label">Select an Driver</label>
-                                <select class="form-select" id="driver" name="driver">
-                                </select>
+                                <select class="form-select" id="driver" name="driver" required></select>
+                                <span class="error_text" id="admin_new_vehicle_error_5"></span>
                             </div>
                             
-                            <button type="submit" class="btn btn-success">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="fa fa-spinner fa-spin" id="snv_btn_loading" style="display: none; margin-right: 5px;"></i>Submit
                             </button>
                         </form>
@@ -147,24 +151,27 @@
                             <input type="hidden" name="old_v_image" id="old_v_image" required>
                             <input type="hidden" name="old_driver_id" id="old_driver_id" required>
                             <div class="mb-3">
-                                <label for="driver" class="form-label">Select Vehicle Type</label>
-                                <select class="form-select" id="update_v_type" name="update_v_type">
-                                </select>
+                                <label for="update_v_type" class="form-label">Select Vehicle Type</label>
+                                <select class="form-select" id="update_v_type" name="update_v_type" onchange="enableSubmitButton()"></select>
+                                <span class="error_text" id="admin_update_vehicle_error_0"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="v_type" class="form-label">Vehicle Name</label>
-                                <input type="text" class="form-control" id="update_v_name" name="update_v_name" placeholder="Enter Vehicle Type">
+                                <label for="update_v_name" class="form-label">Vehicle Name</label>
+                                <input type="text" class="form-control" id="update_v_name" name="update_v_name" placeholder="Enter Vehicle Name" oninput="enableSubmitButton()">
+                                <span class="error_text" id="admin_update_vehicle_error_1"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="v_number" class="form-label">Vehicle Number</label>
-                                <input type="text" class="form-control" id="update_v_number" name="update_v_number" placeholder="Vehicle Number">
+                                <label for="update_v_number" class="form-label">Vehicle Number</label>
+                                <input type="text" class="form-control" id="update_v_number" name="update_v_number" placeholder="Vehicle Number" oninput="enableSubmitButton()">
+                                <span class="error_text" id="admin_update_vehicle_error_2"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="seat_count" class="form-label">Seat Count</label>
-                                <input type="number" min="2" max="100" class="form-control" id="update_seat_count" name="update_seat_count" placeholder="Enter Seat Count">
+                                <label for="update_seat_count" class="form-label">Seat Count</label>
+                                <input type="number" min="2" max="100" class="form-control" id="update_seat_count" name="update_seat_count" placeholder="Enter Seat Count" oninput="enableSubmitButton()">
+                                <span class="error_text" id="admin_update_vehicle_error_3"></span>
                             </div>
 
                             <div style="margin-bottom:10px;">
@@ -172,22 +179,24 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="seat_count" class="form-label">New Vehicle Image</label>
-                                <input type="file" min="2" max="100" class="form-control" id="update_v_image" name="update_v_image" accept="image/*" placeholder="Select Vehicle Image">
+                                <label for="update_v_image" class="form-label">New Vehicle Image</label>
+                                <input type="file" min="2" max="100" class="form-control" id="update_v_image" name="update_v_image" accept="image/*" placeholder="Select Vehicle Image" onchange="enableSubmitButton()" >
+                                <span class="error_text" id="admin_update_vehicle_error_6"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="v_description" class="form-label">Description</label>
-                                <textarea class="form-control" id="update_v_description" name="update_v_description" placeholder="Enter Description"></textarea>
+                                <label for="update_v_description" class="form-label">Description</label>
+                                <textarea class="form-control" id="update_v_description" name="update_v_description" placeholder="Enter Description" oninput="enableSubmitButton()"></textarea>
+                                <span class="error_text" id="admin_update_vehicle_error_4"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="driver" class="form-label">Select an Driver</label>
-                                <select class="form-select" id="update_driver" name="update_driver">
-                                </select>
+                                <label for="update_driver" class="form-label">Select an Driver</label>
+                                <select class="form-select" id="update_driver" name="update_driver" onchange="enableSubmitButton()"></select>
+                                <span class="error_text" id="admin_update_vehicle_error_5"></span>
                             </div>
 
-                            <button type="submit" class="btn btn-success">
+                            <button type="submit" class="btn btn-success" id="updateVehicleBtn">
                                 <i class="fa fa-spinner fa-spin" id="unv_btn_loading" style="display: none; margin-right: 5px;"></i>Submit
                             </button>
                         </form>
@@ -229,6 +238,7 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>var contextPath = '${pageContext.request.contextPath}' + '/uploads/';</script>
         <jsp:include page="../../js/vehicle.js" />
+        <jsp:include page="../../js/validations/validation.js" />
 
     </body>
 </html>

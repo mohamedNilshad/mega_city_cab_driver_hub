@@ -134,12 +134,12 @@
                             <input type="hidden" name="driver_id" id="driver_id" required>
 
                             <div class="mb-3">
-                                <label for="name" class="form-label">Registration Number</label>
+                                <label for="reg_num" class="form-label">Registration Number</label>
                                 <input type="text" class="form-control" id="reg_num" name="reg_num" readonly>
                             </div>
 
                             <div class="mb-3">
-                                <label for="name" class="form-label">Name</label>
+                                <label for="update_name" class="form-label">Name</label>
                                 <input type="text" class="form-control" id="update_name" name="update_name" placeholder="Enter your name" oninput="enableSubmitButton()">
                                 <span class="error_text" id="admin_update_driver_error_0"></span>
                             </div>
@@ -151,32 +151,32 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="phone" class="form-label">Phone</label>
+                                <label for="update_phone" class="form-label">Phone</label>
                                 <input type="text" class="form-control" id="update_phone" name="update_phone" placeholder="Enter your phone number" oninput="enableSubmitButton()">
                                 <span class="error_text" id="admin_update_driver_error_2"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
+                                <label for="update_email" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="update_email" name="update_email" placeholder="Enter your email" oninput="enableSubmitButton()">
                                 <span class="error_text" id="admin_update_driver_error_3"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="address" class="form-label">Address</label>
+                                <label for="update_address" class="form-label">Address</label>
                                 <input type="text" class="form-control" id="update_address" name="update_address" placeholder="Enter your Address"  oninput="enableSubmitButton()">
                                 <span class="error_text" id="admin_update_driver_error_4"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="license_type" class="form-label">Select License Type</label>
+                                <label for="update_license_type" class="form-label">Select License Type</label>
                                 <select class="form-select" id="update_license_type" name="update_license_type_id" onchange="enableSubmitButton()">
                                 </select>
                                 <span class="error_text" id="admin_update_driver_error_5"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="license_expire" class="form-label">License Expire Date</label>
+                                <label for="update_license_expire" class="form-label">License Expire Date</label>
                                 <input type="date" class="form-control" id="update_license_expire" name="update_license_expire" oninput="enableSubmitButton()">
                                 <span class="error_text" id="admin_update_driver_error_6"></span>
                             </div>

@@ -208,6 +208,58 @@
         return (error>0);
     }
 
+    //New Vehicle
+    function validNewVehicleForm(formData){
+        const allFields = Array.from(formData.keys());
+        const image = allFields[5];
+        let remove = [0, 5];
+        let fields = allFields.filter((item, index) => !remove.includes(index));
+
+        let error = 0;
+        let errorPreId = "admin_new_vehicle";
+
+        //empty check
+        error += validateEmptyCheck(errorPreId, fields, formData);
+        let file = formData.get(image);
+
+        document.getElementById(`${errorPreId}_error_6`).innerHTML = "";
+
+        if (!file || file.size === 0) {
+            error++;
+            document.getElementById(`${errorPreId}_error_6`).innerHTML = "This Field is Required";
+        }
+        if (file.size > 5000000) {
+            error++;
+            document.getElementById(`${errorPreId}_error_6`).innerHTML = "Image Should be less then 5 Mb";
+        }
+
+        return (error>0);
+    }
+
+    //Update Vehicle
+    function validUpdateVehicleForm(formData){
+        const allFields = Array.from(formData.keys());
+        const image = allFields[8];
+        let remove = [0, 1, 2, 3, 8];
+
+        let fields = allFields.filter((item, index) => !remove.includes(index));
+
+        let error = 0;
+        let errorPreId = "admin_update_vehicle";
+
+        //empty check
+        error += validateEmptyCheck(errorPreId, fields, formData);
+        let file = formData.get(image);
+
+        document.getElementById(`${errorPreId}_error_6`).innerHTML = "";
+
+        if (file.size > 5000000) {
+            error++;
+            document.getElementById(`${errorPreId}_error_6`).innerHTML = "Image Should be less then 5 Mb";
+        }
+        return (error>0);
+    }
+
     //----------------------------------VALIDATIONS---------------------------->
     //email validation
     function validateEmail(email) {

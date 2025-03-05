@@ -100,6 +100,14 @@
     $("#addNewVehicle").submit(function(event) {
         event.preventDefault();
         var formData = new FormData(this);
+        $(":submit").attr("disabled", true);
+        $('#snv_btn_loading').css('display', 'inline');
+
+        if(validNewVehicleForm(formData)){
+            $(":submit").removeAttr("disabled");
+            $('#snv_btn_loading').css('display', 'none');
+            return;
+        }
         $.ajax({
             type: "POST",
             url: "../../vehicle",
@@ -240,7 +248,16 @@
     //update vehicle
     $("#updateNewVehicle").submit(function(event) {
         event.preventDefault();
-           var formData = new FormData(this);
+        var formData = new FormData(this);
+
+        $(":submit").attr("disabled", true);
+        $('#unv_btn_loading').css('display', 'inline');
+
+        if(validUpdateVehicleForm(formData)){
+            $(":submit").removeAttr("disabled");
+            $('#unv_btn_loading').css('display', 'none');
+            return;
+        }
         $.ajax({
             type: "POST",
             url: "../../vehicle",
@@ -349,6 +366,10 @@
 
     //update vehicle form
     function openEditModal(vehicle) {
+        $("#updateVehicleBtn").attr("disabled", true);
+        document.getElementById(`admin_update_vehicle_error_6`).innerHTML = "";
+        setOldValues(vehicle);
+
         let updateDriver = [...drivers];
 
         let currentDriver = {
@@ -430,5 +451,50 @@
          document.getElementById('v_description').value = '';
          document.getElementById('driver').selectedIndex = 0;
     }
+
+    //---------------------VALIDATE SUBMIT BUTTON----------------------------------->
+    let originalValues;
+
+    function setOldValues(vehicle){
+        originalValues = {
+            type: vehicle.vehicleTypeId,
+            name: vehicle.vehicleName,
+            number: vehicle.vehicleNumber,
+            seatCount: vehicle.seatCount,
+            description: vehicle.description,
+            driver: vehicle.driverId
+        };
+    }
+
+    function enableSubmitButton(){
+        let btnId = '#'+'updateVehicleBtn';
+        let type = document.getElementById("update_v_type").value;
+        let name = document.getElementById("update_v_name").value;
+        let number = document.getElementById("update_v_number").value;
+        let seatCount = document.getElementById("update_seat_count").value;
+        let description = document.getElementById("update_v_description").value;
+        let driver = document.getElementById("update_driver").value;
+
+        let image = document.getElementById("update_v_image");
+
+        if(type != originalValues.type){
+            $(btnId).attr("disabled", false);
+        }else if(name != originalValues.name){
+            $(btnId).attr("disabled", false);
+        }else if(number != originalValues.number){
+            $(btnId).attr("disabled", false);
+        }else if(seatCount != originalValues.seatCount){
+            $(btnId).attr("disabled", false);
+        }else if(description != originalValues.description){
+            $(btnId).attr("disabled", false);
+        }else if(driver != originalValues.driver){
+            $(btnId).attr("disabled", false);
+        }else if (image.files.length) {
+            $(btnId).attr("disabled", false);
+        }else{
+            $(btnId).attr("disabled", true);
+        }
+    }
+    //---------------------VALIDATE SUBMIT BUTTON----------------------------------->
 
 </script>

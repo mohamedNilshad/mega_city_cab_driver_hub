@@ -190,6 +190,7 @@ public class VehicleController extends HttpServlet {
         JSONObject jsonResponse = new JSONObject();
 
         try{
+
             String imageName = request.getParameter("old_v_image");
             Part filePart = request.getPart("update_v_image");
 
