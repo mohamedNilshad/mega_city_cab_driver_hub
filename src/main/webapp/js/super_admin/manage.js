@@ -112,6 +112,8 @@
     }
 
     function openCustomerEditModal(customer){
+        $("#updateCustomerBtn").attr("disabled", true);
+         setOldCustomerValues(customer);
 
          document.getElementById("customer_id").value = customer.id;
          document.getElementById("update_customer_name").value = customer.name;
@@ -128,6 +130,14 @@
     //update customer
     $("#editCustomerForm").submit(function(event) {
         event.preventDefault();
+        $('#uc_btn_loading').css('display', 'inline');
+        $(":submit").attr("disabled", true);
+
+        if(validUpdateCustomerForm(new FormData(this))){
+            $(":submit").attr("disabled", false);
+            $('#uc_btn_loading').css('display', 'none');
+            return;
+        }
         $.ajax({
             type: "POST",
             url: "../../customer",
@@ -185,6 +195,13 @@
         $('#submit_loading').css('visibility', 'visible');
         $(":submit").attr("disabled", true);
 
+
+        if(validNewCustomerForm(new FormData(this))){
+            $(":submit").attr("disabled", false);
+            $('#submit_loading').css('visibility', 'hidden');
+            return;
+        }
+
         $.ajax({
             type: "POST",
             url: "../../customer",
@@ -240,6 +257,47 @@
          document.getElementById('username').value = '';
          document.getElementById('password').value = '';
     }
+
+    //---------------------VALIDATE Customer SUBMIT BUTTON----------------------------------->
+    let originalCustomerValues;
+
+    function setOldCustomerValues(customer){
+        originalCustomerValues = {
+            name: customer.name,
+            nic: customer.nic,
+            phone: customer.phone,
+            email: customer.email,
+            address: customer.address
+        };
+    }
+
+    function enableCustomerSubmitButton(){
+        let name = document.getElementById("update_customer_name").value;
+        let nic = document.getElementById("update_customer_nic").value;
+        let phone = document.getElementById("update_phone").value;
+        let email = document.getElementById("update_email").value;
+        let address = document.getElementById("update_address").value;
+        let password = document.getElementById("update_password").value;
+
+        let btnId = "#updateCustomerBtn";
+
+        if(name != originalCustomerValues.name){
+            $(btnId).attr("disabled", false);
+        }else if(email != originalCustomerValues.email){
+            $(btnId).attr("disabled", false);
+        }else if(phone != originalCustomerValues.phone){
+            $(btnId).attr("disabled", false);
+        }else if(address != originalCustomerValues.address){
+            $(btnId).attr("disabled", false);
+        }else if(nic != originalCustomerValues.nic){
+            $(btnId).attr("disabled", false);
+        }else if(password != ""){
+            $(btnId).attr("disabled", false);
+        }else{
+            $(btnId).attr("disabled", true);
+        }
+    }
+    //---------------------VALIDATE Customer SUBMIT BUTTON----------------------------------->
 
 
     //---------------------------------ADMIN----------------->
@@ -656,6 +714,15 @@
     //add new driver
     $("#newDriverForm").submit(function(event) {
         event.preventDefault();
+        $(":submit").attr("disabled", true);
+        $('#submit_loading').css('display', 'inline');
+
+        if(validNewDriverForm(new FormData(this))){
+            $(":submit").removeAttr("disabled");
+            $('#submit_loading').css('display', 'none');
+            return;
+        }
+
         let today = getCurrentDate();
         $.ajax({
             type: "POST",
@@ -711,6 +778,8 @@
     //update drivers
     $("#updateDriverForm").submit(function(event) {
         event.preventDefault();
+        let formData = new FormData(this);
+        if(validUpdateDriverForm(formData)) return;
         $.ajax({
             type: "POST",
             url: "../../driver",
@@ -763,6 +832,8 @@
 
     function openEditDriverModal(driver) {
         fetchLicenseType();
+         $("#updateDriverBtn").attr("disabled", true);
+         setOldDriverValues(driver);
         document.getElementById("driver_id").value = driver.id;
         document.getElementById("reg_num").value = driver.regNumber;
         document.getElementById("update_driver_name").value = driver.name;
@@ -821,6 +892,50 @@
 
         return today;
     }
+
+    //---------------------VALIDATE DRIVER SUBMIT BUTTON----------------------------------->
+    let originalDriverValues;
+
+    function setOldDriverValues(driver){
+        originalDriverValues = {
+            name: driver.name,
+            nic: driver.nic,
+            phone: driver.phone,
+            email: driver.email,
+            address: driver.address,
+            licenseType: driver.licenseTypeId,
+            licenseExpire: driver.licenseExpireDate,
+        };
+    }
+
+    function enableDriverSubmitButton(){
+        let name = document.getElementById("update_driver_name").value;
+        let nic = document.getElementById("update_driver_nic").value;
+        let phone = document.getElementById("update_driver_phone").value;
+        let email = document.getElementById("update_driver_email").value;
+        let address = document.getElementById("update_driver_address").value;
+        let licenseType = document.getElementById("update_license_type").value;
+        let licenseExpire = document.getElementById("update_license_expire").value;
+
+        if(name != originalDriverValues.name){
+            $("#updateDriverBtn").attr("disabled", false);
+        }else if(email != originalDriverValues.email){
+            $("#updateDriverBtn").attr("disabled", false);
+        }else if(phone != originalDriverValues.phone){
+            $("#updateDriverBtn").attr("disabled", false);
+        }else if(address != originalDriverValues.address){
+            $("#updateDriverBtn").attr("disabled", false);
+        }else if(nic != originalDriverValues.nic){
+            $("#updateDriverBtn").attr("disabled", false);
+        }else if(licenseType != originalDriverValues.licenseType){
+            $("#updateDriverBtn").attr("disabled", false);
+        }else if(licenseExpire != originalDriverValues.licenseExpire){
+            $("#updateDriverBtn").attr("disabled", false);
+        }else{
+            $("#updateDriverBtn").attr("disabled", true);
+        }
+    }
+    //---------------------VALIDATE DRIVER SUBMIT BUTTON----------------------------------->
 
 
     //---------------------------------LICENSE TYPE--------------->
@@ -1303,6 +1418,10 @@
 
     //update vehicle form
     function openVehicleEditModal(vehicle) {
+        $("#updateVehicleBtn").attr("disabled", true);
+        document.getElementById(`admin_update_vehicle_error_6`).innerHTML = "";
+        setOldVehicleValues(vehicle);
+
         let updateDriver = [...drivers];
 
         let currentDriver = {
@@ -1332,7 +1451,15 @@
     //update vehicle
     $("#updateNewVehicle").submit(function(event) {
         event.preventDefault();
-           var formData = new FormData(this);
+        var formData = new FormData(this);
+        $(":submit").attr("disabled", true);
+        $('#unv_btn_loading').css('display', 'inline');
+
+        if(validUpdateVehicleForm(formData)){
+           $(":submit").removeAttr("disabled");
+           $('#unv_btn_loading').css('display', 'none');
+           return;
+        }
         $.ajax({
             type: "POST",
             url: "../../vehicle",
@@ -1389,6 +1516,14 @@
     $("#addNewVehicle").submit(function(event) {
         event.preventDefault();
         var formData = new FormData(this);
+        $(":submit").attr("disabled", true);
+        $('#snv_btn_loading').css('display', 'inline');
+
+        if(validNewVehicleForm(formData)){
+            $(":submit").removeAttr("disabled");
+            $('#snv_btn_loading').css('display', 'none');
+            return;
+        }
         $.ajax({
             type: "POST",
             url: "../../vehicle",
@@ -1515,6 +1650,52 @@
          document.getElementById('v_description').value = '';
          document.getElementById('sdriver').selectedIndex = 0;
     }
+
+
+    //---------------------VALIDATE VEHICLE SUBMIT BUTTON----------------------------------->
+    let originalVehicleValues;
+
+    function setOldVehicleValues(vehicle){
+        originalVehicleValues = {
+            type: vehicle.vehicleTypeId,
+            name: vehicle.vehicleName,
+            number: vehicle.vehicleNumber,
+            seatCount: vehicle.seatCount,
+            description: vehicle.description,
+            driver: vehicle.driverId
+        };
+    }
+
+    function enableVehicleSubmitButton(){
+        let btnId = '#'+'updateVehicleBtn';
+        let type = document.getElementById("update_v_type").value;
+        let name = document.getElementById("update_v_name").value;
+        let number = document.getElementById("update_v_number").value;
+        let seatCount = document.getElementById("update_seat_count").value;
+        let description = document.getElementById("update_v_description").value;
+        let driver = document.getElementById("update_driver").value;
+
+        let image = document.getElementById("update_v_image");
+
+        if(type != originalVehicleValues.type){
+            $(btnId).attr("disabled", false);
+        }else if(name != originalVehicleValues.name){
+            $(btnId).attr("disabled", false);
+        }else if(number != originalVehicleValues.number){
+            $(btnId).attr("disabled", false);
+        }else if(seatCount != originalVehicleValues.seatCount){
+            $(btnId).attr("disabled", false);
+        }else if(description != originalVehicleValues.description){
+            $(btnId).attr("disabled", false);
+        }else if(driver != originalVehicleValues.driver){
+            $(btnId).attr("disabled", false);
+        }else if (image.files.length) {
+            $(btnId).attr("disabled", false);
+        }else{
+            $(btnId).attr("disabled", true);
+        }
+    }
+    //---------------------VALIDATE VEHICLE SUBMIT BUTTON----------------------------------->
 
 
 //---------------------------------VEHICLE TYPE------------------------->

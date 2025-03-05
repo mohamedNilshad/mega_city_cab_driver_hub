@@ -109,7 +109,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="seat_count" class="form-label">Vehicle Image</label>
+                                <label for="v_image" class="form-label">Vehicle Image</label>
                                 <input type="file" min="2" max="100" class="form-control" id="v_image" name="v_image" accept="image/*" placeholder="Select Vehicle Image">
                                 <span class="error_text" id="admin_new_vehicle_error_6"></span>
                             </div>
