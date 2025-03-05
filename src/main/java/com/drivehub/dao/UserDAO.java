@@ -43,6 +43,26 @@ public class UserDAO {
         return null;
     }
 
+    public Boolean checkUsername(String username) {
+
+        try  {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE userName = ?");
+
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                conn.close();
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
     public List<User> getUsers(int userType) {
         List<User> CustomerList = new ArrayList<>();
         try  {

@@ -42,48 +42,55 @@
 
 <style>
         .rubber_stamp {
-          font-family: 'Vollkorn', serif;
-          font-size: 39px;
-          line-height: 45px;
-          text-transform: uppercase;
-          font-weight: bold;
-          color: green;
-          border: 7px solid green;
-          float: left;
-          padding: 10px 20px;
-          border-radius: 10px;
-          width: auto;
-          height: auto;
+                font-family: 'Vollkorn', serif;
+                font-size: 39px;
+                line-height: 45px;
+                text-transform: uppercase;
+                font-weight: bold;
+                color: green;
+                border: 7px solid green;
+                float: left;
+                padding: 10px 20px;
+                border-radius: 10px;
+                width: auto;
+                height: auto;
 
-          opacity: 0.8;
-          -webkit-transform: rotate(-10deg);
-          -o-transform: rotate(-10deg);
-          -moz-transform: rotate(-10deg);
-          -ms-transform: rotate(-10deg);
-          position:absolute;
-          bottom:10%;
-          left: 10%;
+                opacity: 0.8;
+                -webkit-transform: rotate(-10deg);
+                -o-transform: rotate(-10deg);
+                -moz-transform: rotate(-10deg);
+                -ms-transform: rotate(-10deg);
+                position:absolute;
+                bottom:10%;
+                left: 10%;
         }
+
+
+        .error_text{
+                color: red;
+                font-size: 10px;
+        }
+
 
         .custom-alert {
-            position: fixed;
-            bottom: 20px;
-            right: -50px;
-            transform: translateX(-50%);
-            width: 300px;
-            padding: 40px 0;
-            font-weight: bold;
-            text-align: center;
-            z-index: 1050;
-            display:none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow */
+                position: fixed;
+                bottom: 20px;
+                right: -50px;
+                transform: translateX(-50%);
+                width: 300px;
+                padding: 40px 0;
+                font-weight: bold;
+                text-align: center;
+                z-index: 1050;
+                display:none;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .fa {
-          margin-left: -12px;
-          margin-right: 8px;
+                margin-left: -12px;
+                margin-right: 8px;
         }
         .c-table table, thead.thead-dark th, td{
-            vertical-align: middle;
+                vertical-align: middle;
         }
 
 </style>

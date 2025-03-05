@@ -30,6 +30,12 @@
 <html lang="en">
     <head>
         <jsp:include page="WEB-INF/includes/header.jsp" />
+        <style>
+            .error_text{
+                color: red;
+                font-size: 10px;
+            }
+        </style>
     </head>
     <body>
 
@@ -51,43 +57,54 @@
                             <h2 class="form-title">Sign up</h2>
 
                             <form class="register-form" id="registerForm">
-                                  <input type="hidden" name="action" value="register">
+                                <input type="hidden" name="action" value="register">
                                 <div class="form-group">
-                                    <label for="name"><i
-                                            class="zmdi zmdi-account material-icons-name"></i></label> <input
-                                        type="text" name="name" id="name" placeholder="Your Name" />
+                                    <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                    <input type="text" name="name" id="name" placeholder="Your Name" />
+                                    <span class="error_text" id="reg_error_0"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="email"><i class="zmdi zmdi-email"></i></label> <input
-                                        type="email" name="email" id="email" placeholder="Your Email" />
+                                    <label for="email"><i class="zmdi zmdi-email"></i></label>
+                                    <input type="email" name="email" id="email" placeholder="Your Email" />
+                                    <span class="error_text" id="reg_error_1"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="address"><i class="zmdi zmdi-home"></i></label> <input
-                                        type="text" name="address" id="address" placeholder="Your Address" />
+                                    <label for="address"><i class="zmdi zmdi-home"></i></label>
+                                    <input type="text" name="address" id="address" placeholder="Your Address" />
+                                    <span class="error_text" id="reg_error_2"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="NIC"><i class="zmdi zmdi-account-box-mail"></i></label> <input
-                                        type="text" name="nic" id="nic" placeholder="Your NIC" />
+                                    <label for="NIC"><i class="zmdi zmdi-account-box-mail"></i></label>
+                                    <input type="text" name="nic" id="nic" placeholder="Your NIC" />
+                                    <span class="error_text" id="reg_error_3"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="phone"><i class="zmdi zmdi-phone"></i></label> <input
-                                        type="text" name="phone" id="phone" placeholder="Your Phone Number" />
+                                    <label for="phone"><i class="zmdi zmdi-phone"></i></label>
+                                    <input type="text" name="phone" id="phone" placeholder="Your Phone Number" />
+                                    <span class="error_text" id="reg_error_4"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="uname"><i class="zmdi zmdi-account-circle"></i></label>
-                                    <input type="text" name="uname" id="uname"
-                                           placeholder="Username for login" />
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <label for="uname"><i class="zmdi zmdi-account-circle"></i></label>
+                                        <input type="text" name="uname" id="uname" placeholder="Username for login" />
+                                        <i class="fa fa-refresh fa-spin" id="check_username" style="color: blue;"></i>
+                                    </div>
+
+                                    <span class="error_text" id="reg_error_5"></span>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="pass"><i class="zmdi zmdi-lock"></i></label>
+                                    <input type="password" name="pass" id="pass" placeholder="Password" />
+                                    <span class="error_text" id="reg_error_6"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="pass"><i class="zmdi zmdi-lock"></i></label> <input
-                                        type="password" name="pass" id="pass" placeholder="Password" />
+                                    <label for="re_pass"><i class="zmdi zmdi-lock-outline"></i></label>
+                                    <input type="password" name="re_pass" id="re_pass" placeholder="Repeat your password" />
+                                    <span class="error_text" id="reg_error_7"></span>
                                 </div>
-                                <div class="form-group">
-                                    <label for="re-pass"><i class="zmdi zmdi-lock-outline"></i></label>
-                                    <input type="password" name="re_pass" id="re_pass"
-                                           placeholder="Repeat your password" />
-                                </div>
-                              
+
                                 <div class="form-group form-button">
                                     <button type="submit" class="form-submit" ><i class="fa fa-spinner fa-spin" id="btn_loading"></i>Register</button>
                                 </div>
@@ -110,12 +127,19 @@
         <script src="vendor/jquery/jquery.min.js"></script>
         <script src="js/main.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <jsp:include page="js/validations/validation.js" />
         <script>
             $(document).ready(function() {
                 $("#registerForm").submit(function(event) {
                     event.preventDefault();
                     $('#btn_loading').css('visibility', 'visible');
                     $(":submit").attr("disabled", true);
+
+                     if(validRegistrationForm(new FormData(this))){
+                        $(":submit").removeAttr("disabled");
+                        $('#btn_loading').css('visibility', 'hidden');
+                        return;
+                     }
 
                     $.ajax({
                         type: "POST",

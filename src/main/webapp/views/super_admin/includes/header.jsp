@@ -66,6 +66,11 @@
       left: 10%;
     }
 
+    .error_text{
+      color: red;
+      font-size: 10px;
+    }
+
     .custom-alert {
         position: fixed;
         bottom: 20px;

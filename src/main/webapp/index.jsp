@@ -31,6 +31,13 @@
 <html lang="en">
     <head>
         <jsp:include page="WEB-INF/includes/header.jsp" />
+        <style>
+            .error_text{
+                color: red;
+                font-size: 10px;
+
+            }
+        </style>
     </head>
     <body>
 
@@ -56,18 +63,18 @@
                         <div class="signin-form">
                             <h2 class="form-title">Sign up</h2>
                             <form class="register-form" id="loginForm">
-                                  <input type="hidden" name="action" value="login" required>
+                                <input type="hidden" name="action" value="login" required>
                                 <div class="form-group">
-                                    <label for="username"><i
-                                            class="zmdi zmdi-account material-icons-name"></i></label> <input
-                                        type="text" name="username" id="username"
-                                        placeholder="Your Name" />
+                                    <label for="username"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                    <input type="text" name="username" id="username" placeholder="Your Name" />
+                                    <span class="error_text" id="login_error_0"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="password"><i class="zmdi zmdi-lock"></i></label> <input
-                                        type="password" name="password" id="password"
-                                        placeholder="Password" />
+                                    <label for="password"><i class="zmdi zmdi-lock"></i></label>
+                                    <input type="password" name="password" id="password" placeholder="Password" />
+                                    <span class="error_text" id="login_error_1"></span>
                                 </div>
+
                                 <div class="form-group">
                                     <input type="checkbox" name="remember-me" id="remember-me"
                                            class="agree-term" /> <label for="remember-me"
@@ -88,52 +95,61 @@
 
         <!-- JS -->
         <script src="vendor/jquery/jquery.min.js"></script>
+
+        <jsp:include page="js/validations/validation.js" />
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-                $(document).ready(function() {
-                    $("#loginForm").submit(function(event) {
-                        event.preventDefault();
-                        $('#btn_loading').css('visibility', 'visible');
-                        $(":submit").attr("disabled", true);
-                        $.ajax({
-                            type: "POST",
-                            url: "user", // Servlet URL
-                            data: $(this).serialize(), // Serialize form data
-                            dataType: "json",
-                            success: function(response) {
-                                $('#btn_loading').css('visibility', 'hidden');
-                                if (response.status === "success") {
-                                    if (response.userType == 1) {
-                                        window.location.href = "views/admin/home.jsp?user=" + encodeURIComponent(response.userId);
-                                    } else if (response.userType == 2){
-                                         window.location.href = "views/user/home.jsp?user=" + encodeURIComponent(response.userId);
-                                    } else if (response.userType == 0){
-                                         window.location.href = "views/super_admin/home.jsp?user=" + encodeURIComponent(response.userId);
-                                    }
-                                }else {
-                                    $('#error_message').css('display', 'block');
-                                    $('#error').html(response.message);
-                                }
+            $(document).ready(function() {
+                $("#loginForm").submit(function(event) {
+                    event.preventDefault();
+                    $('#btn_loading').css('visibility', 'visible');
+                    $(":submit").attr("disabled", true);
 
-                            },
-                            error: function(xhr) {
-                                    let responseText = xhr.responseText;
-                                    try {
-                                        let errorResponse = JSON.parse(responseText);
-                                        $("#error").html(errorResponse.message);
-                                    } catch (e) {
-                                        $('#error').html("Unexpected error occurred");
-                                    }
-                                    $('#error_message').css('display', 'block');
-                            },
-                            complete: function(){
-                                $(":submit").removeAttr("disabled");
-                                $('#btn_loading').css('visibility', 'hidden');
-                                window.scrollTo(0,0);
+                     if(validLoginForm(new FormData(this))){
+                        $(":submit").removeAttr("disabled");
+                        $('#btn_loading').css('visibility', 'hidden');
+                        return;
+                     }
+
+                    $.ajax({
+                        type: "POST",
+                        url: "user", // Servlet URL
+                        data: $(this).serialize(), // Serialize form data
+                        dataType: "json",
+                        success: function(response) {
+                            $('#btn_loading').css('visibility', 'hidden');
+                            if (response.status === "success") {
+                                if (response.userType == 1) {
+                                    window.location.href = "views/admin/home.jsp?user=" + encodeURIComponent(response.userId);
+                                } else if (response.userType == 2){
+                                     window.location.href = "views/user/home.jsp?user=" + encodeURIComponent(response.userId);
+                                } else if (response.userType == 0){
+                                     window.location.href = "views/super_admin/home.jsp?user=" + encodeURIComponent(response.userId);
+                                }
+                            }else {
+                                $('#error_message').css('display', 'block');
+                                $('#error').html(response.message);
                             }
-                        });
+
+                        },
+                        error: function(xhr) {
+                                let responseText = xhr.responseText;
+                                try {
+                                    let errorResponse = JSON.parse(responseText);
+                                    $("#error").html(errorResponse.message);
+                                } catch (e) {
+                                    $('#error').html("Unexpected error occurred");
+                                }
+                                $('#error_message').css('display', 'block');
+                        },
+                        complete: function(){
+                            $(":submit").removeAttr("disabled");
+                            $('#btn_loading').css('visibility', 'hidden');
+                            window.scrollTo(0,0);
+                        }
                     });
                 });
-            </script>
+            });
+        </script>
     </body>
 </html>

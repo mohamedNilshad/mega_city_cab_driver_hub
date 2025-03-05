@@ -2,9 +2,7 @@
 <%@ page import="com.drivehub.util.constant.ConstantImage" %>
 
 <!-- Navigatsion-->
-<nav
-    class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top"
-    id="mainNav">
+<nav  class="navbar navbar-expand-lg bg-danger text-uppercase fixed-top" id="mainNav">
     <div class="container">
         <a class="navbar-brand" href="#page-top"><%= ConstantStrings.BRAND_NAME%></a>
         <button

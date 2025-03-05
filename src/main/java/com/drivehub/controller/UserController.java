@@ -32,6 +32,8 @@ public class UserController extends HttpServlet {
             getProfileInfo(request, response);
         }else if ("user_list".equals(action)) {
             getUserList(request, response);
+        }else if ("validate_username".equals(action)) {
+            checkUsername(request, response);
         }
     }
 
@@ -72,7 +74,6 @@ public class UserController extends HttpServlet {
         out.flush();
     }
 
-
     private void getProfileInfo(HttpServletRequest request, HttpServletResponse response) throws IOException{
 
         response.setContentType("application/json");
@@ -92,6 +93,32 @@ public class UserController extends HttpServlet {
             jsonResponse.put("status", "error");
             jsonResponse.put("message", "Wrong Credentials!");
         }
+        out.print(jsonResponse);
+        out.flush();
+    }
+
+    private void checkUsername(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
+        JSONObject jsonResponse = new JSONObject();
+        try {
+            String userName = request.getParameter("username");
+
+            Boolean isValid = userService.checkUsername(userName);
+
+            jsonResponse.put("status", "success");
+            jsonResponse.put("data", isValid);
+
+        } catch (JSONException e) {
+
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+            throw new RuntimeException(e);
+        }
+
         out.print(jsonResponse);
         out.flush();
     }

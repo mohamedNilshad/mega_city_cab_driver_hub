@@ -11,6 +11,11 @@ public class UserService {
     public User getProfileInfo(int userId) {
         return userDAO.getProfileInfo(userId);
     }
+
+    public Boolean checkUsername(String username) {
+        return userDAO.checkUsername(username);
+    }
+
     public List<User> getUsers(int userType) {
         return userDAO.getUsers(userType);
     }

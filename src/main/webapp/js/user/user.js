@@ -1,5 +1,45 @@
 <script>
-    fetchProfile();
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchProfile();
+        $("#saveProfile").attr("disabled", true);
+    });
+
+
+    //---------------------VALIDATE SUBMIT BUTTON----------------------------------->
+    let originalValues;
+
+    function setOldValues(profile){
+        originalValues = {
+            name: profile.name,
+            email: profile.email,
+            phone: profile.phone,
+            address: profile.address
+        };
+    }
+
+    function enableSubmitButton(){
+        let name = document.getElementById("user_name").value;
+        let email = document.getElementById("user_email").value;
+        let phone = document.getElementById("user_phone").value;
+        let address = document.getElementById("user_address").value;
+        let password = document.getElementById("user_new_password").value;
+
+        if(name != originalValues.name){
+            $("#saveProfile").attr("disabled", false);
+        }else if(email != originalValues.email){
+            $("#saveProfile").attr("disabled", false);
+        }else if(phone != originalValues.phone){
+            $("#saveProfile").attr("disabled", false);
+        }else if(address != originalValues.address){
+            $("#saveProfile").attr("disabled", false);
+        }else if(password != ""){
+            $("#saveProfile").attr("disabled", false);
+        }else{
+            $("#saveProfile").attr("disabled", true);
+        }
+
+    }
+    //---------------------VALIDATE SUBMIT BUTTON----------------------------------->
 
     function fetchProfile(){
        $.ajax({
@@ -13,6 +53,7 @@
            success: function(response) {
                if (response.status === "success") {
                    setProfileValue(response.data);
+                   setOldValues(response.data);
                }else {
                    $("#success_alert").hide();
                        $('#error_alert').html(response.message);
@@ -55,6 +96,9 @@
     }
 
     function openPasswordModel(){
+        let formData = new FormData(document.getElementById("updateProfile"));
+        if(validProfileForm(formData,"user_profile")) return;
+
         document.getElementById("u_id").value = userId;
 
         let modal = new bootstrap.Modal(document.getElementById("confirmPasswordModel"));
@@ -64,6 +108,7 @@
     //confirm password
     $("#confirmPasswordForm").submit(function(event) {
         event.preventDefault();
+        if(validProfileConfirmPasswordForm(document.getElementById("confirm_password").value)) return;
         $.ajax({
             type: "POST",
             url: "../../user",

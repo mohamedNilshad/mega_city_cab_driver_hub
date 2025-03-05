@@ -54,6 +54,12 @@
         display:none;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow */
     }
+
+    .error_text{
+        color: red;
+        font-size: 10px;
+    }
+
     .fa {
       margin-left: -12px;
       margin-right: 8px;

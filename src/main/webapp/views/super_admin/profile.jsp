@@ -55,28 +55,32 @@
                         <input type="hidden" name="userId" id="userId">
                         <div class="mb-3">
                             <label for="admin_name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="admin_name" name="name" placeholder="Enter your name">
+                            <input type="text" class="form-control" id="admin_name" name="name" placeholder="Enter your name" oninput="enableSubmitButton()">
+                            <span class="error_text" id="super_admin_profile_error_0"></span>
                         </div>
 
                         <div class="mb-3">
                             <label for="admin_nic" class="form-label">NIC Number</label>
-                            <input type="text" class="form-control" id="admin_nic" name="nic" placeholder="Enter your NIC" readonly>
-                            <span style="color: red; font-weight: bold; font-size:10px;">* You can't edit your NIC, Contact Super Admin</span>
+                            <input type="text" class="form-control" id="admin_nic" name="nic" placeholder="Enter your NIC">
+                            <span class="error_text" id="super_admin_profile_error_5"></span>
                         </div>
 
                         <div class="mb-3">
                             <label for="admin_email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="admin_email" name="email" placeholder="Enter your email">
+                            <input type="email" class="form-control" id="admin_email" name="email" placeholder="Enter your email" oninput="enableSubmitButton()">
+                            <span class="error_text" id="super_admin_profile_error_1"></span>
                         </div>
 
                         <div class="mb-3">
                             <label for="admin_phone" class="form-label">Phone</label>
-                            <input type="email" class="form-control" id="admin_phone" name="phone" placeholder="Enter your phone">
+                            <input type="email" class="form-control" id="admin_phone" name="phone" placeholder="Enter your phone" oninput="enableSubmitButton()">
+                            <span class="error_text" id="super_admin_profile_error_2"></span>
                         </div>
 
                         <div class="mb-3">
                             <label for="admin_address" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="admin_address" name="address" placeholder="Enter your address">
+                            <input type="text" class="form-control" id="admin_address" name="address" placeholder="Enter your address" oninput="enableSubmitButton()">
+                            <span class="error_text" id="super_admin_profile_error_3"></span>
                         </div>
 
                         <div class="mb-3">
@@ -86,10 +90,11 @@
 
                         <div class="mb-3">
                             <label for="admin_new_password" class="form-label">New Password</label>
-                            <input type="password" class="form-control" id="admin_new_password" name="new_password" placeholder="Enter your New Password">
+                            <input type="password" class="form-control" id="admin_new_password" name="new_password" placeholder="Enter your New Password" oninput="enableSubmitButton()">
+                            <span class="error_text" id="super_admin_profile_error_4"></span>
                         </div>
 
-                        <button type="button" class="btn btn-primary" onclick="openPasswordModel()" id="saveProfile">Update</button>
+                        <button type="button" class="btn btn-primary" onclick="openPasswordModel('super_admin_profile')" id="saveProfile">Update</button>
                     </form>
                 </div>
             </div>
@@ -111,6 +116,7 @@
                             <div class="mb-3">
                                 <label for="admin_new_password" class="form-label">Current Password</label>
                                 <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Enter your Current Password">
+                                <span class="error_text" id="profile_confirm_pass_error"></span>
                             </div>
 
                             <button type="submit" class="btn btn-success me-2" style="width: 40%;">
@@ -126,6 +132,7 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>var userId = <%= userId %>;</script>
         <jsp:include page="../../js/user.js" />
+        <jsp:include page="../../js/validations/validation.js" />
 
     </body>
 </html>
