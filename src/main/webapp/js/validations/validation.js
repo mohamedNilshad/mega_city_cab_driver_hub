@@ -392,12 +392,12 @@
 
         let error = 0;
 
-        document.getElementById(`admin_new_booking_error_5`).innerHTML = "";
+        document.getElementById(`admin_update_booking_error_2`).innerHTML = "";
         //phone validation
         if(formData.get("update_phone")){
              if(!isValidPhoneNumber(formData.get("update_phone"))){
                 error++;
-                document.getElementById(`admin_new_booking_error_5`).innerHTML = "Please enter a valid Phone Number";
+                document.getElementById(`admin_update_booking_error_2`).innerHTML = "Please enter a valid Phone Number";
              }
         }
         return (error>0);

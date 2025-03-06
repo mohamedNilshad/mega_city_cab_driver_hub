@@ -6,6 +6,7 @@ import com.drivehub.model.VehicleTypes;
 import com.drivehub.service.VehicleService;
 
 import com.drivehub.util.FileSave;
+import com.drivehub.util.Formats;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +22,7 @@ import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.List;
 
@@ -40,6 +42,8 @@ public class VehicleController extends HttpServlet {
             getVehicleTypes( response);
         }else if ("vehicle_list".equals(action)) {
             getVehicleList(response);
+        } else if ("get_vehicles".equals(action)) {
+            getVehiclesForUser(request, response);
         }
     }
 
@@ -103,6 +107,46 @@ public class VehicleController extends HttpServlet {
             }else{
                 jsonResponse.put("status", "error");
                 jsonResponse.put("message", "Vehicle Types Fetched Failed!");
+            }
+        } catch (JSONException e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+
+            throw new RuntimeException(e);
+        }
+
+        out.print(jsonResponse);
+        out.flush();
+    }
+
+    private void getVehiclesForUser(HttpServletRequest request, HttpServletResponse response) throws IOException{
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
+        JSONObject jsonResponse = new JSONObject();
+
+        try {
+            Timestamp startDate = Formats.dateTimeFormat(request.getParameter("start_date"));
+            Timestamp endDate = Formats.dateTimeFormat(request.getParameter("end_date"));
+
+            List<Vehicle> vehicles = vehicleService.getVehicles(startDate, endDate);
+
+            if(vehicles != null){
+
+                JSONArray vehicleArray = new JSONArray();
+
+                for (Vehicle v : vehicles) {
+                    vehicleArray.put(v.toJson());
+                }
+
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "Vehicle Fetched Successfully");
+                jsonResponse.put("data", vehicleArray);
+            }else{
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "No Data");
             }
         } catch (JSONException e) {
             jsonResponse.put("status", "error");

@@ -4,10 +4,7 @@ import com.drivehub.model.Vehicle;
 import com.drivehub.model.VehicleTypes;
 import com.drivehub.util.DBConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +43,38 @@ public class VehicleDAO {
         }
         return null;
     }
+
+    public List<Vehicle> getVehicles(Timestamp startDate, Timestamp endDate) {
+        List<Vehicle> VehicleList = new ArrayList<>();
+        try  {
+            Connection conn = DBConnection.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT v.*, vt.vehicleType FROM vehicles v INNER JOIN vehicle_type vt ON v.vehicleTypeId = vt.id"
+            );
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Vehicle v = new Vehicle();
+                v.setId(rs.getInt("id"));
+                v.setVehicleTypeId(rs.getInt("vehicleTypeId"));
+                v.setVehicleType(rs.getString("vehicleType"));
+                v.setVehicleName(rs.getString("vehicleName"));
+                v.setSeatCount(rs.getInt("seatCount"));
+                v.setVehicleImage(rs.getString("vehicleImage"));
+                v.setDescription(rs.getString("vehicleDescription"));
+                VehicleList.add(v);
+            }
+            conn.close();
+            return getSortedVehicleList(VehicleList, startDate, endDate);
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
 
     public List<Vehicle> getVehicle() {
         List<Vehicle> VehicleList = new ArrayList<>();
@@ -261,5 +290,31 @@ public class VehicleDAO {
         }
         return false;
     }
+
+    private List<Vehicle> getSortedVehicleList(List<Vehicle> list, Timestamp start_date, Timestamp to_date) throws SQLException {
+        Connection conn = DBConnection.getConnection();
+
+        PreparedStatement stmt = conn.prepareStatement(
+                "SELECT DISTINCT v.id AS v_id FROM bookings AS b "+
+                        "INNER JOIN vehicles AS v ON b.vehicle_id = v.id "+
+                        "WHERE (? <= b.to_date AND ? >= b.start_date) "+
+                        "AND (b.status = 0 OR b.status = 3)"
+        );
+        stmt.setTimestamp(1, start_date);
+        stmt.setTimestamp(2, to_date);
+
+        ResultSet rs = stmt.executeQuery();
+
+        List<Integer> idList = new ArrayList<>();
+
+        while (rs.next()) {
+            idList.add(rs.getInt("v_id"));
+        }
+
+        list.removeIf(vehicle -> idList.contains(vehicle.getId()));
+        conn.close();
+        return list;
+    }
+
 
 }

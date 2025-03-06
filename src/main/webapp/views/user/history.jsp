@@ -33,6 +33,9 @@
         .crb input[type="radio"][id^="pt"] {
           display: none;
         }
+        .crb input[type="radio"][id^="cpt"] {
+          display: none;
+        }
 
         .crb label {
           border: 1px solid #fff;
@@ -95,8 +98,6 @@
                 <th scope="col" style="vertical-align: middle;">Booking Type</th>
                 <th scope="col" style="vertical-align: middle;">Customer Name</th>
                 <th scope="col" style="vertical-align: middle;">Vehicle Number</th>
-                <th scope="col" style="vertical-align: middle;">From</th>
-                <th scope="col" style="vertical-align: middle;">To</th>
                 <th scope="col" style="vertical-align: middle;">Start Date</th>
                 <th scope="col" style="vertical-align: middle;">End Date</th>
                 <th scope="col" style="vertical-align: middle;">Total Amount (LKR)</th>
@@ -121,10 +122,13 @@
                     <p style="margin-left:15px;">Are you sure you want to <span id="subtitle" style="font-weight: bold;"> </span> this ?</p>
                     <div class="modal-body">
                         <form id="changeStatusForm">
-                            <input type="hidden" name="action" value="change_change" required>
+                            <input type="hidden" name="action" value="change_status" required>
                             <input type="hidden" name="status" id="status" required>
                             <input type="hidden" name="booking_id" id="booking_id" required>
-
+                            <div class="mb-3" id="meter_reading_div" style="display: none;">
+                                <label for="meter_reading" class="form-label">Current Meter Reading</label>
+                                <input type="number" min="5" class="form-control" id="meter_reading" step="0.1" name="meter_reading" placeholder="Enter Current Reading">
+                            </div>
                             <div class="row justify-content-center">
                                 <button type="submit" class="btn btn-success me-2" style="width: 40%;">
                                     <i class="fa fa-spinner fa-spin" id="cs_btn_loading" style="display: none; margin-right: 5px;"></i>Confirm
@@ -150,8 +154,10 @@
                         </div>
                         <form id="updateBookingForm">
                             <input type="hidden" name="action" value="update_booking">
+                            <input type="hidden" id="enable" value="0">
                             <input type="hidden" name="update_booking_id" id="update_booking_id">
                             <input type="hidden" name="update_payment_type" id="update_payment_type">
+                            <input type="hidden" name="payment_type" id="payment_type">
                             <input type="hidden" name="update_selected_vehicle" id="update_selected_vehicle">
 
                             <input type="hidden" name="selected_vehicle" id="old_selected_vehicle">
@@ -159,7 +165,6 @@
 
                             <input type="hidden" name="update_provided_amount" id="update_provided_amount">
                             <input type="hidden" name="update_is_paid" id="update_is_paid">
-                            <input type="hidden" id="enable" value="0">
 
                             <div class="row">
                                 <!-- Booking Details (Left Side) -->
@@ -168,33 +173,18 @@
 
                                     <div class="mb-3">
                                         <label for="update_v_type" class="form-label">Select Vehicle Type</label>
-                                        <select class="form-select" id="update_v_type" name="v_type" onchange="validateChange(this.id ,this.value, true)">
+                                        <select class="form-select" id="update_v_type" name="v_type" onchange="validateChange(this.id ,this.value, true)" oninput="updateValidateVehicle(this.value , true)">
                                         </select>
                                     </div>
 
                                     <div class="mb-3">
                                         <label for="update_from_date" class="form-label">From Date</label>
-                                        <input type="datetime-local" class="form-control" id="update_from_date" name="update_from_date" onchange="validateChange(this.id ,this.value, true)">
+                                        <input type="datetime-local" class="form-control" id="update_from_date" name="update_from_date" onchange="validateChange(this.id ,this.value, true)" oninput="updateValidateVehicle('' ,true)">
                                     </div>
 
                                     <div class="mb-3">
                                         <label for="update_to_date" class="form-label">To Date</label>
-                                        <input type="datetime-local" class="form-control" id="update_to_date" name="update_to_date" onchange="validateChange(this.id ,this.value, true)">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="update_from" class="form-label">From Destination</label>
-                                        <input type="text" class="form-control" id="update_from" name="update_from" placeholder="Enter From Destination" oninput="validateChange(this.id ,this.value, true)">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="update_to" class="form-label">To Destination</label>
-                                        <input type="text" class="form-control" id="update_to" name="update_to" placeholder="Enter To Destination" oninput="validateChange(this.id ,this.value, true)">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="update_seat_count" class="form-label">Seat Count</label>
-                                        <input type="number" min="2" max="100" class="form-control" id="update_seat_count" name="update_seat_count" placeholder="Enter seat count" oninput="updateValidateVehicle()">
+                                        <input type="datetime-local" class="form-control" id="update_to_date" name="update_to_date" onchange="validateChange(this.id ,this.value, true)" oninput="updateValidateVehicle('' ,true)">
                                     </div>
 
                                     <div class="mb-3" id="updateSelectVehicle" style="display:block;">
@@ -205,10 +195,11 @@
                                     <div class="mb-3">
                                         <label for="update_total_distance" class="form-label">Total Distance (Approximately) (KM)</label>
                                         <input type="number" min="5" class="form-control" id="update_total_distance" step="0.1" name="update_total_distance" placeholder="Enter Distance(KM)" oninput="calculateTotalAmount(this.value, true)">
+                                        <span class="error_text" id="admin_update_booking_error_0"></span>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="update_total_distance" class="form-label">Total Amount(LKR)</label>
+                                        <label for="update_total_amount" class="form-label">Total Amount(LKR)</label>
                                         <input type="text" class="form-control" id="update_total_amount" name="update_total_amount" placeholder="Total Amount (LKR)" readonly>
                                     </div>
                                 </div>
@@ -220,7 +211,8 @@
                                     <input type="hidden" id="updateCustomerId" name="customerId">
                                     <div class="mb-3">
                                         <label for="update_customer_name" class="form-label">Passenger Name</label>
-                                        <input type="text" class="form-control" id="update_customer_name" name="update_customer_name" placeholder="Enter customer name">
+                                        <input type="text" class="form-control" id="update_customer_name" name="update_customer_name" placeholder="Enter customer name" oninput="enableSubmitButton(true)">
+                                        <span class="error_text" id="admin_update_booking_error_1"></span>
                                     </div>
 
                                     <div class="mb-3">
@@ -229,20 +221,136 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="phone" class="form-label">Passenger Phone</label>
-                                        <input type="text" class="form-control" id="update_phone" name="update_phone" placeholder="Enter phone number">
+                                        <label for="update_phone" class="form-label">Passenger Phone</label>
+                                        <input type="text" class="form-control" id="update_phone" name="update_phone" placeholder="Enter phone number" oninput="enableSubmitButton(true)">
+                                        <span class="error_text" id="admin_update_booking_error_2"></span>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="text-center mt-3" id="update_btn">
-                                <button type="submit" class="btn btn-success">Submit</button>
+                                <button type="submit" class="btn btn-success" id="updateBookingBtn" disabled>Submit</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!--Invoice Model-->
+        <div class="modal fade" id="invoiceModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content" style="padding-top: 15px;padding-bottom: 15px;">
+                    <div id="downloadBtn"></div>
+
+                    <div class="container">
+                        <div class="card">
+                            <div class="card-header">
+                                Invoice
+                                <strong><span id="currentDate"></span></strong>
+                                <span class="float-right"> <strong>Status: </strong><span id="rideStatus"></span></span>
+
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-4">
+                                    <div class="col-sm-6">
+                                        <h6 class="mb-3">From:</h6>
+                                        <div>
+                                            <strong><span id="companyName"></span></strong>
+                                        </div>
+                                        <div id="companyAddress"></div>
+                                        <div id="companyEmail"></div>
+                                        <div id="companyPhone"></div>
+                                    </div>
+
+                                    <div class="col-sm-6"  style="text-align: right;">
+                                        <h6 class="mb-3">To:</h6>
+                                        <div>
+                                            <strong><span id="customerName"></span></strong>
+                                        </div>
+                                        <div id="customerAddress"></div>
+                                        <div id="customerEmail"></div>
+                                        <div id="customerPhone"></div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="col-sm-6">
+                                    <div>
+                                        <span style="font-weight: 600;">Booking No :</span><strong><span id="bookingNo"></span></strong>
+                                    </div>
+                                    <div><span style="font-weight: 600;">Booking Type :</span> <span id="iBookingType"></span></div>
+                                    <div><span style="font-weight: 600;">Start Date : </span><span id="iStartDate"></span></div>
+                                    <div><span style="font-weight: 600;">End Date : </span><span id="iEndDate"></span></div>
+                                    <div><span style="font-weight: 600;">Total Amount : </span><span id="iTotalAmount"></span></div>
+                                </div>
+
+                                <div class="table-responsive-sm">
+                                    <table class="table table-striped" id="invoiceListTable">
+                                        <thead>
+                                        <tr>
+                                            <th class="center">#</th>
+                                            <th>Ref. No</th>
+                                            <th>Payment Type</th>
+                                            <th class="center">Date</th>
+                                            <th class="right" style="text-align: right;">Amount(LKR)</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="row">
+                                    <div class="rubber_stamp" id="rubberStamp"></div>
+                                    <div class="col-lg-6 col-sm-5 ml-auto">
+                                        <table class="table table-clear">
+                                            <tbody>
+                                            <tr style="text-align: right;">
+                                                <td class="left">
+                                                    Total Amount To Pay
+                                                </td>
+                                                <td class="right">
+                                                    <strong id="iTotalAmountToPay"></strong>
+                                                </td>
+                                            </tr>
+                                            <tr style="text-align: right;">
+                                                <td class="left">
+                                                    Paid Amount
+                                                </td>
+                                                <td class="right">
+                                                    <strong id="iTotalPaidAmount"></strong>
+                                                </td>
+                                            </tr>
+                                            <tr style="text-align: right;">
+                                                <td class="left">
+                                                    Balance Amount
+                                                </td>
+                                                <td class="right">
+                                                    <strong id="iTotalBalAmount"></strong>
+                                                </td>
+                                            </tr>
+                                            <tr style="text-align: right;">
+                                                <td class="left">
+                                                    Return Amount
+                                                </td>
+                                                <td class="right">
+                                                    <strong id="iReturnAmount"></strong>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 
         <!-- Choose payment Type / Cash payment-->
         <div class="modal fade" id="paymentTypeModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
@@ -255,7 +363,7 @@
                     <div class="modal-body">
                         <form id="paymentType1Form">
                             <input type="hidden" name="action" value="cash_payment" required>
-                            <input type="hidden" name="action" id="balance_amount" value="-1" required>
+                            <input type="hidden" name="balance_amount" id="balance_amount" value="-1" required>
                             <input type="hidden" id="is_update" value="false" required>
 
 
@@ -292,13 +400,14 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mb-3" id="payNowAmountField" style="display: none;">
-                                    <label for="phone" class="form-label">Enter Amount(LKR)</label>
-                                    <input type="number" step="0.1" min="1" class="form-control" id="payNowAmount" name="payNowAmount" placeholder="Enter Amount">
+                                <div class="mb-3" id="payNowAmountField" style="display: block;">
+                                    <label for="payNowAmount" class="form-label">Enter Amount(LKR)</label>
+                                    <input type="number" step="0.1" min="1" class="form-control" id="payNowAmount" name="payNowAmount" placeholder="Enter Amount" oninput="enablePaymentButtons()">
+                                    <span class="error_text" id="pay_now_amount_error"></span>
                                 </div>
                             </div>
                             <div class="row justify-content-center" id="paymentTypeBtn">
-                                <button type="button" class="btn btn-primary" style="width: 40%;"  data-bs-toggle="modal" data-bs-target="#cardPaymentModel">Next</button>
+                                <button type="button" class="btn btn-primary" style="width: 40%;" onclick="openCardPaymentModel()" id="cardPaymentNextBtn">Next</button>
                             </div>
                         </form>
                     </div>
@@ -311,99 +420,199 @@
             <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="popupFormLabel2">Online Payment Gateway</h5>
+                        <h5 class="modal-title" id="popupFormLabel8">Online Payment Gateway</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="cardPaymentTypeForm">
-                            <input type="hidden" name="action" value="card_payment" required>
-                            <input type="hidden" name="payment_type" value="2" required>
+                        <div class="container">
+                            <div class="custom-box">
+                                <div class="custom-box-inner">
+                                    <div>
+                                        <p class="fw-bold">Payment Details</p>
+                                        <p class="dis mb-3">Complete your purchase by providing your payment details</p>
+                                    </div>
 
-                            <div class="row justify-content-center" id="cardPaymentBtn">
-                                <button type="submit" class="btn btn-success" style="width: 40%;">Submit</button>
+                                    <form id="cardPaymentTypeForm">
+                                        <input type="hidden" name="action" value="custom_card_payment" required>
+                                        <input type="hidden" name="paymentTypeForCustomPay" value="2" required>
+
+                                        <div>
+                                            <label class="dis fw-bold mb-2">Card details</label>
+                                            <div class="d-flex align-items-center justify-content-between custom-card-with-border">
+                                                <i class="fab fa-brands fa-cc-visa"></i>
+                                                <input type="text" class="form-control custom-input" id="r_card_number" placeholder="Card Number" name="cardNumber" pattern="^\d{14,}$" title="Invalid Card Number" minlength="14" required>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between mt-2">
+                                                <input type="text" class="form-control" placeholder="MM/YY" required>
+                                                <div class="w-50"></div>
+                                                <input type="password" maxlength="3" class="form-control" placeholder="CVV" required>
+                                            </div>
+                                            <div class="my-3 custom-cardholder">
+                                                <label class="dis fw-bold mb-2">Cardholder Name</label>
+                                                <input class="form-control" type="text" placeholder="Full Name" id="r_card_holder_name" name="cardHolderName" required>
+                                            </div>
+                                            <div class="custom-address">
+                                                <div class="d-flex flex-column dis">
+                                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                                        <p class="fw-bold">Total</p>
+                                                        <p class="fw-bold">LKR <span id="pay_amount_1"></span></p>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary custom-btn mt-2">Pay LKR <span id="pay_amount_btn_1"></span></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                        </form>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
 
 
-        <!--New Booking form-->
-        <div class="modal fade" id="bookingForm" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
-            <div class="modal-dialog">
+
+        <!-- Custom payment-->
+        <div class="modal fade" id="customPaymentTypeModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="popupFormLabel">New Booking</h5>
+                        <h5 class="modal-title" id="popupFormLabel6">Choose Payment Type</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form>
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Customer Name</label>
-                                <input type="text" class="form-control" id="customer_name" name="customer_name" placeholder="Enter your name" value="Mark">
+                        <form id="customPaymentTypeForm">
+                            <input type="hidden" name="action" value="custom_cash_payment" required>
+                            <input type="hidden" id="bookingIdForCustomPay" name="bookingIdForCustomPay" required>
+                            <input type="hidden" id="customerIdForCustomPay" name="customerIdForCustomPay" required>
+                            <input type="hidden" id="paymentTypeForCustomPay" name="paymentTypeForCustomPay" value="1" required>
+                            <input type="hidden" id="totalAmountForCustomPay" name="totalAmountForCustomPay" required>
+                            <input type="hidden" id="balanceAmountForCustomPay" name="balanceAmountForCustomPay" required>
+
+                            <div class="row justify-content-center">
+                                <div class="mb-3" id="selectCPaymentType">
+                                    <div class="row g-4 crb" id="cPaymentType">
+                                        <div style="width:50%;" class="p-img">
+                                            <input type="radio" id="cpt1" name="cPaymentTypeSelection" value="1" onclick="cPaymentTypeChanged(this.value)">
+                                            <label for="cpt1">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h6 class="card-title">Cash</h6>
+                                                        <p class="card-text"> Cash on the spot</p>
+                                                    </div>
+                                                </div>
+                                                <div class="form-check" id="cPayNow" style="display: none;">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input" id="cIsPayNow" name="cIsPayNow" onclick="cPayNowValidation()">Pay Now
+                                                    </label>
+                                                </div>
+                                            </label>
+
+                                        </div>
+                                        <div style="width:50%;" class="p-img">
+                                            <input type="radio" id="cpt2" name="cPaymentTypeSelection" value="2" checked onclick="cPaymentTypeChanged(this.value)">
+                                            <label for="cpt2">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h6 class="card-title">Card</h6>
+                                                        <p class="card-text"> Online Payment</p>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3" id="balanceAmountField" style="display: block;">
+                                    <label for="balanceAmount" class="form-label">Enter Amount(LKR)</label>
+                                    <input type="number" step="0.1" min="1" class="form-control" id="balanceAmount" name="balanceAmount" placeholder="Enter Amount" oninput="enablePaymentButtons()" required>
+                                    <span class="error_text" id="c_pay_now_amount_error"></span>
+                                </div>
                             </div>
-
-                            <div class="mb-3">
-                                <label for="nic" class="form-label">NIC  Number</label>
-                                <input type="text" class="form-control" id="customer_nic" name="customer_nic" placeholder="Enter your NIC" readonly="" value="1234567890 V">
+                            <div class="row justify-content-center" id="cPaymentTypeBtn">
+                                <button type="button" class="btn btn-primary" style="width: 40%;" onclick="openCustomCardPaymentModel()" id="cCardPaymentNextBtn">Next</button>
                             </div>
-
-                            <div class="mb-3">
-                                <label for="phone" class="form-label">Phone</label>
-                                <input type="text" class="form-control" id="phone" placeholder="Enter your phone number" value="0771234567">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="address" class="form-label">Address</label>
-                                <input type="text" class="form-control" id="address" address="address" placeholder="Enter your Address" value="Kandy">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="from" class="form-label">From Destination</label>
-                                <input type="text" class="form-control" id="from" name="from" placeholder="Enter your From Destination">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="from" class="form-label">To Destination</label>
-                                <input type="text" class="form-control" id="to" name="to" placeholder="Enter your To Destination">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="from_date" class="form-label">From Time</label>
-                                <input type="datetime-local" class="form-control" id="from_date" name="from_date">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="to_date" class="form-label">To Time</label>
-                                <input type="datetime-local" class="form-control" id="to_date" name="to_date" >
-                            </div>
-
-
-                            <div class="mb-3">
-                                <label for="select_vehical" class="form-label">Select an Vehicle</label>
-                                <select class="form-select" id="select_vehical" name="select_vehical">
-                                    <option value="" selected disabled>Choose an option</option>
-                                    <option value="option1">Option 1</option>
-                                    <option value="option2">Option 2</option>
-                                    <option value="option3">Option 3</option>
-                                </select>
-                            </div>
-
-                            <button type="submit" class="btn btn-success">Submit</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Custom Card payment-->
+        <div class="modal fade" id="customCardPaymentModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="popupFormLabel7">Online Payment Gateway</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="custom-box">
+                                <div class="custom-box-inner">
+                                    <div>
+                                        <p class="fw-bold">Payment Details</p>
+                                        <p class="dis mb-3">Complete your purchase by providing your payment details</p>
+                                    </div>
+
+                                    <form id="cCardPaymentTypeForm">
+                                        <input type="hidden" name="action" value="custom_card_payment" required>
+                                        <input type="hidden" name="paymentTypeForCustomPay" value="2" required>
+                                        <input type="hidden" id="bookingIdForCustomPayCard" name="bookingIdForCustomPay" required>
+                                        <input type="hidden" id="customerIdForCustomPayCard" name="customerIdForCustomPay" required>
+                                        <input type="hidden" id="totalAmountForCustomPayCard" name="totalAmountForCustomPay" required>
+                                        <input type="hidden" id="balanceAmountForCustomPayCard" name="balanceAmountForCustomPay" required>
+
+                                        <div>
+                                            <label class="dis fw-bold mb-2">Card details</label>
+                                            <div class="d-flex align-items-center justify-content-between custom-card-with-border">
+                                                <i class="fab fa-brands fa-cc-visa"></i>
+                                                <input type="text" class="form-control custom-input" placeholder="Card Number" name="cardNumber" pattern="^\d{14,}$" title="Invalid Card Number" minlength="14" required>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between mt-2">
+                                                <input type="text" class="form-control" placeholder="MM/YY" required>
+                                                <div class="w-50"></div>
+                                                <input type="password" maxlength="3" class="form-control" placeholder="CVV" required>
+                                            </div>
+                                            <div class="my-3 custom-cardholder">
+                                                <label class="dis fw-bold mb-2">Cardholder Name</label>
+                                                <input class="form-control" type="text" placeholder="Full Name" name="cardHolderName" required>
+                                            </div>
+                                            <div class="custom-address">
+                                                <div class="d-flex flex-column dis">
+                                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                                        <p class="fw-bold">Total</p>
+                                                        <p class="fw-bold">LKR <span id="pay_amount"></span></p>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary custom-btn mt-2">Pay LKR <span id="pay_amount_btn"></span></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <jsp:include page="../../WEB-INF/includes/footer.jsp" />
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <jsp:include page="../../js/invoice/invoice.js" />
+        <jsp:include page="../../js/user/booking.js" />
+        <jsp:include page="../../js/validations/validation.js" />
         <script>
             let customerId = <%= userId %>;
             var contextPath = '${pageContext.request.contextPath}' + '/uploads/';
+            fetchUserBookings();
         </script>
-        <jsp:include page="../../js/user/booking.js" />
+
         <script>
             function onMouseOver(id) {
              document.getElementById(id).style.whiteSpace = "wrap";

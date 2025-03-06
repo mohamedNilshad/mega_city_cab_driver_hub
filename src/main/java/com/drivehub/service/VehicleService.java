@@ -3,6 +3,7 @@ import com.drivehub.dao.VehicleDAO;
 import com.drivehub.model.Vehicle;
 import com.drivehub.model.VehicleTypes;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class VehicleService {
@@ -23,6 +24,10 @@ public class VehicleService {
 
     public List<VehicleTypes> getVehicleTypes() {
         return vehicleDAO.getVehicleTypes();
+    }
+
+    public List<Vehicle> getVehicles(Timestamp startDate, Timestamp endDate) {
+        return vehicleDAO.getVehicles(startDate, endDate);
     }
 
     public List<Vehicle> getVehicles() {

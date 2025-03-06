@@ -1263,7 +1263,6 @@
     //------------------------------------PAYMENT----------->
 
     function openPaymentFormModel(isNew = false){
-        console.log("pay 1");
 
         if(!isNew) $("#editBookingModel").modal("hide");
 

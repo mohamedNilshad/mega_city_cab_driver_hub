@@ -6,11 +6,11 @@ import java.util.Map;
 public class VisaCardDetails {
 
     private String cardHolderName;
-    private int cardNumber;
+    private String cardNumber;
     private int bookingId;
     private int paymentId;
 
-    public VisaCardDetails(String cardHolderName, int cardNumber, int bookingId) {
+    public VisaCardDetails(String cardHolderName, String cardNumber, int bookingId) {
         this.cardHolderName = cardHolderName;
         this.cardNumber = cardNumber;
         this.bookingId = bookingId;
@@ -22,7 +22,7 @@ public class VisaCardDetails {
         return cardHolderName;
     }
 
-    public int getCardNumber() {
+    public String getCardNumber() {
         return cardNumber;
     }
 
@@ -34,7 +34,7 @@ public class VisaCardDetails {
         this.cardHolderName = cardHolderName;
     }
 
-    public void setCardNumber(int cardNumber) {
+    public void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
     }
 

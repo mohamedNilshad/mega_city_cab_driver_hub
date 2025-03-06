@@ -395,7 +395,7 @@ public class BookingDAO {
         );
 
         stmt.setString(1,cardDetails.getCardHolderName());
-        stmt.setInt(2, cardDetails.getCardNumber());
+        stmt.setString(2, cardDetails.getCardNumber());
         stmt.setInt(3, bookingId);
         stmt.setInt(4, paymentId);
 

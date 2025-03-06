@@ -320,7 +320,7 @@ public class BookingController extends HttpServlet {
             if(Integer.parseInt(request.getParameter("payment_type")) == 2){
 
                 long i = Long.parseLong(request.getParameter("card_number"));
-                int cardNumber = Integer.parseInt(String.format("%04d", i % 10000));
+                String cardNumber = String.valueOf(i % 10000);
 
                 cardDetails.setCardHolderName(request.getParameter("card_holder_name"));
                 cardDetails.setCardNumber(cardNumber);
@@ -369,8 +369,9 @@ public class BookingController extends HttpServlet {
                         isPaid
                 );
             }else{
+
                 long i = Long.parseLong(request.getParameter("customerIdForCustomPay"));
-                int cardNumber = Integer.parseInt(String.format("%04d", i % 10000));
+                String cardNumber = String.valueOf(i % 10000);
 
                 cardDetails.setCardHolderName(request.getParameter("cardHolderName"));
                 cardDetails.setCardNumber(cardNumber);
@@ -438,7 +439,7 @@ public class BookingController extends HttpServlet {
             if(Integer.parseInt(request.getParameter("update_payment_type")) == 2){
 
                 long i = Long.parseLong(request.getParameter("update_card_number"));
-                int cardNumber = Integer.parseInt(String.format("%04d", i % 10000));
+                String cardNumber = String.valueOf(i % 10000);
 
                 cardDetails.setCardHolderName(request.getParameter("update_card_holder_name"));
                 cardDetails.setCardNumber(cardNumber);
