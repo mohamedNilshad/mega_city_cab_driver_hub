@@ -30,7 +30,7 @@
     });
 
 
-    //---------------------------------CUSTOMER-------------->
+    //---------------------------------CUSTOMER------------------------------------------------------------->
     function fetchCustomers(){
         $.ajax({
             type: "GET",
@@ -258,7 +258,7 @@
          document.getElementById('password').value = '';
     }
 
-    //---------------------VALIDATE Customer SUBMIT BUTTON----------------------------------->
+    //---------------------VALIDATE Customer SUBMIT BUTTON--->
     let originalCustomerValues;
 
     function setOldCustomerValues(customer){
@@ -297,10 +297,10 @@
             $(btnId).attr("disabled", true);
         }
     }
-    //---------------------VALIDATE Customer SUBMIT BUTTON----------------------------------->
+    //---------------------VALIDATE Customer SUBMIT BUTTON--->
 
 
-    //---------------------------------ADMIN----------------->
+    //---------------------------------ADMIN---------------------------------------------------------------->
     function fetchAdmins(){
         $.ajax({
             type: "GET",
@@ -386,6 +386,8 @@
     }
 
     function openAdminEditModal(admin){
+         $("#updateAdminBtn").attr("disabled", true);
+         setOldAdminValues(admin);
 
          document.getElementById("admin_id").value = admin.id;
          document.getElementById("update_admin_name").value = admin.name;
@@ -402,13 +404,22 @@
     //update customer
     $("#editAdminForm").submit(function(event) {
         event.preventDefault();
+        $('#ua_btn_loading').css('display', 'inline');
+        $(":submit").attr("disabled", true);
+
+        if(validUpdateAdminForm(new FormData(this))){
+            $(":submit").attr("disabled", false);
+            $('#ua_btn_loading').css('display', 'none');
+            return;
+        }
+
         $.ajax({
             type: "POST",
             url: "../../user",
             data: $(this).serialize(),
             dataType: "json",
             beforeSend: function() {
-                $('#uc_btn_loading').css('display', 'inline');
+                $('#ua_btn_loading').css('display', 'inline');
                 $(":submit").attr("disabled", true);
             },
             success: function(response) {
@@ -447,7 +458,7 @@
             },
             complete: function(){
                 $(":submit").removeAttr("disabled");
-                $('#uc_btn_loading').css('display', 'none');
+                $('#ua_btn_loading').css('display', 'none');
 
             }
         });
@@ -458,6 +469,12 @@
         event.preventDefault();
         $('#submit_loading').css('visibility', 'visible');
         $(":submit").attr("disabled", true);
+
+        if(validNewAdminForm(new FormData(this))){
+            $(":submit").attr("disabled", false);
+            $('#submit_loading').css('visibility', 'hidden');
+            return;
+        }
 
         $.ajax({
             type: "POST",
@@ -580,8 +597,49 @@
         modal.show();
     }
 
+    //---------------------VALIDATE ADMIN SUBMIT BUTTON--->
+    let originalAdminValues;
 
-    //---------------------------------DRIVER------------------>
+    function setOldAdminValues(admin){
+        originalAdminValues = {
+            name: admin.name,
+            nic: admin.nic,
+            phone: admin.phone,
+            email: admin.email,
+            address: admin.address
+        };
+    }
+
+    function enableAdminSubmitButton(){
+        let name = document.getElementById("update_admin_name").value;
+        let nic = document.getElementById("update_admin_nic").value;
+        let phone = document.getElementById("update_admin_phone").value;
+        let email = document.getElementById("update_admin_email").value;
+        let address = document.getElementById("update_admin_address").value;
+        let password = document.getElementById("update_admin_password").value;
+
+        let btnId = "#updateAdminBtn";
+
+        if(name != originalAdminValues.name){
+            $(btnId).attr("disabled", false);
+        }else if(email != originalAdminValues.email){
+            $(btnId).attr("disabled", false);
+        }else if(phone != originalAdminValues.phone){
+            $(btnId).attr("disabled", false);
+        }else if(address != originalAdminValues.address){
+            $(btnId).attr("disabled", false);
+        }else if(nic != originalAdminValues.nic){
+            $(btnId).attr("disabled", false);
+        }else if(password != ""){
+            $(btnId).attr("disabled", false);
+        }else{
+            $(btnId).attr("disabled", true);
+        }
+    }
+    //---------------------VALIDATE ADMIN SUBMIT BUTTON--->
+
+
+    //---------------------------------DRIVER--------------------------------------------------------------->
     //fetch license type
     function fetchLicenseType(){
         $.ajax({
@@ -893,7 +951,7 @@
         return today;
     }
 
-    //---------------------VALIDATE DRIVER SUBMIT BUTTON----------------------------------->
+    //---------------------VALIDATE DRIVER SUBMIT BUTTON--->
     let originalDriverValues;
 
     function setOldDriverValues(driver){
@@ -935,10 +993,10 @@
             $("#updateDriverBtn").attr("disabled", true);
         }
     }
-    //---------------------VALIDATE DRIVER SUBMIT BUTTON----------------------------------->
+    //---------------------VALIDATE DRIVER SUBMIT BUTTON--->
 
 
-    //---------------------------------LICENSE TYPE--------------->
+    //---------------------------------LICENSE TYPE-------------------------------------------------------->
     function fetchAllLicenseType(){
         $.ajax({
             type: "GET",
@@ -1198,7 +1256,7 @@
     }
 
 
-//---------------------------------VEHICLE------------------------->
+//---------------------------------VEHICLE------------------------------------------------------------------>
     //fetch vehicle
     function fetchVehicles(){
         $.ajax({
@@ -1652,7 +1710,7 @@
     }
 
 
-    //---------------------VALIDATE VEHICLE SUBMIT BUTTON----------------------------------->
+    //---------------------VALIDATE VEHICLE SUBMIT BUTTON--->
     let originalVehicleValues;
 
     function setOldVehicleValues(vehicle){
@@ -1695,10 +1753,10 @@
             $(btnId).attr("disabled", true);
         }
     }
-    //---------------------VALIDATE VEHICLE SUBMIT BUTTON----------------------------------->
+    //---------------------VALIDATE VEHICLE SUBMIT BUTTON--->
 
 
-//---------------------------------VEHICLE TYPE------------------------->
+//---------------------------------VEHICLE TYPE------------------------------------------------------------>
     //fetch vehicle type
     function fetchAllVehicleType(){
         $.ajax({
@@ -1787,13 +1845,22 @@
     //update vehicle type
     $("#updateVehicleType").submit(function(event) {
         event.preventDefault();
+        $(":submit").attr("disabled", true);
+        $('#unv_type_btn_loading').css('display', 'inline');
+
+        if(validUpdateVTypeForm(new FormData(this))){
+           $(":submit").removeAttr("disabled");
+           $('#unv_type_btn_loading').css('display', 'none');
+           return;
+        }
+
         $.ajax({
             type: "POST",
             url: "../../vehicle",
             data: $(this).serialize(),
             dataType: "json",
             beforeSend: function() {
-                $('#unv_btn_loading').css('display', 'inline');
+                $('#unv_type_btn_loading').css('display', 'inline');
                 $(":submit").attr("disabled", true);
             },
             success: function(response) {
@@ -1832,7 +1899,7 @@
             },
             complete: function(){
                 $(":submit").removeAttr("disabled");
-                $('#unv_btn_loading').css('display', 'none');
+                $('#unv_type_btn_loading').css('display', 'none');
             }
         });
     });
@@ -1841,13 +1908,23 @@
     $("#addNewVehicleType").submit(function(event) {
         event.preventDefault();
         var formData = new FormData(this);
+
+        $('#snvt_btn_loading').css('display', 'none');
+        $(":submit").attr("disabled", true);
+
+        if(validNewVTypeForm(formData)){
+            $(":submit").attr("disabled", false);
+            $('#snvt_btn_loading').css('display', 'none');
+            return;
+        }
+        return;
         $.ajax({
             type: "POST",
             url: "../../vehicle",
             data: formData,
             dataType: "json",
             beforeSend: function() {
-                $('#snv_btn_loading').css('display', 'inline');
+                $('#snvt_btn_loading').css('display', 'inline');
                 $(":submit").attr("disabled", true);
             },
             success: function(response) {
@@ -1887,7 +1964,7 @@
             complete: function(){
                 fetchAvailableDrivers();
                 $(":submit").removeAttr("disabled");
-                $('#snv_btn_loading').css('display', 'none');
+                $('#snvt_btn_loading').css('display', 'none');
             }
         });
     });
@@ -1945,6 +2022,33 @@
         });
     });
 
+    function openVehicleTypeEditModal(vehicleType) {
+        $("#updateVTypeBtn").attr("disabled", true);
+        setOldVehicleTypeValues(vehicleType);
+
+        document.getElementById("update_vehicle_type_id").value = vehicleType.id;
+        document.getElementById("update_v_type_name").value = vehicleType.type;
+        document.getElementById("update_per_one_day").value = vehicleType.perOneDay;
+
+        document.getElementById("update_discount_full_amount").value = vehicleType.discountFullAmount;
+        document.getElementById("update_discount_balance_amount").value = vehicleType.discountBalanceAmount;
+        document.getElementById("update_penalty_extra_km").value = vehicleType.penaltyExtraKm;
+        document.getElementById("update_maximum_km_per_day").value = vehicleType.maximumKmPerDay;
+
+        document.getElementById("update_discount_days").value = vehicleType.discountDays;
+
+        let modal = new bootstrap.Modal(document.getElementById("vehicleTypeUpdateFrom"));
+        modal.show();
+    }
+
+    //delete vehicle type model
+    function openVehicleTypeDeleteModal(vt_id) {
+        document.getElementById("delete_vehicle_type_id").value = vt_id;
+
+        let modal = new bootstrap.Modal(document.getElementById("deleteVehicleTypeForm"));
+        modal.show();
+    }
+
     //fetch vehicle type
     function fetchVehicleTypes(){
         $.ajax({
@@ -1992,6 +2096,69 @@
        });
     }
 
+    function emptyVehicleTypeFields(){
+         document.getElementById("new_v_type_name").value = "";
+         document.getElementById("new_per_one_day").value = "";
+
+         document.getElementById("new_discount_full_amount").value = "";
+         document.getElementById("new_discount_balance_amount").value = "";
+         document.getElementById("new_penalty_extra_km").value = "";
+         document.getElementById("new_maximum_km_per_day").value = "";
+
+         document.getElementById("new_discount_days").value = "";
+    }
+
+    //---------------------VALIDATE VEHICLE TYPE SUBMIT BUTTON--->
+    let originalVehicleTypeValues;
+
+    function setOldVehicleTypeValues(vehicleType){
+
+        originalVehicleTypeValues = {
+            name: vehicleType.type,
+            perOneDay: vehicleType.perOneDay,
+            discountFullAmount: vehicleType.discountFullAmount,
+            discountBalanceAmount: vehicleType.discountBalanceAmount,
+            penaltyExtraKm: vehicleType.penaltyExtraKm,
+            maximumKmPerDay: vehicleType.maximumKmPerDay,
+            discountDays: vehicleType.discountDays
+        };
+    }
+
+    function enableVTypeSubmitButton(){
+        let btnId = '#updateVTypeBtn';
+
+        let name = document.getElementById("update_v_type_name").value;
+        let upo_day = document.getElementById("update_per_one_day").value;
+        let udf_amount = document.getElementById("update_discount_full_amount").value;
+        let udb_amount = document.getElementById("update_discount_balance_amount").value;
+        let upe_km = document.getElementById("update_penalty_extra_km").value;
+        let ump_day = document.getElementById("update_maximum_km_per_day").value;
+        let ud_days = document.getElementById("update_discount_days").value;
+
+
+        if(name != originalVehicleTypeValues.name){
+            $(btnId).attr("disabled", false);
+        }else if(upo_day != originalVehicleTypeValues.perOneDay){
+            $(btnId).attr("disabled", false);
+        }else if(udf_amount != originalVehicleTypeValues.discountFullAmount){
+            $(btnId).attr("disabled", false);
+        }else if(udb_amount != originalVehicleTypeValues.discountBalanceAmount){
+            $(btnId).attr("disabled", false);
+        }else if(upe_km != originalVehicleTypeValues.penaltyExtraKm){
+            $(btnId).attr("disabled", false);
+        }else if(ump_day != originalVehicleTypeValues.maximumKmPerDay){
+            $(btnId).attr("disabled", false);
+        }else if(ud_days != originalVehicleTypeValues.discountDays){
+            $(btnId).attr("disabled", false);
+        }else{
+            $(btnId).attr("disabled", true);
+        }
+
+
+    }
+    //---------------------VALIDATE VEHICLE TYPE SUBMIT BUTTON--->
+
+//---------------------------------OTHER------------------------------------------------------------>
     //fetch available drivers
     function fetchAvailableDrivers(){
 
@@ -2076,44 +2243,5 @@
             dropdown.val(selectId);
         }
     }
-
-    //update vehicle type form
-    function openVehicleTypeEditModal(vehicleType) {
-
-        document.getElementById("update_vehicle_type_id").value = vehicleType.id;
-        document.getElementById("update_v_type_name").value = vehicleType.type;
-        document.getElementById("update_per_one_day").value = vehicleType.perOneDay;
-
-        document.getElementById("update_discount_full_amount").value = vehicleType.discountFullAmount;
-        document.getElementById("update_discount_balance_amount").value = vehicleType.discountBalanceAmount;
-        document.getElementById("update_penalty_extra_km").value = vehicleType.penaltyExtraKm;
-        document.getElementById("update_maximum_km_per_day").value = vehicleType.maximumKmPerDay;
-
-        document.getElementById("update_discount_days").value = vehicleType.discountDays;
-
-        let modal = new bootstrap.Modal(document.getElementById("vehicleTypeUpdateFrom"));
-        modal.show();
-    }
-
-    //delete vehicle type model
-    function openVehicleTypeDeleteModal(vt_id) {
-        document.getElementById("delete_vehicle_type_id").value = vt_id;
-
-        let modal = new bootstrap.Modal(document.getElementById("deleteVehicleTypeForm"));
-        modal.show();
-    }
-
-    function emptyVehicleTypeFields(){
-         document.getElementById("new_v_type_name").value = "";
-         document.getElementById("new_per_one_day").value = "";
-
-         document.getElementById("new_discount_full_amount").value = "";
-         document.getElementById("new_discount_balance_amount").value = "";
-         document.getElementById("new_penalty_extra_km").value = "";
-         document.getElementById("new_maximum_km_per_day").value = "";
-
-         document.getElementById("new_discount_days").value = "";
-    }
-
 
 </script>

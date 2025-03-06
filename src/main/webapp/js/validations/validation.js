@@ -325,7 +325,8 @@
    //Update Customer
     function validUpdateCustomerForm(formData){
         const allFields = Array.from(formData.keys());
-        let remove = [0, 1, 5, 7, 8];
+
+        let remove = [0, 1, 7, 8];
         let password = formData.get("update_password");
         let fields = allFields.filter((item, index) => !remove.includes(index));
 
@@ -400,6 +401,148 @@
              }
         }
         return (error>0);
+    }
+
+    //New Admin
+    function validNewAdminForm(formData){
+        const fields = Array.from(formData.keys());
+        fields.shift();
+
+        let error = 0;
+        let errorPreId = "admin_new_admin";
+
+        //empty check
+        error += validateEmptyCheck(errorPreId, fields, formData);
+
+        //email validation
+        if(formData.get("new_admin_email")){
+             if(!validateEmail(formData.get("new_admin_email"))){
+                error++;
+                document.getElementById(`${errorPreId}_error_4`).innerHTML = "Please enter a valid Email";
+             }
+        }
+
+        //nic validation
+        if(formData.get("new_admin_nic")){
+             if(!isValidNIC(formData.get("new_admin_nic"))){
+                error++;
+                document.getElementById(`${errorPreId}_error_1`).innerHTML = "Please enter a valid NIC";
+             }
+        }
+
+        //phone validation
+        if(formData.get("new_admin_phone")){
+             if(!isValidPhoneNumber(formData.get("new_admin_phone"))){
+                error++;
+                document.getElementById(`${errorPreId}_error_2`).innerHTML = "Please enter a valid Phone Number";
+             }
+        }
+
+        //username validation
+        if(formData.get("admin_username")){
+             if(!isValidUsername(formData.get("admin_username"))){
+                error++;
+                document.getElementById(`${errorPreId}_error_5`).innerHTML = "Please enter a valid Username";
+             }else{
+                 validateUserName(formData.get("admin_username"), function(result) {
+                     if (!result) {
+                        error++;
+                        document.getElementById(`${errorPreId}_error_5`).innerHTML = "This username is already taken";
+                     }
+                 }, true);
+             }
+        }
+
+        //password validation
+        if(formData.get("admin_password")){
+             if(!isValidPassword(formData.get("admin_password"))){
+                error++;
+                document.getElementById(`${errorPreId}_error_6`).innerHTML = "Password must contain at least 4 digits";
+             }
+        }
+
+        return (error>0);
+    }
+
+    //Update admin
+    function validUpdateAdminForm(formData){
+         const allFields = Array.from(formData.keys());
+
+         let remove = [0, 1, 7, 8];
+         let password = formData.get("update_admin_password");
+         let fields = allFields.filter((item, index) => !remove.includes(index));
+
+         let error = 0;
+         let errorPreId = "admin_update_admin";
+
+         //empty check
+         error += validateEmptyCheck(errorPreId, fields, formData);
+
+         //email validation
+         if(formData.get("update_admin_email")){
+              if(!validateEmail(formData.get("update_admin_email"))){
+                 error++;
+                 document.getElementById(`${errorPreId}_error_4`).innerHTML = "Please enter a valid Email";
+              }
+         }
+
+         //nic validation
+         if(formData.get("update_admin_nic")){
+              if(!isValidNIC(formData.get("update_admin_nic"))){
+                 error++;
+                 document.getElementById(`${errorPreId}_error_1`).innerHTML = "Please enter a valid NIC";
+              }
+         }
+
+         //phone validation
+         if(formData.get("update_admin_phone")){
+              if(!isValidPhoneNumber(formData.get("update_admin_phone"))){
+                 error++;
+                 document.getElementById(`${errorPreId}_error_2`).innerHTML = "Please enter a valid Phone Number";
+              }
+         }
+
+         //password validation
+         if(password){
+              if(!isValidPassword(password)){
+                 error++;
+                 document.getElementById(`${errorPreId}_error_5`).innerHTML = "Password must contain at least 4 digits";
+              }
+         }
+
+         return (error>0);
+    }
+
+    //New VType
+    function validNewVTypeForm(formData){
+        const fields = Array.from(formData.keys());
+
+        fields.shift();
+
+        let error = 0;
+        let errorPreId = "admin_new_v_type";
+
+        //empty check
+        error += validateEmptyCheck(errorPreId, fields, formData);
+
+        return (error>0);
+    }
+
+    //Update VType
+    function validUpdateVTypeForm(formData){
+         const allFields = Array.from(formData.keys());
+
+         let remove = [0, 1, 2];
+         let password = formData.get("update_admin_password");
+         let fields = allFields.filter((item, index) => !remove.includes(index));
+
+         let error = 0;
+         let errorPreId = "admin_update_v_type";
+
+         //empty check
+         error += validateEmptyCheck(errorPreId, fields, formData);
+
+         return (error>0);
     }
 
     //Payment Choose

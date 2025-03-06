@@ -36,39 +36,49 @@
                     <div class="mb-3">
                         <label for="new_admin_name" class="form-label">Admin Name</label>
                         <input type="text" class="form-control" id="new_admin_name" name="new_admin_name" placeholder="Enter admin name">
+                        <span class="error_text" id="admin_new_admin_error_0"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="new_admin_nic" class="form-label">NIC  Number</label>
                         <input type="text" class="form-control" id="new_admin_nic" name="new_admin_nic" placeholder="Enter admin NIC">
+                        <span class="error_text" id="admin_new_admin_error_1"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="new_admin_phone" class="form-label">Phone</label>
                         <input type="text" class="form-control" id="new_admin_phone" name="new_admin_phone" placeholder="Enter admin phone number">
+                        <span class="error_text" id="admin_new_admin_error_2"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="new_admin_address" class="form-label">Address</label>
                         <input type="text" class="form-control" id="new_admin_address" name="new_admin_address" placeholder="Enter admin Address">
+                        <span class="error_text" id="admin_new_admin_error_3"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="new_admin_email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="new_admin_email" name="new_admin_email" placeholder="Enter admin Email">
+                        <span class="error_text" id="admin_new_admin_error_4"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="admin_username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="admin_username" name="admin_username" placeholder="Enter admin Username">
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <input type="text" class="form-control" id="admin_username" name="admin_username" placeholder="Enter admin Username">
+                            <i class="fa fa-refresh fa-spin" id="check_username" style="color: blue; display: none;"></i>
+                        </div>
+                        <span class="error_text" id="admin_new_admin_error_5"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="admin_password" class="form-label">Password</label>
                         <input type="password" class="form-control" id="admin_password" name="admin_password" placeholder="Enter admin Password">
+                        <span class="error_text" id="admin_new_admin_error_6"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn btn-primary">
                         <i class="fa fa-spinner fa-spin" id="submit_loading" style="display: none;"></i> Submit
                     </button>
                 </form>
@@ -91,27 +101,32 @@
                     <input type="hidden" name="adminId" id="admin_id" required>
                     <div class="mb-3">
                         <label for="update_admin_name" class="form-label">Customer Name</label>
-                        <input type="text" class="form-control" id="update_admin_name" name="update_admin_name" placeholder="Enter your name">
+                        <input type="text" class="form-control" id="update_admin_name" name="update_admin_name" placeholder="Enter your name" oninput="enableAdminSubmitButton()">
+                        <span class="error_text" id="admin_update_admin_error_0"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="update_admin_nic" class="form-label">NIC  Number</label>
-                        <input type="text" class="form-control" id="update_admin_nic" name="update_admin_nic" placeholder="Enter your NIC">
+                        <input type="text" class="form-control" id="update_admin_nic" name="update_admin_nic" placeholder="Enter your NIC" oninput="enableAdminSubmitButton()">
+                        <span class="error_text" id="admin_update_admin_error_1"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="update_admin_phone" class="form-label">Phone</label>
-                        <input type="text" class="form-control" id="update_admin_phone" name="update_admin_phone" placeholder="Enter your phone number">
+                        <input type="text" class="form-control" id="update_admin_phone" name="update_admin_phone" placeholder="Enter your phone number" oninput="enableAdminSubmitButton()">
+                        <span class="error_text" id="admin_update_admin_error_2"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="update_admin_address" class="form-label">Address</label>
-                        <input type="text" class="form-control" id="update_admin_address" name="update_admin_address" placeholder="Enter your Address">
+                        <input type="text" class="form-control" id="update_admin_address" name="update_admin_address" placeholder="Enter your Address" oninput="enableAdminSubmitButton()">
+                        <span class="error_text" id="admin_update_admin_error_3"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="update_admin_email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="update_admin_email" name="update_admin_email" placeholder="Enter your Email">
+                        <input type="email" class="form-control" id="update_admin_email" name="update_admin_email" placeholder="Enter your Email" oninput="enableAdminSubmitButton()">
+                        <span class="error_text" id="admin_update_admin_error_4"></span>
                     </div>
 
                     <div class="mb-3">
@@ -121,11 +136,12 @@
 
                     <div class="mb-3">
                         <label for="update_admin_password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="update_admin_password" name="update_admin_password" placeholder="Enter your Password">
+                        <input type="password" class="form-control" id="update_admin_password" name="update_admin_password" placeholder="Enter your Password" oninput="enableAdminSubmitButton()">
+                        <span class="error_text" id="admin_update_admin_error_5"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-success">
-                        <i class="fa fa-spinner fa-spin" id="uc_btn_loading" style="display: none;"></i> Update
+                    <button type="submit" class="btn btn-success" id="updateAdminBtn">
+                        <i class="fa fa-spinner fa-spin" id="ua_btn_loading" style="display: none;"></i> Update
                     </button>
                 </form>
             </div>

@@ -40,39 +40,46 @@
                     <div class="mb-3">
                         <label for="new_v_type_name" class="form-label">Vehicle Type</label>
                         <input type="text" class="form-control" id="new_v_type_name" name="new_v_type_name" placeholder="Enter Vehicle Type">
+                        <span class="error_text" id="admin_new_v_type_error_0"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="new_per_one_day" class="form-label">Per one day amount</label>
                         <input type="number" min="1" step="0.1" class="form-control" id="new_per_one_day" name="new_per_one_day" placeholder="Enter Amount">
+                        <span class="error_text" id="admin_new_v_type_error_1"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="new_discount_full_amount" class="form-label">Discount full amount</label>
                         <input type="number" min="1" step="0.1" class="form-control" id="new_discount_full_amount" name="new_discount_full_amount" placeholder="Enter Amount">
+                        <span class="error_text" id="admin_new_v_type_error_2"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="new_discount_balance_amount" class="form-label">Discount balance amount</label>
                         <input type="number" min="1" step="0.1" class="form-control" id="new_discount_balance_amount" name="new_discount_balance_amount" placeholder="Enter Amount">
+                        <span class="error_text" id="admin_new_v_type_error_3"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="new_penalty_extra_km" class="form-label">Penalty for extra Km</label>
                         <input type="number" min="1" step="0.1" class="form-control" id="new_penalty_extra_km" name="new_penalty_extra_km" placeholder="Enter Amount">
+                        <span class="error_text" id="admin_new_v_type_error_4"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="new_maximum_km_per_day" class="form-label">Maximum Km Per Day</label>
                         <input type="number" min="1" step="0.1" class="form-control" id="new_maximum_km_per_day" name="new_maximum_km_per_day" placeholder="Enter Km amount">
+                        <span class="error_text" id="admin_new_v_type_error_5"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="new_discount_days" class="form-label">Discount Days</label>
                         <input type="number" min="1" class="form-control" id="new_discount_days" name="new_discount_days" placeholder="Enter Days">
+                        <span class="error_text" id="admin_new_v_type_error_6"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn btn-primary">
                         <i class="fa fa-spinner fa-spin" id="snv_btn_loading" style="display: none; margin-right: 5px;"></i>Submit
                     </button>
                 </form>
@@ -98,41 +105,48 @@
 
                     <div class="mb-3">
                         <label for="update_v_type_name" class="form-label">Vehicle Type</label>
-                        <input type="text" class="form-control" id="update_v_type_name" name="update_v_type_name" placeholder="Enter Vehicle Type">
+                        <input type="text" class="form-control" id="update_v_type_name" name="update_v_type_name" placeholder="Enter Vehicle Type" oninput="enableVTypeSubmitButton()">
+                        <span class="error_text" id="admin_update_v_type_error_0"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="update_per_one_day" class="form-label">Per one day amount</label>
-                        <input type="number" min="1" step="0.1" class="form-control" id="update_per_one_day" name="update_per_one_day" placeholder="Enter Amount">
+                        <input type="number" min="1" step="0.1" class="form-control" id="update_per_one_day" name="update_per_one_day" placeholder="Enter Amount" oninput="enableVTypeSubmitButton()">
+                        <span class="error_text" id="admin_update_v_type_error_1"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="update_discount_full_amount" class="form-label">Discount full amount</label>
-                        <input type="number" min="1" step="0.1" class="form-control" id="update_discount_full_amount" name="update_discount_full_amount" placeholder="Enter Amount">
+                        <input type="number" min="1" step="0.1" class="form-control" id="update_discount_full_amount" name="update_discount_full_amount" placeholder="Enter Amount" oninput="enableVTypeSubmitButton()">
+                        <span class="error_text" id="admin_update_v_type_error_2"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="update_discount_balance_amount" class="form-label">Discount balance amount</label>
-                        <input type="number" min="1" step="0.1" class="form-control" id="update_discount_balance_amount" name="update_discount_balance_amount" placeholder="Enter Amount">
+                        <input type="number" min="1" step="0.1" class="form-control" id="update_discount_balance_amount" name="update_discount_balance_amount" placeholder="Enter Amount" oninput="enableVTypeSubmitButton()">
+                        <span class="error_text" id="admin_update_v_type_error_3"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="update_penalty_extra_km" class="form-label">Penalty for extra Km</label>
-                        <input type="number" min="1" step="0.1" class="form-control" id="update_penalty_extra_km" name="update_penalty_extra_km" placeholder="Enter Amount">
+                        <input type="number" min="1" step="0.1" class="form-control" id="update_penalty_extra_km" name="update_penalty_extra_km" placeholder="Enter Amount" oninput="enableVTypeSubmitButton()">
+                        <span class="error_text" id="admin_update_v_type_error_4"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="update_maximum_km_per_day" class="form-label">Maximum Km Per Day</label>
-                        <input type="number" min="1" step="0.1" class="form-control" id="update_maximum_km_per_day" name="update_maximum_km_per_day" placeholder="Enter Km amount">
+                        <input type="number" min="1" step="0.1" class="form-control" id="update_maximum_km_per_day" name="update_maximum_km_per_day" placeholder="Enter Km amount" oninput="enableVTypeSubmitButton()">
+                        <span class="error_text" id="admin_update_v_type_error_5"></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="update_discount_days" class="form-label">Discount Days</label>
-                        <input type="number" min="1" class="form-control" id="update_discount_days" name="update_discount_days" placeholder="Enter Days">
+                        <input type="number" min="1" class="form-control" id="update_discount_days" name="update_discount_days" placeholder="Enter Days" oninput="enableVTypeSubmitButton()">
+                        <span class="error_text" id="admin_update_v_type_error_6"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-success">
-                        <i class="fa fa-spinner fa-spin" id="unv_btn_loading" style="display: none; margin-right: 5px;"></i>Submit
+                    <button type="submit" class="btn btn-success" id="updateVTypeBtn">
+                        <i class="fa fa-spinner fa-spin" id="unv_type_btn_loading" style="display: none; margin-right: 5px;"></i>Submit
                     </button>
                 </form>
             </div>

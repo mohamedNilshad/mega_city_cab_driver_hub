@@ -30,10 +30,10 @@
 
                     <div class="mb-3">
                         <label for="new_license_type" class="form-label">License Type</label>
-                        <input type="text" class="form-control" id="new_license_type" name="new_license_type" placeholder="Enter new type">
+                        <input type="text" class="form-control" id="new_license_type" name="new_license_type" placeholder="Enter new type" required>
                     </div>
 
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn btn-primary">
                         <i class="fa fa-spinner fa-spin" id="submit_loading" style="display: none;"></i> Submit
                     </button>
                 </form>
@@ -56,7 +56,7 @@
                     <input type="hidden" name="licenseTypeId" id="license_type_id" required>
                     <div class="mb-3">
                         <label for="u_license_type" class="form-label">License Type</label>
-                        <input type="text" class="form-control" id="u_license_type" name="update_license_type" placeholder="Enter new type">
+                        <input type="text" class="form-control" id="u_license_type" name="update_license_type" placeholder="Enter new type" required>
                     </div>
 
                     <button type="submit" class="btn btn-success">
