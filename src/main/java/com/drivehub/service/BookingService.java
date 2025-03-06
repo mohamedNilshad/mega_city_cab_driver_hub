@@ -39,6 +39,10 @@ public class BookingService {
         return bookingDAO.addNewBooking(booking, paymentInfo);
     }
 
+    public Boolean customCashPayment(int bookingId, PaymentInfo paymentInfo) {
+        return bookingDAO.customCashPayment(bookingId, paymentInfo);
+    }
+
     public Boolean updateBooking(Booking booking, PaymentInfo paymentInfo) {
         return bookingDAO.updateBooking(booking, paymentInfo);
     }

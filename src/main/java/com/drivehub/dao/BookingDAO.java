@@ -343,6 +343,17 @@ public class BookingDAO {
         return false;
     }
 
+    public Boolean customCashPayment(int bookingId, PaymentInfo paymentInfo) {
+
+        try {
+            return addPaymentInfo(paymentInfo, bookingId);
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
     public Boolean updateBooking(Booking booking, PaymentInfo paymentInfo) {
 
         try {

@@ -129,7 +129,7 @@ public class PaymentInfo {
         jsonMap.put("id", id);
         jsonMap.put("referenceNumber", referenceNumber);
         jsonMap.put("customerId", customerId);
-        jsonMap.put("customer", customer.toJson());
+        jsonMap.put("customer", customer == null ? "" : customer.toJson());
         jsonMap.put("paymentType", paymentType);
         jsonMap.put("totalAmount", totalAmount);
         jsonMap.put("providedAmount", providedAmount);

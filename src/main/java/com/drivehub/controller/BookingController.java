@@ -276,6 +276,8 @@ public class BookingController extends HttpServlet {
                 updateBooking(request, response);
             }else if ("update_final_amount".equals(action)) {
                 updateFinalAmount(request, response);
+            }else if ("custom_cash_payment".equals(action)) {
+                customCashPayment(request, response);
             }
         } catch (ParseException e) {
             throw new RuntimeException(e);
@@ -320,6 +322,44 @@ public class BookingController extends HttpServlet {
             } else {
                 jsonResponse.put("status", "error");
                 jsonResponse.put("message", "New Booking Adding Failed!");
+            }
+
+        } catch (Exception e) {
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", e);
+            throw new RuntimeException(e);
+        }
+        out.print(jsonResponse);
+        out.flush();
+    }
+
+    private void customCashPayment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject jsonResponse = new JSONObject();
+
+        try{
+            int isPaid = request.getParameter("cIsPayNow") == null ? 0 : 1;
+            PaymentInfo paymentInfo = new PaymentInfo(
+                    Integer.parseInt(request.getParameter("customerIdForCustomPay")),
+                    Integer.parseInt(request.getParameter("paymentTypeForCustomPay")),
+                    Double.parseDouble(request.getParameter("totalAmountForCustomPay")),
+                    Double.parseDouble(request.getParameter("balanceAmount")),
+                    isPaid
+            );
+
+            int bookingId = Integer.parseInt(request.getParameter("bookingIdForCustomPay"));
+
+            boolean isAdded= bookingService.customCashPayment(bookingId, paymentInfo);
+
+            if (isAdded) {
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "New Payment Added Successful!");
+
+            } else {
+                jsonResponse.put("status", "error");
+                jsonResponse.put("message", "New Payment Adding Failed!");
             }
 
         } catch (Exception e) {
