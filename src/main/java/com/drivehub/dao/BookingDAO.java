@@ -305,7 +305,7 @@ public class BookingDAO {
         return null;
     }
 
-    public Boolean addNewBooking(Booking newBooking, PaymentInfo paymentInfo) {
+    public Boolean addNewBooking(Booking newBooking, PaymentInfo paymentInfo, VisaCardDetails cardDetails) {
 
         try {
             Connection conn = DBConnection.getConnection();
@@ -339,7 +339,12 @@ public class BookingDAO {
                     if (generatedKeys.next()) {
                         int insertedId = generatedKeys.getInt(1);
                         conn.close();
-                        return addPaymentInfo(paymentInfo, insertedId);
+
+                        if(paymentInfo.getPaymentType() == 1) {
+                            return addPaymentInfo(paymentInfo, insertedId);
+                        }
+                        int paymentId = addAndGetPaymentInfoId(paymentInfo, insertedId);
+                        return cardPayment(cardDetails, insertedId, paymentId);
                     }
                 }
             }
@@ -359,20 +364,22 @@ public class BookingDAO {
             }
             int paymentId = addAndGetPaymentInfoId(paymentInfo, bookingId);
             if(paymentId != -1){
-                Connection conn = DBConnection.getConnection();
+                return cardPayment(cardDetails, bookingId, paymentId);
 
-                PreparedStatement stmt = conn.prepareStatement(
-                        "INSERT INTO `card_info`(`cardHolderName`, `cardNumber`, `bookingId`, `paymentId`) VALUES (?,?,?,?)"
-                );
-
-                stmt.setString(1,cardDetails.getCardHolderName());
-                stmt.setInt(2, cardDetails.getCardNumber());
-                stmt.setInt(3, bookingId);
-                stmt.setInt(4, paymentId);
-
-                int rs = stmt.executeUpdate();
-                conn.close();
-                return  rs > 0;
+//                Connection conn = DBConnection.getConnection();
+//
+//                PreparedStatement stmt = conn.prepareStatement(
+//                        "INSERT INTO `card_info`(`cardHolderName`, `cardNumber`, `bookingId`, `paymentId`) VALUES (?,?,?,?)"
+//                );
+//
+//                stmt.setString(1,cardDetails.getCardHolderName());
+//                stmt.setInt(2, cardDetails.getCardNumber());
+//                stmt.setInt(3, bookingId);
+//                stmt.setInt(4, paymentId);
+//
+//                int rs = stmt.executeUpdate();
+//                conn.close();
+//                return  rs > 0;
             }
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -380,7 +387,24 @@ public class BookingDAO {
         return false;
     }
 
-    public Boolean updateBooking(Booking booking, PaymentInfo paymentInfo) {
+    private Boolean cardPayment(VisaCardDetails cardDetails, int bookingId, int paymentId ) throws SQLException {
+        Connection conn = DBConnection.getConnection();
+
+        PreparedStatement stmt = conn.prepareStatement(
+                "INSERT INTO `card_info`(`cardHolderName`, `cardNumber`, `bookingId`, `paymentId`) VALUES (?,?,?,?)"
+        );
+
+        stmt.setString(1,cardDetails.getCardHolderName());
+        stmt.setInt(2, cardDetails.getCardNumber());
+        stmt.setInt(3, bookingId);
+        stmt.setInt(4, paymentId);
+
+        int rs = stmt.executeUpdate();
+        conn.close();
+        return  rs > 0;
+    }
+
+    public Boolean updateBooking(Booking booking, PaymentInfo paymentInfo, VisaCardDetails cardDetails) {
 
         try {
             Connection conn = DBConnection.getConnection();
@@ -404,7 +428,11 @@ public class BookingDAO {
             int rs = stmt.executeUpdate();
             if (rs > 0) {
                 conn.close();
-                return addPaymentInfo(paymentInfo, booking.getId());
+                if(paymentInfo.getPaymentType() == 1) {
+                    return addPaymentInfo(paymentInfo, booking.getId());
+                }
+                int paymentId = addAndGetPaymentInfoId(paymentInfo, booking.getId());
+                return cardPayment(cardDetails, booking.getId(), paymentId);
             }
 
 

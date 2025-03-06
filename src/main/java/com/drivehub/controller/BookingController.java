@@ -315,8 +315,19 @@ public class BookingController extends HttpServlet {
                     Integer.parseInt(request.getParameter("is_paid"))
             );
 
+            VisaCardDetails cardDetails = new VisaCardDetails();
 
-            boolean isAdded= bookingService.addNewBooking(newBooking,paymentInfo);
+            if(Integer.parseInt(request.getParameter("payment_type")) == 2){
+
+                long i = Long.parseLong(request.getParameter("card_number"));
+                int cardNumber = Integer.parseInt(String.format("%04d", i % 10000));
+
+                cardDetails.setCardHolderName(request.getParameter("card_holder_name"));
+                cardDetails.setCardNumber(cardNumber);
+            }
+
+
+            boolean isAdded= bookingService.addNewBooking(newBooking,paymentInfo,cardDetails);
 
             if (isAdded) {
                 jsonResponse.put("status", "success");
@@ -358,7 +369,7 @@ public class BookingController extends HttpServlet {
                         isPaid
                 );
             }else{
-                int i = Integer.parseInt(request.getParameter("customerIdForCustomPay"));
+                long i = Long.parseLong(request.getParameter("customerIdForCustomPay"));
                 int cardNumber = Integer.parseInt(String.format("%04d", i % 10000));
 
                 cardDetails.setCardHolderName(request.getParameter("cardHolderName"));
@@ -422,8 +433,20 @@ public class BookingController extends HttpServlet {
                     Integer.parseInt(request.getParameter("update_is_paid"))
             );
 
+            VisaCardDetails cardDetails = new VisaCardDetails();
 
-            boolean isUpdated= bookingService.updateBooking(booking, paymentInfo);
+            if(Integer.parseInt(request.getParameter("update_payment_type")) == 2){
+
+                long i = Long.parseLong(request.getParameter("update_card_number"));
+                int cardNumber = Integer.parseInt(String.format("%04d", i % 10000));
+
+                cardDetails.setCardHolderName(request.getParameter("update_card_holder_name"));
+                cardDetails.setCardNumber(cardNumber);
+            }
+
+
+
+            boolean isUpdated= bookingService.updateBooking(booking, paymentInfo, cardDetails);
 
 
             if (isUpdated) {

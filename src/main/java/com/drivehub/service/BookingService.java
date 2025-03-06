@@ -36,16 +36,16 @@ public class BookingService {
         return bookingDAO.getAllBookings();
     }
 
-    public Boolean addNewBooking(Booking booking, PaymentInfo paymentInfo) {
-        return bookingDAO.addNewBooking(booking, paymentInfo);
+    public Boolean addNewBooking(Booking booking, PaymentInfo paymentInfo, VisaCardDetails cardDetails) {
+        return bookingDAO.addNewBooking(booking, paymentInfo, cardDetails);
     }
 
     public Boolean customCashPayment(int bookingId, PaymentInfo paymentInfo, VisaCardDetails cardDetails) {
         return bookingDAO.customCashPayment(bookingId, paymentInfo, cardDetails);
     }
 
-    public Boolean updateBooking(Booking booking, PaymentInfo paymentInfo) {
-        return bookingDAO.updateBooking(booking, paymentInfo);
+    public Boolean updateBooking(Booking booking, PaymentInfo paymentInfo, VisaCardDetails cardDetails) {
+        return bookingDAO.updateBooking(booking, paymentInfo, cardDetails);
     }
 
     public Boolean updateFinalAmount(int bookingId, double finalAmount) {

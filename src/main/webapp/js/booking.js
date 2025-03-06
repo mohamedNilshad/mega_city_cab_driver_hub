@@ -712,7 +712,11 @@
         document.getElementById('payment_type').value = '2';
         document.getElementById('selected_vehicle').value = readSelectedVehicle("cabSelection");
         document.getElementById('provided_amount').value = payNowAmount == "" ? 0.0 : payNowAmount;
-        document.getElementById('is_paid').value =  1 ;
+        document.getElementById('is_paid').value =  1;
+
+        document.getElementById('card_holder_name').value = document.getElementById('r_card_holder_name').value;
+        document.getElementById('card_number').value = document.getElementById('r_card_number').value;
+
         //add all the required values to this
 
         $.ajax({
@@ -729,6 +733,7 @@
                     });
                     fetchUserBookings();
                     emptyFields();
+                    $("#paymentTypeModel").modal("hide");
                     $("#cardPaymentModel").modal("hide");
                 }else {
                     $("#success_alert").hide();
@@ -785,7 +790,13 @@
         let payNowAmount = document.getElementById('payNowAmount').value;
         document.getElementById('update_provided_amount').value = payNowAmount == "" ? 0.0 : payNowAmount;
         document.getElementById('update_is_paid').value = 1;
-        //add all the required values to this
+
+        if(isCard){
+            let cName = document.getElementById('r_card_holder_name').value;
+            let cNumber= document.getElementById('r_card_number').value;
+            document.getElementById('update_card_holder_name').value = cName;
+            document.getElementById('update_card_number').value = cNumber;
+        }
 
         $.ajax({
             type: "POST",
@@ -800,7 +811,9 @@
                         $("#success_alert").slideUp(500);
                     });
                     fetchUserBookings(true);
+                    emptyCardFields();
                     $("#editBookingModel").modal("hide");
+                    $("#cardPaymentModel").modal("hide");
                     isCard ? $("#cardPaymentModel").modal("hide") : $("#paymentTypeModel").modal("hide");
                 }else {
                     $("#success_alert").hide();
@@ -955,7 +968,7 @@
 
                 if(providedAmount < totalAmount){
                     document.getElementById("balance_amount").value = totalAmount - providedAmount
-                    button = `<button type="button" class="btn btn-primary" onclick="openPaymentFormModel()">
+                    button = `<button type="button" class="btn btn-primary" onclick="openPaymentFormModel(${!isUpdate})">
                                     Next
                               </button>`;
                 }else{
@@ -1169,7 +1182,16 @@
         document.getElementById('total_amount').value = '';
         document.getElementById('total_distance').value = '';
         document.getElementById('selectVehicle').style.display = 'none';
+        emptyCardFields();
         disableAllFields();
+    }
+
+    function emptyCardFields(){
+        document.getElementById('r_card_number').value = "";
+        document.getElementById('r_card_holder_name').value = "";
+        document.getElementById('pay_amount_1').innerHTML = "";
+        document.getElementById('pay_amount_btn_1').innerHTML = "";
+        document.getElementById("balance_amount").value = "-1";
     }
 
     function openEditModal(booking){
@@ -1241,26 +1263,23 @@
     //------------------------------------PAYMENT----------->
 
     function openPaymentFormModel(isNew = false){
+        console.log("pay 1");
 
-        if(!isNew){
-            $("#editBookingModel").modal("hide");
-        }
+        if(!isNew) $("#editBookingModel").modal("hide");
 
         let formData = new FormData(document.getElementById("newBookingForm"));
-        if(validNewBookingForm(formData)){
-            return;
-        }
+        if(validNewBookingForm(formData)) return;
+
 
         let buttonDiv = document.getElementById("paymentTypeBtn");
         buttonDiv.innerHTML = "";
-        let button = `<button type="button" class="btn btn-primary" style="width: 40%;" data-bs-toggle="modal" data-bs-target="#cardPaymentModel" id="cardPaymentNextBtn"> Next </button>`;
+        let button = `<button type="button" class="btn btn-primary" style="width: 40%;" onclick="openCardPaymentModel()" id="cardPaymentNextBtn"> Next </button>`;
         buttonDiv.insertAdjacentHTML('beforeend', button);
 
         $("#pt2").prop("checked", true);
         document.getElementById("isPayNow").checked = false;
         document.getElementById('payNow').style.display = 'none';
 
-//        document.getElementById("payNowAmountField").style.display = "none";
 
         let total_amount = "total_amount";
         let is_update = document.getElementById("is_update").value
@@ -1277,6 +1296,16 @@
         modal.show();
     }
 
+    function openCardPaymentModel(){
+
+            document.getElementById("pay_amount_btn_1").innerHTML = document.getElementById("payNowAmount").value;
+            document.getElementById("pay_amount_1").innerHTML = document.getElementById("payNowAmount").value;
+            document.getElementById("payment_type").innerHTML = 2;
+
+            let modal = new bootstrap.Modal(document.getElementById("cardPaymentModel"));
+            modal.show();
+        }
+
     function paymentTypeChanged(value){
 
         let buttonDiv = document.getElementById("paymentTypeBtn");
@@ -1289,7 +1318,7 @@
         }
         if(value == "2"){
             document.getElementById('payNow').style.display = 'none';
-            button = `<button type="button" class="btn btn-primary" style="width: 40%;" data-bs-toggle="modal" data-bs-target="#cardPaymentModel" id="cardPaymentNextBtn"> Next </button>`;
+            button = `<button type="button" class="btn btn-primary" style="width: 40%;" onclick="openCardPaymentModel()" id="cardPaymentNextBtn"> Next </button>`;
         }
         buttonDiv.insertAdjacentHTML('beforeend', button);
         enablePaymentButtons();

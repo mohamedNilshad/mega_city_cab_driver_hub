@@ -2,21 +2,22 @@
 <%@  page import="java.util.*" %>
 
 <%
-    HttpSession sessionObj = request.getSession(false);
-    Integer userId = -1;
-    if (sessionObj != null) {
-        userId = (Integer) sessionObj.getAttribute("adminId");
-        if(userId == null){
-            response.sendRedirect("../../index.jsp");
-        }
-    } else {
-        response.sendRedirect("../../index.jsp");
-    }
+HttpSession sessionObj = request.getSession(false);
+Integer userId = -1;
+if (sessionObj != null) {
+userId = (Integer) sessionObj.getAttribute("adminId");
+if(userId == null){
+response.sendRedirect("../../index.jsp");
+}
+} else {
+response.sendRedirect("../../index.jsp");
+}
 %>
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <jsp:include page="includes/admin_header.jsp" />
+
     <style>
         .overlay {
            position: absolute;
@@ -121,6 +122,9 @@
                 <input type="hidden" name="provided_amount" id="provided_amount">
                 <input type="hidden" name="is_paid" id="is_paid">
 
+                <input type="hidden" name="card_number" id="card_number">
+                <input type="hidden" name="card_holder_name" id="card_holder_name">
+
                 <div class="row">
                     <!-- Booking Details (Left Side) -->
                     <div class="col-md-6">
@@ -186,7 +190,7 @@
                 </div>
 
                 <div class="text-center mt-3">
-                    <button type="button" class="btn btn-primary" onclick="openPaymentFormModel(true)" id="newBookingBtn">Next</button>
+                    <button type="button" class="btn btn-primary" onclick="openPaymentFormModel(true)" id="newBookingBtn" disabled>Next</button>
                 </div>
             </form>
         </div>
@@ -302,7 +306,7 @@
                     <input type="hidden" name="action" value="cash_payment" required>
                     <input type="hidden" name="balance_amount" id="balance_amount" value="-1" required>
                     <input type="hidden" id="is_update" value="false" required>
-                    <input type="hidden" id="bookingIdForCustomPay" name="bookingIdForCustomPay" required>
+
 
                     <div class="row justify-content-center">
                         <div class="mb-3" id="selectPaymentType">
@@ -344,7 +348,7 @@
                         </div>
                     </div>
                     <div class="row justify-content-center" id="paymentTypeBtn">
-                        <button type="button" class="btn btn-primary" style="width: 40%;"  data-bs-toggle="modal" data-bs-target="#cardPaymentModel" id="cardPaymentNextBtn">Next</button>
+                        <button type="button" class="btn btn-primary" style="width: 40%;" onclick="openCardPaymentModel()" id="cardPaymentNextBtn">Next</button>
                     </div>
                 </form>
             </div>
@@ -357,22 +361,58 @@
     <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="popupFormLabel2">Online Payment Gateway</h5>
+                <h5 class="modal-title" id="popupFormLabel8">Online Payment Gateway</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="cardPaymentTypeForm">
-                    <input type="hidden" name="action" value="card_payment" required>
-                    <input type="hidden" name="payment_type" value="2" required>
+                <div class="container">
+                    <div class="custom-box">
+                        <div class="custom-box-inner">
+                            <div>
+                                <p class="fw-bold">Payment Details</p>
+                                <p class="dis mb-3">Complete your purchase by providing your payment details</p>
+                            </div>
 
-                    <div class="row justify-content-center" id="cardPaymentBtn">
-                        <button type="submit" class="btn btn-success" style="width: 40%;">Submit</button>
+                            <form id="cardPaymentTypeForm">
+                                <input type="hidden" name="action" value="custom_card_payment" required>
+                                <input type="hidden" name="paymentTypeForCustomPay" value="2" required>
+
+                                <div>
+                                    <label class="dis fw-bold mb-2">Card details</label>
+                                    <div class="d-flex align-items-center justify-content-between custom-card-with-border">
+                                        <i class="fab fa-brands fa-cc-visa"></i>
+                                        <input type="text" class="form-control custom-input" id="r_card_number" placeholder="Card Number" name="cardNumber" pattern="^\d{14,}$" title="Invalid Card Number" minlength="14" required>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mt-2">
+                                        <input type="text" class="form-control" placeholder="MM/YY" required>
+                                        <div class="w-50"></div>
+                                        <input type="password" maxlength="3" class="form-control" placeholder="CVV" required>
+                                    </div>
+                                    <div class="my-3 custom-cardholder">
+                                        <label class="dis fw-bold mb-2">Cardholder Name</label>
+                                        <input class="form-control" type="text" placeholder="Full Name" id="r_card_holder_name" name="cardHolderName" required>
+                                    </div>
+                                    <div class="custom-address">
+                                        <div class="d-flex flex-column dis">
+                                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                                <p class="fw-bold">Total</p>
+                                                <p class="fw-bold">LKR <span id="pay_amount_1"></span></p>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary custom-btn mt-2">Pay LKR <span id="pay_amount_btn_1"></span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </form>
+                </div>
+
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- Table -->
 <table id="userBookingTable" class="ctable table" style="text-align: center;">
