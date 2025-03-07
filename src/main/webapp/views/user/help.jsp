@@ -21,12 +21,12 @@
         <style>
             .image-text-container {
                 display: flex;
-                align-items: center;
+                align-items: start;
                 gap: 20px;
                 width: 100%;
             }
             .image-text-container img {
-                width: 100%;
+                width: 50%;
                 border-radius: 10px;
             }
             .image-text-container div {
@@ -34,14 +34,14 @@
             }
         </style>
     </head>
-    <body id="page-top"  style="padding-top: 110px;">
+    <body id="page-top" style="padding-top: 110px;">
         <!-- Navigation-->
         <jsp:include page="nav.jsp" />
-        <div class="container mt-5">
+        <div class="m-2">
             <div class="row">
                 <div class="col-12">
                     <div class="image-text-container">
-                        <img src="<% ConstantImage.CAB_1_IMAGE %>" alt="Sample Image">
+                        <img src="${pageContext.request.contextPath}/assets/images/car_1.jpg" alt="Sample Image">
                         <div>
                             <h2>Side by Side Text</h2>
                             <p>This is an example of text displayed beside an image using Bootstrap.</p>
@@ -50,7 +50,8 @@
                 </div>
             </div>
         </div>
-        <div class="container mt-5">
+        <hr>
+        <div class="m-2">
             <div class="row">
                 <div class="col-12">
                     <div class="image-text-container">
@@ -58,13 +59,12 @@
                             <h2>Side by Side Text</h2>
                             <p>This is an example of text displayed beside an image using Bootstrap.</p>
                         </div>
-                        <img src="https://via.placeholder.com/400x300" alt="Sample Image">
+                        <img src="${pageContext.request.contextPath}/assets/images/car_1.jpg" alt="Sample Image">
+
                     </div>
                 </div>
             </div>
         </div>
-
-
 
 
         <jsp:include page="../../WEB-INF/includes/footer.jsp" />

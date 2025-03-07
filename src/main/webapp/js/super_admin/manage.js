@@ -21,7 +21,8 @@
               fetchAllVehicleType();
            }else if(activeTab == "License Type"){
               fetchAllLicenseType();
-
+           }else if(activeTab == "Help Document"){
+              fetchHelps();
            }else{
               fetchCustomers();
            }
@@ -2243,5 +2244,336 @@
             dropdown.val(selectId);
         }
     }
+
+
+
+//---------------------------------VEHICLE------------------------------------------------------------------>
+    //fetch helps
+    function fetchHelps(){
+        let tbody = $("#helpTable tbody");
+
+        $.ajax({
+            type: "GET",
+            url: "../../company",
+            data: { action: "help_list" },
+            dataType: "json",
+            beforeSend: function() {
+                tbody.empty();
+                tbody.append(`<tr>
+                   <td scope="row" colspan="5" style="text-align: center;">
+                     <i class="fa fa-spinner fa-spin" id="data_loading" style="display:inline; font-size:32px;"></i>
+                   </td>
+                 </tr>`);
+            },
+            success: function(response) {
+                tbody.empty();
+                if (response.status === "success") {
+
+                    if(response.data.length == 0){
+                        tbody.append(`<tr><td colspan="5" style="text-align:center;">No Data</td></tr>`);
+                    }else{
+
+                        let i = 0;
+                        response.data.forEach((help) => {
+                            i = i+1;
+                            let jsonHelp= JSON.stringify(help);
+
+                            let newRow = `
+                                <tr>
+                                    <td>${i}</td>
+                                    <td><img src="${contextPath}help/${help.helpImage}" width="50px;" height="30px;"></td>
+                                    <td><div id="h_title${i}" class="text-container" style="width:25%;">${help.helpTitle}</div></td>
+                                    <td><div id="h_description${i}" class="text-container" style="width:50%;">${help.helpDescription}</div></td>
+                                    <td>
+                                        <button type="button" class="icon-btn" onclick='openHelpEditModal(${jsonHelp})'><i class="zmdi zmdi-edit"></i></button>
+                                        <button type="button" class="icon-btn" style="color: red" onclick='openHelpDeleteModal(${help.id},"${help.helpImage}")'><i class="zmdi zmdi-delete"></i></button>
+                                    </td>
+                                </tr>
+                            `;
+                            tbody.append(newRow);
+                        });
+                    }
+                }else {
+                    tbody.append(`<tr><td colspan="5" style="text-align:center;">No Data</td></tr>`);
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred: "+e;
+                }
+
+                tbody.empty();
+                tbody.append(`<tr><td colspan="5" style="text-align:center;">No Data</td></tr>`);
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+
+        });
+    }
+
+    //update help form
+    function openHelpEditModal(help) {
+        $("#updateHelpBtn").attr("disabled", true);
+        setOldHelpValues(help);
+
+        document.getElementById("help_id").value = help.id;
+        document.getElementById("update_h_title").value = help.helpTitle;
+        document.getElementById("update_h_description").value = help.helpDescription;
+
+        document.getElementById("old_h_image").value = help.helpImage;
+        document.getElementById("old_h_image_d").src = contextPath+"help/" + help.helpImage;
+        document.getElementById("old_h_image_label").innerHTML = help.vehicleImage;
+
+        let modal = new bootstrap.Modal(document.getElementById("helpUpdateFromModel"));
+        modal.show();
+    }
+
+    //update help
+    $("#updateHelpForm").submit(function(event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+        $(":submit").attr("disabled", true);
+        $('#uh_btn_loading').css('display', 'inline');
+
+        if(validUpdateHelpForm(formData)){
+           $(":submit").removeAttr("disabled");
+           $('#uh_btn_loading').css('display', 'none');
+           return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "../../company",
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            beforeSend: function() {
+                $('#uh_btn_loading').css('display', 'inline');
+                $(":submit").attr("disabled", true);
+            },
+            success: function(response) {
+                if (response.status === "success") {
+                    fetchHelps();
+                    $("#success_alert").hide();
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+                    let responseText = xhr.responseText;
+                    let errorMsg = '';
+                    try {
+                        let errorResponse = JSON.parse(responseText);
+                        errorMsg = errorResponse.message;
+                    } catch (e) {
+                        errorMsg = "Unexpected error occurred "+e;
+                    }
+
+                    $("#success_alert").hide();
+                        $('#error_alert').html(errorMsg);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#uh_btn_loading').css('display', 'none');
+                $("#helpUpdateFromModel").modal("hide");
+            }
+        });
+    });
+
+    //add help
+    $("#addNewHelp").submit(function(event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+        $(":submit").attr("disabled", true);
+        $('#snv_btn_loading').css('display', 'inline');
+
+        if(validNewHelpForm(formData)){
+            $(":submit").removeAttr("disabled");
+            $('#snv_btn_loading').css('display', 'none');
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "../../company",
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            beforeSend: function() {
+                $('#h_btn_loading').css('display', 'inline');
+                $(":submit").attr("disabled", true);
+            },
+            success: function(response) {
+                if (response.status === "success") {
+                    emptyHelpFields();
+                    fetchHelps();
+                    $("#success_alert").hide();
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+                let responseText = xhr.responseText;
+
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                console.log(errorResponse);
+
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred";
+                }
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+            complete: function(){
+
+                $(":submit").removeAttr("disabled");
+                $('#h_btn_loading').css('display', 'none');
+            }
+        });
+    });
+
+    //delete help
+    $("#deleteHelp").submit(function(event) {
+        event.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "../../company",
+            data:  $(this).serialize(),
+            dataType: "json",
+            beforeSend: function() {
+                $('#dh_btn_loading').css('display', 'inline');
+                $(":submit").attr("disabled", true);
+            },
+            success: function(response) {
+                if (response.status === "success") {
+                    fetchHelps();
+                    $("#success_alert").hide();
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+
+            },
+            error: function(xhr) {
+                    let responseText = xhr.responseText;
+                    let errorMsg = '';
+                    try {
+                        let errorResponse = JSON.parse(responseText);
+                        errorMsg = errorResponse.message;
+                    } catch (e) {
+                        errorMsg = "Unexpected error occurred "+e;
+                    }
+
+                    $("#success_alert").hide();
+                        $('#error_alert').html(errorMsg);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#dh_btn_loading').css('display', 'none');
+                $("#deleteHelpFormModel").modal("hide");
+            }
+        });
+    });
+
+    //delete help model
+    function openHelpDeleteModal(h_id, h_image) {
+        document.getElementById("h_id").value = h_id;
+        document.getElementById("h_image_name").value = h_image;
+
+        let modal = new bootstrap.Modal(document.getElementById("deleteHelpFormModel"));
+        modal.show();
+    }
+
+    function emptyHelpFields(){
+         document.getElementById('h_title').value = '';
+         document.getElementById('h_image').value = '';
+         document.getElementById('h_description').value = '';
+    }
+
+    //---------------------VALIDATE HELP SUBMIT BUTTON--->
+    let originalHelpValues;
+
+    function setOldHelpValues(help){
+        originalHelpValues = {
+            helpTitle: help.helpTitle,
+            helpDescription: help.helpDescription
+        };
+    }
+
+    function enableHelpSubmitButton(){
+        let btnId = '#updateHelpBtn';
+        let helpTitle = document.getElementById("update_h_title").value;
+        let helpDescription = document.getElementById("update_h_description").value;
+
+        let image = document.getElementById("update_h_image");
+
+        if(helpTitle != originalHelpValues.helpTitle){
+            $(btnId).attr("disabled", false);
+        }else if(helpDescription != originalHelpValues.helpDescription){
+            $(btnId).attr("disabled", false);
+        }else if (image.files.length) {
+            $(btnId).attr("disabled", false);
+        }else{
+            $(btnId).attr("disabled", true);
+        }
+    }
+    //---------------------VALIDATE HELP SUBMIT BUTTON--->
+
+
 
 </script>

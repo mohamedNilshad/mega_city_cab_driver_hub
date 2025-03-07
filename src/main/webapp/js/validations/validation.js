@@ -559,6 +559,60 @@
         return (error>0);
     }
 
+    //New Help
+    function validNewHelpForm(formData){
+        const allFields = Array.from(formData.keys());
+
+        const image = allFields[2];
+        let remove = [0, 2];
+        let fields = allFields.filter((item, index) => !remove.includes(index));
+
+        let error = 0;
+        let errorPreId = "new_help";
+
+        //empty check
+        error += validateEmptyCheck(errorPreId, fields, formData);
+        let file = formData.get(image);
+
+        document.getElementById(`${errorPreId}_error_2`).innerHTML = "";
+
+        if (!file || file.size === 0) {
+            error++;
+            document.getElementById(`${errorPreId}_error_2`).innerHTML = "This Field is Required";
+        }
+        if (file.size > 5000000) {
+            error++;
+            document.getElementById(`${errorPreId}_error_2`).innerHTML = "Image Should be less then 5 Mb";
+        }
+
+        return (error>0);
+    }
+
+    //Update Help
+    function validUpdateHelpForm(formData){
+        const allFields = Array.from(formData.keys());
+
+        const image = allFields[4];
+        let remove = [0, 1, 2, 4];
+
+        let fields = allFields.filter((item, index) => !remove.includes(index));
+
+        let error = 0;
+        let errorPreId = "update_help";
+
+        //empty check
+        error += validateEmptyCheck(errorPreId, fields, formData);
+        let file = formData.get(image);
+
+        document.getElementById(`${errorPreId}_error_2`).innerHTML = "";
+
+        if (file.size > 5000000) {
+            error++;
+            document.getElementById(`${errorPreId}_error_2`).innerHTML = "Image Should be less then 5 Mb";
+        }
+        return (error>0);
+    }
+
 
 
     //----------------------------------VALIDATIONS---------------------------->

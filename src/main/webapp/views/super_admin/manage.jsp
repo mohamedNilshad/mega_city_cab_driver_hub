@@ -88,6 +88,9 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#vehicle_type_tab">Vehicle Type</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#help_document">Help Document</a>
+            </li>
 
         </ul>
 
@@ -110,6 +113,9 @@
             </div>
             <div id="vehicle_type_tab" class="tab-pane fade"><br>
                 <jsp:include page="sub_pages/manage_vehicle_type.jsp" />
+            </div>
+            <div id="help_document" class="tab-pane fade"><br>
+                <jsp:include page="sub_pages/help_document.jsp" />
             </div>
         </div>
         </div>
