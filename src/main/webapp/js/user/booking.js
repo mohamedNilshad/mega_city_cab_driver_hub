@@ -1606,9 +1606,11 @@
         document.getElementById("iBookingType").innerHTML = invoiceData.bookingType == 1 ? "Schedule Booking" : "Instant Booking";
         document.getElementById("iStartDate").innerHTML = invoiceData.status == 1 ? invoiceData.finalStartDate : invoiceData.startDate;
         document.getElementById("iEndDate").innerHTML = invoiceData.status == 1 ? invoiceData.finalEndDate : invoiceData.endDate;
+
         let totalAmount = invoiceData.totalAmount;
         document.getElementById("iTotalAmount").innerHTML = formatCurrency(totalAmount);
-        console.log(invoiceData)
+
+        //-->
         let startMeterReading = invoiceData.startMeterReading == 0 ? ' - ' : invoiceData.startMeterReading;
         let endMeterReading = invoiceData.endMeterReading == 0 ? ' - ' : invoiceData.endMeterReading;
 
@@ -1622,12 +1624,13 @@
         let days = def.days == 0 ? 1 : def.days;
         if(days != 0 && def.hours > 2) days +=1;
 
-        document.getElementById("iTotalDays").innerHTML = invoiceData.status == 2 ? ' - ' : days;
+        document.getElementById("iTotalDays").innerHTML = invoiceData.status == 2 ? ' - ' : " "+days;
 
-        let totDistance = invoiceData.status == 2 ? ' - ' : (endMeterReading - startMeterReading) + " KM";
+        let totDistance = invoiceData.status == 2 ? ' - ' : (endMeterReading - startMeterReading);
+        totDistance = invoiceData.status == 0 ? invoiceData.totalRequestedDistance : totDistance;
 
-        document.getElementById("iTotalDistance").innerHTML = totDistance;
-//        document.getElementById("iPenaltyAmount").innerHTML = endMeterReading;
+        document.getElementById("iTotalDistance").innerHTML = totDistance + " KM";
+        //-->
 
         document.getElementById("iTotalAmountToPay").innerHTML = formatCurrency(totalAmount);
 

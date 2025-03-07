@@ -1451,6 +1451,28 @@
         let totalAmount = invoiceData.totalAmount;
         document.getElementById("iTotalAmount").innerHTML = formatCurrency(totalAmount);
 
+        //-->
+        let startMeterReading = invoiceData.startMeterReading == 0 ? ' - ' : invoiceData.startMeterReading;
+        let endMeterReading = invoiceData.endMeterReading == 0 ? ' - ' : invoiceData.endMeterReading;
+
+        document.getElementById("iStartMeterReading").innerHTML = startMeterReading;
+        document.getElementById("iEndMeterReading").innerHTML = endMeterReading;
+
+        let fromDate = invoiceData.status == 1 ? invoiceData.finalStartDate : invoiceData.startDate;
+        let toDate = invoiceData.status == 1 ? invoiceData.finalEndDate : invoiceData.endDate;
+
+        let def = calculateDaysAndHour(fromDate, toDate);
+        let days = def.days == 0 ? 1 : def.days;
+        if(days != 0 && def.hours > 2) days +=1;
+
+        document.getElementById("iTotalDays").innerHTML = invoiceData.status == 2 ? ' - ' : " "+days;
+
+        let totDistance = invoiceData.status == 2 ? ' - ' : (endMeterReading - startMeterReading);
+        totDistance = invoiceData.status == 0 ? invoiceData.totalRequestedDistance : totDistance;
+
+        document.getElementById("iTotalDistance").innerHTML = totDistance + " KM";
+        //-->
+
         document.getElementById("iTotalAmountToPay").innerHTML = formatCurrency(totalAmount);
 
         let paidAmount = 0.0;

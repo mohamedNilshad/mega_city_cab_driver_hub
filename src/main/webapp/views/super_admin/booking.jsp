@@ -502,14 +502,24 @@
                             </div>
                         </div>
                         <hr>
-                        <div class="col-sm-6">
-                            <div>
-                                <span style="font-weight: 600;">Booking No :</span><strong><span id="bookingNo"></span></strong>
+                        <div class="row mb-4">
+                            <div class="col-sm-6">
+                                <div>
+                                    <span style="font-weight: 600;">Booking No :</span><strong><span id="bookingNo"></span></strong>
+                                </div>
+                                <div><span style="font-weight: 600;">Booking Type : </span> <span id="iBookingType"></span></div>
+                                <div><span style="font-weight: 600;">Start Date : </span><span id="iStartDate"></span></div>
+                                <div><span style="font-weight: 600;">End Date : </span><span id="iEndDate"></span></div>
+                                <div><span style="font-weight: 600;">Total Amount : </span><span id="iTotalAmount"></span></div>
                             </div>
-                            <div><span style="font-weight: 600;">Booking Type :</span> <span id="iBookingType"></span></div>
-                            <div><span style="font-weight: 600;">Start Date : </span><span id="iStartDate"></span></div>
-                            <div><span style="font-weight: 600;">End Date : </span><span id="iEndDate"></span></div>
-                            <div><span style="font-weight: 600;">Total Amount : </span><span id="iTotalAmount"></span></div>
+                            <div class="col-sm-6" style="text-align: right;">
+                                <div>
+                                    <span style="font-weight: 600;">Total Days:</span><strong><span id="iTotalDays"></span></strong>
+                                </div>
+                                <div><span style="font-weight: 600;">Start Meter Reading :</span> <span id="iStartMeterReading"></span></div>
+                                <div><span style="font-weight: 600;">End Meter Reading : </span><span id="iEndMeterReading"></span></div>
+                                <div><span style="font-weight: 600;">Total Distance KM: </span><span id="iTotalDistance"></span></div>
+                            </div>
                         </div>
 
                         <div class="table-responsive-sm">

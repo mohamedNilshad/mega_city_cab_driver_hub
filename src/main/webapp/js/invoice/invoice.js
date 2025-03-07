@@ -127,15 +127,38 @@
 
         let totalAmount = formatCurrency(invoiceData.totalAmount);
         let bookingType = invoiceData.bookingType == 1 ? "Schedule Booking" : "Instant Booking";
+
+        let def = calculateDaysAndHour(startDate, endDate);
+        let days = def.days == 0 ? 1 : def.days;
+        if(days != 0 && def.hours > 2) days +=1;
+
+        days = invoiceData.status == 2 ? ' - ' : " "+days;
+
+        let startMeterReading = invoiceData.startMeterReading == 0 ? ' - ' : invoiceData.startMeterReading;
+        let endMeterReading = invoiceData.endMeterReading == 0 ? ' - ' : invoiceData.endMeterReading;
+
+         let totDistance = invoiceData.status == 2 ? ' - ' : (endMeterReading - startMeterReading);
+         totDistance = invoiceData.status == 0 ? invoiceData.totalRequestedDistance : totDistance;
+
         return `
-            <div class="col-sm-6">
-                <div>
-                    <span style="font-weight: 600;">Booking No :</span><strong>${invoiceData.bookingNumber}</strong>
+            <div class="row mb-4">
+                <div class="col-sm-6">
+                    <div>
+                        <span style="font-weight: 600;">Booking No : </span><strong>${invoiceData.bookingNumber}</strong>
+                    </div>
+                    <div><span style="font-weight: 600;">Booking Type :</span> ${bookingType}</div>
+                    <div><span style="font-weight: 600;">Start Date : ${startDate}</div>
+                    <div><span style="font-weight: 600;">End Date : ${endDate}</div>
+                    <div><span style="font-weight: 600;">Total Amount :</span> ${totalAmount}</div>
                 </div>
-                <div><span style="font-weight: 600;">Booking Type :</span> ${bookingType}</div>
-                <div><span style="font-weight: 600;">Start Date : ${startDate}</div>
-                <div><span style="font-weight: 600;">End Date : ${endDate}</div>
-                <div><span style="font-weight: 600;">Total Amount : </span> ${totalAmount}</div>
+                <div class="col-sm-6" style="text-align: right;">
+                    <div>
+                        <span style="font-weight: 600;">Total Days: </span><strong>${days}</strong>
+                    </div>
+                    <div><span style="font-weight: 600;">Start Meter Reading : </span>${startMeterReading}</div>
+                    <div><span style="font-weight: 600;">End Meter Reading : </span>${endMeterReading}</span></div>
+                    <div><span style="font-weight: 600;">Total Distance KM: </span>${totDistance}</div>
+                </div>
             </div>
         `;
     }
@@ -222,6 +245,18 @@
         }else{
             return `<div class="rubber_stamp" style="color: red; border-color: red;">Not Paid</div>`;
         }
+    }
+
+    function calculateDaysAndHour(fromDate, toDate) {
+        const date1 = new Date(fromDate);
+        const date2 = new Date(toDate);
+
+        const diffInMs = date2 - date1;
+
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+        const diffInHours = Math.floor((diffInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+        return { days: diffInDays, hours: diffInHours };
     }
 
 </script>

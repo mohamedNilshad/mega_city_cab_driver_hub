@@ -20,6 +20,18 @@
         <jsp:include page="includes/header.jsp" />
 
         <style>
+            .overlay {
+               position: absolute;
+               top: 0;
+               left: 0;
+               width: 100%;
+               height: 100%;
+               background: rgba(255, 255, 255, 0.7);
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               z-index: 10;
+            }
 
             .hide-text {
               white-space: nowrap;
@@ -35,6 +47,10 @@
 
         <div class="alert alert-success custom-alert" role="alert" id="success_alert"></div>
         <div class="alert alert-danger custom-alert" role="alert" id="error_alert"></div>
+
+        <div id="formOverlay" class="overlay d-none">
+            <i class="fa fa-spinner fa-spin" style="font-size:35px;"></i>
+        </div>
 
         <table id="bookingHistoryTable" class="ctable table" style="text-align: center;">
             <thead class="thead-dark">
@@ -123,14 +139,24 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <div class="col-sm-6">
-                                    <div>
-                                        <span style="font-weight: 600;">Booking No :</span><strong><span id="bookingNo"></span></strong>
+                                <div class="row mb-4">
+                                    <div class="col-sm-6">
+                                        <div>
+                                            <span style="font-weight: 600;">Booking No :</span><strong><span id="bookingNo"></span></strong>
+                                        </div>
+                                        <div><span style="font-weight: 600;">Booking Type : </span> <span id="iBookingType"></span></div>
+                                        <div><span style="font-weight: 600;">Start Date : </span><span id="iStartDate"></span></div>
+                                        <div><span style="font-weight: 600;">End Date : </span><span id="iEndDate"></span></div>
+                                        <div><span style="font-weight: 600;">Total Amount : </span><span id="iTotalAmount"></span></div>
                                     </div>
-                                    <div><span style="font-weight: 600;">Booking Type :</span> <span id="iBookingType"></span></div>
-                                    <div><span style="font-weight: 600;">Start Date : </span><span id="iStartDate"></span></div>
-                                    <div><span style="font-weight: 600;">End Date : </span><span id="iEndDate"></span></div>
-                                    <div><span style="font-weight: 600;">Total Amount : </span><span id="iTotalAmount"></span></div>
+                                    <div class="col-sm-6" style="text-align: right;">
+                                        <div>
+                                            <span style="font-weight: 600;">Total Days:</span><strong><span id="iTotalDays"></span></strong>
+                                        </div>
+                                        <div><span style="font-weight: 600;">Start Meter Reading :</span> <span id="iStartMeterReading"></span></div>
+                                        <div><span style="font-weight: 600;">End Meter Reading : </span><span id="iEndMeterReading"></span></div>
+                                        <div><span style="font-weight: 600;">Total Distance KM: </span><span id="iTotalDistance"></span></div>
+                                    </div>
                                 </div>
 
                                 <div class="table-responsive-sm">

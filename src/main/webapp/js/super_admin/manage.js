@@ -1121,7 +1121,7 @@
                     });
             },
             complete: function(){
-                emptyFields();
+                emptyLicenseTypeFields();
                 $(":submit").removeAttr("disabled");
                 $('#submit_loading').css('display', 'none');
             }

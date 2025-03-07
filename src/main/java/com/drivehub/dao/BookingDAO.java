@@ -147,6 +147,8 @@ public class BookingDAO {
                         rs.getTimestamp("finalEndDate"),
                         rs.getInt("status")
                 );
+                bookingDetails.setStartMeterReading(rs.getInt("startMeterReading"));
+                bookingDetails.setEndMeterReading(rs.getInt("endMeterReading"));
 
                 conn.close();
                 return bookingDetails;

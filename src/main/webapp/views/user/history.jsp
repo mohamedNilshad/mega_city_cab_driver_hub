@@ -279,7 +279,7 @@
                                         <div>
                                             <span style="font-weight: 600;">Booking No :</span><strong><span id="bookingNo"></span></strong>
                                         </div>
-                                        <div><span style="font-weight: 600;">Booking Type :</span> <span id="iBookingType"></span></div>
+                                        <div><span style="font-weight: 600;">Booking Type : </span> <span id="iBookingType"></span></div>
                                         <div><span style="font-weight: 600;">Start Date : </span><span id="iStartDate"></span></div>
                                         <div><span style="font-weight: 600;">End Date : </span><span id="iEndDate"></span></div>
                                         <div><span style="font-weight: 600;">Total Amount : </span><span id="iTotalAmount"></span></div>
@@ -291,7 +291,6 @@
                                         <div><span style="font-weight: 600;">Start Meter Reading :</span> <span id="iStartMeterReading"></span></div>
                                         <div><span style="font-weight: 600;">End Meter Reading : </span><span id="iEndMeterReading"></span></div>
                                         <div><span style="font-weight: 600;">Total Distance : </span><span id="iTotalDistance"></span></div>
-                                        <div><span style="font-weight: 600;">Penalty Amount LKR : </span><span id="iPenaltyAmount"></span></div>
                                     </div>
                                 </div>
 
