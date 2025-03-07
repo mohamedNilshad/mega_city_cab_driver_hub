@@ -32,42 +32,34 @@
             .image-text-container div {
                 width: 100%;
             }
+            .overlay {
+               position: absolute;
+               top: 0;
+               left: 0;
+               width: 100%;
+               height: 100%;
+               background: rgba(255, 255, 255, 0.7);
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               z-index: 10;
+           }
         </style>
     </head>
     <body id="page-top" style="padding-top: 110px;">
         <!-- Navigation-->
         <jsp:include page="nav.jsp" />
-        <div class="m-2">
-            <div class="row">
-                <div class="col-12">
-                    <div class="image-text-container">
-                        <img src="${pageContext.request.contextPath}/assets/images/car_1.jpg" alt="Sample Image">
-                        <div>
-                            <h2>Side by Side Text</h2>
-                            <p>This is an example of text displayed beside an image using Bootstrap.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Overlay (Hidden Initially) -->
+        <div id="formOverlay" class="overlay d-none">
+            <i class="fa fa-spinner fa-spin" style="font-size:35px;"></i>
         </div>
-        <hr>
-        <div class="m-2">
-            <div class="row">
-                <div class="col-12">
-                    <div class="image-text-container">
-                        <div>
-                            <h2>Side by Side Text</h2>
-                            <p>This is an example of text displayed beside an image using Bootstrap.</p>
-                        </div>
-                        <img src="${pageContext.request.contextPath}/assets/images/car_1.jpg" alt="Sample Image">
+        <div id="helpBody"> </div>
 
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
+        <script>
+            var contextPath = '${pageContext.request.contextPath}' + '/uploads/help/';
+        </script>
         <jsp:include page="../../WEB-INF/includes/footer.jsp" />
+        <jsp:include page="../../js/user/help.js" />
 
     </body>
 </html>
