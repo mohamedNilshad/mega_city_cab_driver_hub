@@ -55,9 +55,7 @@
         </div>
         <div id="helpBody"> </div>
 
-        <script>
-            var contextPath = '${pageContext.request.contextPath}' + '/uploads/help/';
-        </script>
+        <script> var contextPath = '${pageContext.request.contextPath}' + '/uploads/help/'; </script>
         <jsp:include page="../../WEB-INF/includes/footer.jsp" />
         <jsp:include page="../../js/user/help.js" />
 
