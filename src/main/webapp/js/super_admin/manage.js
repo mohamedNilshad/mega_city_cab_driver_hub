@@ -1917,11 +1917,11 @@
             $('#snvt_btn_loading').css('display', 'none');
             return;
         }
-        return;
+
         $.ajax({
             type: "POST",
             url: "../../vehicle",
-            data: formData,
+            data: $(this).serialize(),
             dataType: "json",
             beforeSend: function() {
                 $('#snvt_btn_loading').css('display', 'inline');

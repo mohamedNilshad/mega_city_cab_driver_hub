@@ -18,70 +18,70 @@
 <html lang="en">
     <head>
         <jsp:include page="includes/user_header.jsp" />
-    <style>
+        <style>
 
-        .hide-text {
-          white-space: nowrap;
-          width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
+            .hide-text {
+              white-space: nowrap;
+              width: 100%;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
 
-        .crb input[type="radio"][id^="cb"] {
-          display: none;
-        }
-        .crb input[type="radio"][id^="pt"] {
-          display: none;
-        }
-        .crb input[type="radio"][id^="cpt"] {
-          display: none;
-        }
+            .crb input[type="radio"][id^="cb"] {
+              display: none;
+            }
+            .crb input[type="radio"][id^="pt"] {
+              display: none;
+            }
+            .crb input[type="radio"][id^="cpt"] {
+              display: none;
+            }
 
-        .crb label {
-          border: 1px solid #fff;
-          padding: 5px;
-          display: block;
-          position: relative;
-          cursor: pointer;
-          text-align: left;
-        }
+            .crb label {
+              border: 1px solid #fff;
+              padding: 5px;
+              display: block;
+              position: relative;
+              cursor: pointer;
+              text-align: left;
+            }
 
-        .crb label:before {
-          background-color: white;
-          color: white;
-          content: " ";
-          display: block;
-          border-radius: 50%;
-          border: 1px solid grey;
-          position: absolute;
-          top: -5px;
-          left: -5px;
-          width: 25px;
-          height: 25px;
-          text-align: center;
-          line-height: 28px;
-          transition-duration: 0.4s;
-          transform: scale(0);
-        }
+            .crb label:before {
+              background-color: white;
+              color: white;
+              content: " ";
+              display: block;
+              border-radius: 50%;
+              border: 1px solid grey;
+              position: absolute;
+              top: -5px;
+              left: -5px;
+              width: 25px;
+              height: 25px;
+              text-align: center;
+              line-height: 28px;
+              transition-duration: 0.4s;
+              transform: scale(0);
+            }
 
-        crb label .cimg .p-img {
-          transition-duration: 0.2s;
-          transform-origin: 50% 50%;
-        }
+            crb label .cimg .p-img {
+              transition-duration: 0.2s;
+              transform-origin: 50% 50%;
+            }
 
-        .crb input[type="radio"]:checked + label {
-          border-color: #2154a6;
-        }
+            .crb input[type="radio"]:checked + label {
+              border-color: #2154a6;
+            }
 
-        .crb input[type="radio"]:checked + label:before {
-          content: "✓";
-          text-align: center;
-          background-color: grey;
-          transform: scale(1);
-          z-index:1;
-        }
+            .crb input[type="radio"]:checked + label:before {
+              content: "✓";
+              text-align: center;
+              background-color: grey;
+              transform: scale(1);
+              z-index:1;
+            }
 
-    </style>
+        </style>
     </head>
     <body id="page-top" style="padding-top: 110px; padding-bottom: 10px; ">
         <!-- Navigation-->
@@ -263,7 +263,7 @@
                                         <div id="companyPhone"></div>
                                     </div>
 
-                                    <div class="col-sm-6"  style="text-align: right;">
+                                    <div class="col-sm-6" style="text-align: right;">
                                         <h6 class="mb-3">To:</h6>
                                         <div>
                                             <strong><span id="customerName"></span></strong>
@@ -274,14 +274,25 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <div class="col-sm-6">
-                                    <div>
-                                        <span style="font-weight: 600;">Booking No :</span><strong><span id="bookingNo"></span></strong>
+                                <div class="row mb-4">
+                                    <div class="col-sm-6">
+                                        <div>
+                                            <span style="font-weight: 600;">Booking No :</span><strong><span id="bookingNo"></span></strong>
+                                        </div>
+                                        <div><span style="font-weight: 600;">Booking Type :</span> <span id="iBookingType"></span></div>
+                                        <div><span style="font-weight: 600;">Start Date : </span><span id="iStartDate"></span></div>
+                                        <div><span style="font-weight: 600;">End Date : </span><span id="iEndDate"></span></div>
+                                        <div><span style="font-weight: 600;">Total Amount : </span><span id="iTotalAmount"></span></div>
                                     </div>
-                                    <div><span style="font-weight: 600;">Booking Type :</span> <span id="iBookingType"></span></div>
-                                    <div><span style="font-weight: 600;">Start Date : </span><span id="iStartDate"></span></div>
-                                    <div><span style="font-weight: 600;">End Date : </span><span id="iEndDate"></span></div>
-                                    <div><span style="font-weight: 600;">Total Amount : </span><span id="iTotalAmount"></span></div>
+                                    <div class="col-sm-6" style="text-align: right;">
+                                        <div>
+                                            <span style="font-weight: 600;">Total Days:</span><strong><span id="iTotalDays"></span></strong>
+                                        </div>
+                                        <div><span style="font-weight: 600;">Start Meter Reading :</span> <span id="iStartMeterReading"></span></div>
+                                        <div><span style="font-weight: 600;">End Meter Reading : </span><span id="iEndMeterReading"></span></div>
+                                        <div><span style="font-weight: 600;">Total Distance : </span><span id="iTotalDistance"></span></div>
+                                        <div><span style="font-weight: 600;">Penalty Amount LKR : </span><span id="iPenaltyAmount"></span></div>
+                                    </div>
                                 </div>
 
                                 <div class="table-responsive-sm">

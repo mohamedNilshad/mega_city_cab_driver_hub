@@ -869,7 +869,7 @@
                               if(booking.status == 0){
                                 status = `<td class="status status-scheduled" style="vertical-align: middle;">
                                     ${booking.startDate}<br>
-                                    ${cancelBtn} ${startBtn}
+                                    ${cancelBtn}
                                 </td>`;
                                 editButton = `<button type="button" class="icon-btn" onclick='openEditModal(${jsonBooking})'><i class="zmdi zmdi-edit"></i></button>`;
 
@@ -880,7 +880,6 @@
                               }else if(booking.status == 3){
                                 status = `<td class="status status-ongoing" style="vertical-align: middle;">
                                     On Going
-                                    ${completedBtn}
                                 </td>`;
                               }
 
@@ -1609,6 +1608,26 @@
         document.getElementById("iEndDate").innerHTML = invoiceData.status == 1 ? invoiceData.finalEndDate : invoiceData.endDate;
         let totalAmount = invoiceData.totalAmount;
         document.getElementById("iTotalAmount").innerHTML = formatCurrency(totalAmount);
+        console.log(invoiceData)
+        let startMeterReading = invoiceData.startMeterReading == 0 ? ' - ' : invoiceData.startMeterReading;
+        let endMeterReading = invoiceData.endMeterReading == 0 ? ' - ' : invoiceData.endMeterReading;
+
+        document.getElementById("iStartMeterReading").innerHTML = startMeterReading;
+        document.getElementById("iEndMeterReading").innerHTML = endMeterReading;
+
+        let fromDate = invoiceData.status == 1 ? invoiceData.finalStartDate : invoiceData.startDate;
+        let toDate = invoiceData.status == 1 ? invoiceData.finalEndDate : invoiceData.endDate;
+
+        let def = calculateDaysAndHour(fromDate, toDate);
+        let days = def.days == 0 ? 1 : def.days;
+        if(days != 0 && def.hours > 2) days +=1;
+
+        document.getElementById("iTotalDays").innerHTML = invoiceData.status == 2 ? ' - ' : days;
+
+        let totDistance = invoiceData.status == 2 ? ' - ' : (endMeterReading - startMeterReading) + " KM";
+
+        document.getElementById("iTotalDistance").innerHTML = totDistance;
+//        document.getElementById("iPenaltyAmount").innerHTML = endMeterReading;
 
         document.getElementById("iTotalAmountToPay").innerHTML = formatCurrency(totalAmount);
 

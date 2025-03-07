@@ -91,7 +91,7 @@
 
                               let newRow = `
                                   <tr>
-                                      <td>${i}</td>
+                                      <td style="vertical-align: middle;">${i}</td>
                                       <td style="vertical-align: middle;">${booking.bookingNumber}</td>
                                       <td style="vertical-align: middle;">${bookingType}</td>
                                       <td style="vertical-align: middle;">${booking.passengerName}</td>
@@ -102,7 +102,7 @@
                                       <td style="vertical-align: middle;">${booking.totalAmount}</td>
                                       <td style="vertical-align: middle;">${isPaid}</td>
                                       ${status}
-                                      <td>
+                                      <td style="vertical-align: middle;">
                                            <button type="button" class="icon-btn" onclick='fetchInvoiceData(${booking.id})'><i class="zmdi zmdi-receipt"></i></button>
                                       </td>
                                   </tr>

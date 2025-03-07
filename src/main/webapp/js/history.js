@@ -56,6 +56,9 @@
                               cancelBtn = (booking.status == 0) ? cancelBtn : ``;
                               completedBtn = (booking.status == 3) ? completedBtn : ``;
 
+                              let payBtn = ``;
+                              let jsonBooking = JSON.stringify(booking);
+
                               let payment = booking.paymentInfoList;
                               let isPaid = "Yes";
 
@@ -66,10 +69,14 @@
 
                                if(tempTotalProAmount < booking.totalAmount){
                                   isPaid = "No";
+                                  let tempBalAmount = booking.totalAmount - tempTotalProAmount;
+                                  payBtn = `<button type="button" class="icon-btn" onclick='openCustomPaymentFormModel(${jsonBooking},${tempBalAmount})' style="color: green;">
+                                                    <i class="fas fa-hand-holding-usd"></i>
+                                            </button>`;
                                }
 
 
-                              let jsonBooking = JSON.stringify(booking);
+
 
                               if(booking.status == 0){
                                 status = `<td class="status status-scheduled" style="vertical-align: middle;">
@@ -102,6 +109,7 @@
                                       ${status}
                                       <td style="vertical-align: middle;">
                                             <button type="button" class="icon-btn" onclick="fetchInvoiceData(${booking.id})"><i class="zmdi zmdi-receipt"></i></button>
+                                            ${payBtn}
                                       </td>
                                   </tr>
                               `;
@@ -276,8 +284,8 @@
             dataType: "json",
             success: function(response) {
                 if (response.status === "success") {
-
                     fetchAllBookings();
+                    fetchInvoiceData(bookingId, true);
 
                     $("#success_alert").hide();
                         $('#success_alert').html(response.message);
@@ -393,6 +401,177 @@
 
     //------------------------------CF AMOUNT---------------------->
 
+    //------------------------------------CUSTOM PAYMENT----------->
+
+    function openCustomPaymentFormModel(booking, balanceAmount){
+
+        $("#cpt2").prop("checked", true);
+        document.getElementById("cIsPayNow").checked = false;
+        document.getElementById('cPayNow').style.display = 'none';
+
+        let button = `<button type="button" class="btn btn-primary" style="width: 40%;" onclick="openCustomCardPaymentModel()" id="cCardPaymentNextBtn"> Next </button>`;
+        document.getElementById("cPaymentTypeBtn").innerHTML = "";
+        document.getElementById("cPaymentTypeBtn").insertAdjacentHTML('beforeend', button);
+
+        document.getElementById("bookingIdForCustomPay").value = booking.id;
+        document.getElementById("customerIdForCustomPay").value = booking.customerId;
+        document.getElementById("paymentTypeForCustomPay").value = 1;
+        document.getElementById("totalAmountForCustomPay").value = booking.totalAmount;
+        document.getElementById("balanceAmountForCustomPay").value = balanceAmount;
+
+        document.getElementById("balanceAmount").value = balanceAmount;
+
+        let modal = new bootstrap.Modal(document.getElementById("customPaymentTypeModel"));
+        modal.show();
+    }
+
+    function openCustomCardPaymentModel(){
+
+        document.getElementById("pay_amount_btn").innerHTML = document.getElementById("balanceAmount").value;
+        document.getElementById("pay_amount").innerHTML = document.getElementById("balanceAmount").value;
+
+        document.getElementById("bookingIdForCustomPayCard").value = document.getElementById("bookingIdForCustomPay").value;
+        document.getElementById("customerIdForCustomPayCard").value = document.getElementById("customerIdForCustomPay").value;
+        document.getElementById("totalAmountForCustomPayCard").value = document.getElementById("totalAmountForCustomPay").value;
+        document.getElementById("balanceAmountForCustomPayCard").value = document.getElementById("balanceAmount").value;
+
+        let modal = new bootstrap.Modal(document.getElementById("customCardPaymentModel"));
+        modal.show();
+    }
+
+    function cPayNowValidation(){
+        let payNowField = document.getElementById("balanceAmount");
+        if($("#cIsPayNow").prop('checked') == true){
+
+            let amount = document.getElementById('totalAmountForCustomPay').value;
+            let balanceAmount = document.getElementById("balanceAmountForCustomPay").value;
+
+            payNowField.value = balanceAmount == "-1" ? amount : balanceAmount;
+        }
+    }
+
+    function cPaymentTypeChanged(value){
+
+        let buttonDiv = document.getElementById("cPaymentTypeBtn");
+        buttonDiv.innerHTML = "";
+        let button = `<button type="submit" class="btn btn-success" style="width: 40%;" id="cCashPaymentSubmitBtn">
+                            <i class="fa fa-spinner fa-spin" id="csb_btn_loading" style="display: none; margin-right: 5px;"></i>Submit
+                      </button>`;
+        if(value == "1"){
+            document.getElementById('cPayNow').style.display = 'block';
+        }
+        if(value == "2"){
+            document.getElementById('cPayNow').style.display = 'none';
+            button = `<button type="button" class="btn btn-primary" style="width: 40%;" onclick="openCustomCardPaymentModel()" id="cCardPaymentNextBtn"> Next </button>`;
+        }
+        buttonDiv.insertAdjacentHTML('beforeend', button);
+
+    }
+
+    //custom cash payment
+    $("#customPaymentTypeForm").submit(function(event) {
+        event.preventDefault();
+
+        $('#csb_btn_loading').css('display', 'inline');
+        $(":submit").attr("disabled", true);
+
+        $.ajax({
+            type: "POST",
+            url: "../../booking",
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function(response) {
+                if (response.status === "success") {
+                    $("#success_alert").hide();
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                    fetchAllBookings();
+                    $("#customPaymentTypeModel").modal("hide");
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+            },
+            error: function(xhr) {
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred "+e;
+                }
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#csb_btn_loading').css('display', 'none');
+            }
+        });
+    });
+
+    //custom card payment
+    $("#cCardPaymentTypeForm").submit(function(event) {
+        event.preventDefault();
+        $(":submit").attr("disabled", true);
+
+        $.ajax({
+            type: "POST",
+            url: "../../booking",
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function(response) {
+                if (response.status === "success") {
+                    $("#success_alert").hide();
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                    fetchAllBookings();
+                    $("#customPaymentTypeModel").modal("hide");
+                    $("#customCardPaymentModel").modal("hide");
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+            },
+            error: function(xhr) {
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred "+e;
+                }
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#nb_btn_loading').css('display', 'none');
+                window.scrollTo(0,0);
+            }
+        });
+    });
+
 
 
     //------------------------------------INVOICE----------->
@@ -428,7 +607,7 @@
         });
     }
 
-    function fetchInvoiceData(bId){
+    function fetchInvoiceData(bId, addTime = false){
 
         $.ajax({
             type: "GET",
@@ -446,7 +625,7 @@
                           };
                           let invoiceData = Object.assign(currentDate, response.data);
 
-                          openInvoiceModel(invoiceData);
+                          openInvoiceModel(invoiceData, addTime);
                      }
                 }else {
 
@@ -470,7 +649,8 @@
         });
     }
 
-    function openInvoiceModel(invoiceData){
+    function openInvoiceModel(invoiceData, addTime = false){
+        document.getElementById("formOverlay").classList.remove("d-none");
         let jsonInvoice= JSON.stringify(invoiceData);
 
         document.getElementById("downloadBtn").innerHTML = `
@@ -498,6 +678,7 @@
         document.getElementById("iEndDate").innerHTML = invoiceData.status == 1 ? invoiceData.finalEndDate : invoiceData.endDate;
         let totalAmount = invoiceData.totalAmount;
         document.getElementById("iTotalAmount").innerHTML = formatCurrency(totalAmount);
+
 
         document.getElementById("iTotalAmountToPay").innerHTML = formatCurrency(totalAmount);
 
@@ -543,9 +724,16 @@
             rubberStamp.style.borderColor  = "red";
         }
 
-
-        let modal = new bootstrap.Modal(document.getElementById("invoiceModel"));
-        modal.show();
+        if(addTime){
+            setTimeout(() => {
+                let modal = new bootstrap.Modal(document.getElementById("invoiceModel"));
+                modal.show();
+            }, 1000);
+        }else{
+            let modal = new bootstrap.Modal(document.getElementById("invoiceModel"));
+            modal.show();
+        }
+        document.getElementById("formOverlay").classList.add("d-none");
     }
 
     function printInvoice(invoiceData) {
@@ -589,6 +777,21 @@
 
         return { days: diffInDays, hours: diffInHours };
     }
+
+    function enablePaymentButtons(){
+            let payNowAmount = document.getElementById("balanceAmount").value;
+
+            let btnId1 = "#cardPaymentNextBtn";
+            let btnId2 = "#cashPaymentSubmitBtn";
+
+            if(!payNowAmount){
+                $(btnId1).attr("disabled", true);
+                $(btnId2).attr("disabled", true);
+            }else{
+                $(btnId1).attr("disabled", false);
+                $(btnId2).attr("disabled", false);
+            }
+        }
 
 
 </script>

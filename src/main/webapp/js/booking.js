@@ -181,9 +181,8 @@
                                }
 
                                if(tempTotalProAmount < booking.totalAmount){
-
-                                let tempBalAmount = booking.totalAmount - tempTotalProAmount;
                                   isPaid = "No";
+                                  let tempBalAmount = booking.totalAmount - tempTotalProAmount;
                                   payBtn = `<button type="button" class="icon-btn" onclick='openCustomPaymentFormModel(${jsonBooking},${tempBalAmount})' style="color: green;">
                                                   <i class="fas fa-hand-holding-usd"></i>
                                           </button>`;
@@ -481,6 +480,8 @@
                 if (response.status === "success") {
 
                     fetchUserBookings();
+                    fetchInvoiceData(bookingId, true);
+
 
                     $("#success_alert").hide();
                         $('#success_alert').html(response.message);
@@ -1377,7 +1378,7 @@
         });
     }
 
-    function fetchInvoiceData(bId){
+    function fetchInvoiceData(bId, addTime = false){
 
         $.ajax({
             type: "GET",
@@ -1397,7 +1398,7 @@
                           };
                           let invoiceData = Object.assign(currentDate, response.data);
 
-                          openInvoiceModel(invoiceData);
+                          openInvoiceModel(invoiceData, addTime);
                      }
                 }else {
 
@@ -1421,7 +1422,7 @@
         });
     }
 
-    function openInvoiceModel(invoiceData){
+    function openInvoiceModel(invoiceData, addTime = false){
         let jsonInvoice= JSON.stringify(invoiceData);
 
         document.getElementById("downloadBtn").innerHTML = `
@@ -1495,8 +1496,15 @@
         }
 
 
-        let modal = new bootstrap.Modal(document.getElementById("invoiceModel"));
-        modal.show();
+        if(addTime){
+            setTimeout(() => {
+                let modal = new bootstrap.Modal(document.getElementById("invoiceModel"));
+                modal.show();
+            }, 1000);
+        }else{
+            let modal = new bootstrap.Modal(document.getElementById("invoiceModel"));
+            modal.show();
+        }
     }
 
     function printInvoice(invoiceData) {

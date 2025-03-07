@@ -94,24 +94,24 @@
         }
 
 
-            .custom-box-2 .custom-box-inner-2 input.custom-form-control {
+        .custom-box-2 .custom-box-inner-2 input.custom-form-control {
                 font-size: 12px;
                 font-weight: 600;
-            }
+        }
 
             /* Focus Styles */
-            .custom-form-control:focus,
-            .custom-form-select:focus {
+        .custom-form-control:focus,
+        .custom-form-select:focus {
                 box-shadow: none;
                 outline: none;
                 border: 1px solid #7700ff;
-            }
+        }
 
-            /* Remove border for card details input */
-            .custom-box-2 .custom-card-atm .custom-form-control {
+        /* Remove border for card details input */
+        .custom-box-2 .custom-card-atm .custom-form-control {
                 border: none;
                 box-shadow: none;
-            }
+        }
 
             /* Button Styles */
             .custom-btn-primary {
