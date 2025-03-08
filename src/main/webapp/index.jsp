@@ -75,12 +75,6 @@
                                     <span class="error_text" id="login_error_1"></span>
                                 </div>
 
-                                <div class="form-group">
-                                    <input type="checkbox" name="remember-me" id="remember-me"
-                                           class="agree-term" /> <label for="remember-me"
-                                           class="label-agree-term"><span><span></span></span>Remember
-                                        me</label>
-                                </div>
                                 <div class="form-group form-button">
                                     <button type="submit" class="form-submit" ><i class="fa fa-spinner fa-spin" id="btn_loading"></i>Log in</button>
                                 </div>
