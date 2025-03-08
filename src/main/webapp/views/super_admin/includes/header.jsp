@@ -92,4 +92,96 @@
         vertical-align: middle;
     }
 
+    .custom-box-2 .custom-box-inner-2 input.custom-form-control {
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* Focus Styles */
+    .custom-form-control:focus,
+    .custom-form-select:focus {
+        box-shadow: none;
+        outline: none;
+        border: 1px solid #7700ff;
+    }
+
+    /* Remove border for card details input */
+    .custom-box-2 .custom-card-atm .custom-form-control {
+        border: none;
+        box-shadow: none;
+    }
+
+    /* Button Styles */
+    .custom-btn-primary {
+        background-color: #7700ff;
+        color: whitesmoke;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        justify-content: center;
+        border: none;
+        padding: 10px;
+    }
+
+    .custom-btn-primary:hover {
+        background-color: #7a34ca;
+    }
+
+    /* Card Details Section */
+    .custom-card-atm {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 5px;
+    }
+
+    .custom-card-atm .fab {
+        font-size: 20px;
+    }
+
+    /* Cardholder Name Section */
+    .custom-cardname p {
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    /* Total Amount Display */
+    .custom-address {
+        margin-top: 15px;
+    }
+
+    .custom-address .custom-d-flex {
+        justify-content: space-between;
+        font-weight: bold;
+    }
+
+    /* Icons */
+    .custom-fas,
+    .custom-fab {
+        color: #6d6c6d;
+    }
+
+    .custom-card-with-border {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid #ddd; /* Border for both the icon and input */
+        border-radius: 5px;
+        padding: 5px;
+    }
+
+    .custom-card-with-border .fab {
+        font-size: 20px;
+    }
+
+    .custom-input {
+        border: none; /* Remove individual borders from input */
+        box-shadow: none;
+    }
+
+
+
 </style>

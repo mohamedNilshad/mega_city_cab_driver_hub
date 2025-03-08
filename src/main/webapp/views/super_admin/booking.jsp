@@ -17,6 +17,7 @@
 <html lang="en">
 <head>
     <jsp:include page="includes/header.jsp" />
+
     <style>
         .overlay {
            position: absolute;
@@ -192,7 +193,7 @@
         </div>
     </div>
 </div>
-
+<a href="card_payment.jsp">card</a>
 <!--Booking update From-->
 <div class="modal fade" id="editBookingModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -598,7 +599,7 @@
                         </div>
                     </div>
                     <div class="row justify-content-center" id="cPaymentTypeBtn">
-                        <button type="button" class="btn btn-primary" style="width: 40%;"  data-bs-toggle="modal" data-bs-target="#cardPaymentModel" id="cCardPaymentNextBtn">Next</button>
+                        <button type="button" class="btn btn-primary" style="width: 40%;" onclick="openCustomCardPaymentModel()" id="cCardPaymentNextBtn">Next</button>
                     </div>
                 </form>
             </div>
@@ -606,7 +607,66 @@
     </div>
 </div>
 
+<!-- Custom Card payment-->
+<div class="modal fade" id="customCardPaymentModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="popupFormLabel7">Online Payment Gateway</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="custom-box">
+                        <div class="custom-box-inner">
+                            <div>
+                                <p class="fw-bold">Payment Details</p>
+                                <p class="dis mb-3">Complete your purchase by providing your payment details</p>
+                            </div>
 
+                            <form id="cCardPaymentTypeForm">
+                                <input type="hidden" name="action" value="custom_card_payment" required>
+                                <input type="hidden" name="paymentTypeForCustomPay" value="2" required>
+                                <input type="hidden" id="bookingIdForCustomPayCard" name="bookingIdForCustomPay" required>
+                                <input type="hidden" id="customerIdForCustomPayCard" name="customerIdForCustomPay" required>
+                                <input type="hidden" id="totalAmountForCustomPayCard" name="totalAmountForCustomPay" required>
+                                <input type="hidden" id="balanceAmountForCustomPayCard" name="balanceAmountForCustomPay" required>
+
+                                <div>
+                                    <label class="dis fw-bold mb-2">Card details</label>
+                                    <div class="d-flex align-items-center justify-content-between custom-card-with-border">
+                                        <i class="fab fa-brands fa-cc-visa"></i>
+                                        <input type="text" class="form-control custom-input" placeholder="Card Number" name="cardNumber" pattern="^\d{14,}$" title="Invalid Card Number" minlength="14" required>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mt-2">
+                                        <input type="text" class="form-control" placeholder="MM/YY" required>
+                                        <div class="w-50"></div>
+                                        <input type="password" maxlength="3" class="form-control" placeholder="CVV" required>
+                                    </div>
+                                    <div class="my-3 custom-cardholder">
+                                        <label class="dis fw-bold mb-2">Cardholder Name</label>
+                                        <input class="form-control" type="text" placeholder="Full Name" name="cardHolderName" required>
+                                    </div>
+                                    <div class="custom-address">
+                                        <div class="d-flex flex-column dis">
+                                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                                <p class="fw-bold">Total</p>
+                                                <p class="fw-bold">LKR <span id="pay_amount"></span></p>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary custom-btn mt-2">Pay LKR <span id="pay_amount_btn"></span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
 
 
 

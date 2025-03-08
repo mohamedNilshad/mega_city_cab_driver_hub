@@ -19,25 +19,30 @@
     <head>
         <jsp:include page="includes/header.jsp" />
 
+        <style>
+
+            .hide-text {
+              white-space: nowrap;
+              width: 100%;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+        </style>
     </head>
-    <body id="page-top"  style="padding-top: 110px;">
+    <body id="page-top" style="padding-top: 110px; padding-bottom: 10px; ">
         <!-- Navigation-->
         <jsp:include page="nav.jsp" />
 
-        <div style="padding-bottom: 5px; padding-right: 10px; float: right;">
-            <a href="customer_booking.jsp" class="btn btn-primary">New Customer Booking</a>
-        </div>
         <div class="alert alert-success custom-alert" role="alert" id="success_alert"></div>
         <div class="alert alert-danger custom-alert" role="alert" id="error_alert"></div>
 
-        <table id="bookingsTable" class="ctable table" style="text-align: center;">
+        <table id="bookingHistoryTable" class="ctable table" style="text-align: center;">
             <thead class="thead-dark">
             <tr>
                 <th scope="col" style="width: 3%; vertical-align: middle;">#</th>
                 <th scope="col" style="vertical-align: middle;">Booking Number</th>
                 <th scope="col" style="vertical-align: middle;">Booking Type</th>
                 <th scope="col" style="vertical-align: middle;">Customer Name</th>
-                <th scope="col" style="vertical-align: middle;">Customer NIC</th>
                 <th scope="col" style="vertical-align: middle;">Vehicle Number</th>
                 <th scope="col" style="vertical-align: middle;">Start Date</th>
                 <th scope="col" style="vertical-align: middle;">End Date</th>
@@ -137,7 +142,6 @@
                                             <th>Payment Type</th>
                                             <th class="center">Date</th>
                                             <th class="right" style="text-align: right;">Amount(LKR)</th>
-
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -194,13 +198,27 @@
             </div>
         </div>
 
-
-
         <jsp:include page="../../WEB-INF/includes/footer.jsp" />
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            let customerId = <%= userId %>;
+            var contextPath = '${pageContext.request.contextPath}' + '/uploads/';
+        </script>
         <jsp:include page="../../js/invoice/invoice.js" />
-        <jsp:include page="../../js/home.js" />
-        
+
+        <jsp:include page="../../js/history.js" />
+        <script>
+
+            function onMouseOver(id) {
+             document.getElementById(id).style.whiteSpace = "wrap";
+             document.getElementById(id).style.overflow = "visible";
+            }
+            function onMouseLeave(id) {
+                document.getElementById(id).style.whiteSpace = "nowrap";
+                document.getElementById(id).style.overflow = "hidden";
+            }
+        </script>
+
     </body>
 </html>
 

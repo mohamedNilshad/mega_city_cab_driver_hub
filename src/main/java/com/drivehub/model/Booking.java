@@ -32,7 +32,7 @@ public class Booking {
 
 
     //select
-    public Booking(int id, String bookingNumber, List<PaymentInfo> paymentInfoList, int bookingType, int customerId, User customer, Vehicle vehicle, int vehicleId, Timestamp startDate, Timestamp endDate, double totalAmount, int requestedSeatCount, double totalRequestedDistance, String passengerName, String passengerPhone, double finalTotalAmount, int status) {
+    public Booking(int id, String bookingNumber, List<PaymentInfo> paymentInfoList, int bookingType, int customerId, User customer, Vehicle vehicle, int vehicleId, Timestamp startDate, Timestamp endDate, double totalAmount, int requestedSeatCount, double totalRequestedDistance, String passengerName, String passengerPhone, double finalTotalAmount, Timestamp finalStartDate, Timestamp finalEndDate, int status) {
         this.id = id;
         this.bookingNumber = bookingNumber;
         this.paymentInfoList = paymentInfoList;
@@ -49,6 +49,8 @@ public class Booking {
         this.passengerName = passengerName;
         this.passengerPhone = passengerPhone;
         this.finalTotalAmount = finalTotalAmount;
+        this.finalStartDate = finalStartDate;
+        this.finalEndDate = finalEndDate;
         this.status = status;
     }
 

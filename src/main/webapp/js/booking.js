@@ -973,43 +973,6 @@
         }
     }
 
-    function openPaymentFormModel(isNew = false){
-
-        if(!isNew){
-            $("#editBookingModel").modal("hide");
-        }
-
-        let formData = new FormData(document.getElementById("newBookingForm"));
-        if(validNewBookingForm(formData)){
-            return;
-        }
-
-        let buttonDiv = document.getElementById("paymentTypeBtn");
-        buttonDiv.innerHTML = "";
-        let button = `<button type="button" class="btn btn-primary" style="width: 40%;" data-bs-toggle="modal" data-bs-target="#cardPaymentModel" id="cardPaymentNextBtn"> Next </button>`;
-        buttonDiv.insertAdjacentHTML('beforeend', button);
-
-        $("#pt2").prop("checked", true);
-        document.getElementById("isPayNow").checked = false;
-        document.getElementById('payNow').style.display = 'none';
-
-//        document.getElementById("payNowAmountField").style.display = "none";
-
-        let total_amount = "total_amount";
-        let is_update = document.getElementById("is_update").value
-        if(is_update == "true"){
-            total_amount = "update_total_amount";
-        }
-        let amount = document.getElementById(total_amount).value;
-        let balanceAmount = document.getElementById("balance_amount").value;
-
-        document.getElementById("payNowAmount").value = balanceAmount == "-1" ? amount : balanceAmount;
-
-
-        let modal = new bootstrap.Modal(document.getElementById("paymentTypeModel"));
-        modal.show();
-    }
-
     function removeDuplicateVehicle(arr, key) {
         let seen = new Set();
 
@@ -1153,43 +1116,6 @@
         }
     }
 
-    function paymentTypeChanged(value){
-
-        let buttonDiv = document.getElementById("paymentTypeBtn");
-        buttonDiv.innerHTML = "";
-        let button = `<button type="submit" class="btn btn-success" style="width: 40%;" id="cashPaymentSubmitBtn">
-                            <i class="fa fa-spinner fa-spin" id="nb_btn_loading" style="display: none; margin-right: 5px;"></i>Submit
-                      </button>`;
-        if(value == "1"){
-            document.getElementById('payNow').style.display = 'block';
-        }
-        if(value == "2"){
-            document.getElementById('payNow').style.display = 'none';
-            button = `<button type="button" class="btn btn-primary" style="width: 40%;" data-bs-toggle="modal" data-bs-target="#cardPaymentModel" id="cardPaymentNextBtn"> Next </button>`;
-        }
-        buttonDiv.insertAdjacentHTML('beforeend', button);
-        enablePaymentButtons();
-    }
-
-    function payNowValidation(){
-        let payNowField = document.getElementById("payNowAmountField");
-        if($("#isPayNow").prop('checked') == true){
-            let total_amount = "total_amount";
-            let is_update = document.getElementById("is_update").value
-            if(is_update == "true"){
-                total_amount = "update_total_amount";
-            }
-            let amount = document.getElementById(total_amount).value;
-            let balanceAmount = document.getElementById("balance_amount").value;
-
-            document.getElementById("payNowAmount").value = balanceAmount == "-1" ? amount : balanceAmount;
-//            payNowField.style.display = "block";
-        }else{
-//            document.getElementById("payNowAmount").value = "";
-//            payNowField.style.display = "none";
-        }
-    }
-
     function buildVehicleType(idName, vTypes, selectId){
         let dropdown = $("#"+idName);
         dropdown.empty();
@@ -1312,6 +1238,84 @@
     }
 
 
+    //------------------------------------PAYMENT----------->
+
+    function openPaymentFormModel(isNew = false){
+
+        if(!isNew){
+            $("#editBookingModel").modal("hide");
+        }
+
+        let formData = new FormData(document.getElementById("newBookingForm"));
+        if(validNewBookingForm(formData)){
+            return;
+        }
+
+        let buttonDiv = document.getElementById("paymentTypeBtn");
+        buttonDiv.innerHTML = "";
+        let button = `<button type="button" class="btn btn-primary" style="width: 40%;" data-bs-toggle="modal" data-bs-target="#cardPaymentModel" id="cardPaymentNextBtn"> Next </button>`;
+        buttonDiv.insertAdjacentHTML('beforeend', button);
+
+        $("#pt2").prop("checked", true);
+        document.getElementById("isPayNow").checked = false;
+        document.getElementById('payNow').style.display = 'none';
+
+//        document.getElementById("payNowAmountField").style.display = "none";
+
+        let total_amount = "total_amount";
+        let is_update = document.getElementById("is_update").value
+        if(is_update == "true"){
+            total_amount = "update_total_amount";
+        }
+        let amount = document.getElementById(total_amount).value;
+        let balanceAmount = document.getElementById("balance_amount").value;
+
+        document.getElementById("payNowAmount").value = balanceAmount == "-1" ? amount : balanceAmount;
+
+
+        let modal = new bootstrap.Modal(document.getElementById("paymentTypeModel"));
+        modal.show();
+    }
+
+    function paymentTypeChanged(value){
+
+        let buttonDiv = document.getElementById("paymentTypeBtn");
+        buttonDiv.innerHTML = "";
+        let button = `<button type="submit" class="btn btn-success" style="width: 40%;" id="cashPaymentSubmitBtn">
+                            <i class="fa fa-spinner fa-spin" id="nb_btn_loading" style="display: none; margin-right: 5px;"></i>Submit
+                      </button>`;
+        if(value == "1"){
+            document.getElementById('payNow').style.display = 'block';
+        }
+        if(value == "2"){
+            document.getElementById('payNow').style.display = 'none';
+            button = `<button type="button" class="btn btn-primary" style="width: 40%;" data-bs-toggle="modal" data-bs-target="#cardPaymentModel" id="cardPaymentNextBtn"> Next </button>`;
+        }
+        buttonDiv.insertAdjacentHTML('beforeend', button);
+        enablePaymentButtons();
+    }
+
+    function payNowValidation(){
+        let payNowField = document.getElementById("payNowAmountField");
+        if($("#isPayNow").prop('checked') == true){
+            let total_amount = "total_amount";
+            let is_update = document.getElementById("is_update").value
+            if(is_update == "true"){
+                total_amount = "update_total_amount";
+            }
+            let amount = document.getElementById(total_amount).value;
+            let balanceAmount = document.getElementById("balance_amount").value;
+
+            document.getElementById("payNowAmount").value = balanceAmount == "-1" ? amount : balanceAmount;
+//            payNowField.style.display = "block";
+        }else{
+//            document.getElementById("payNowAmount").value = "";
+//            payNowField.style.display = "none";
+        }
+    }
+
+
+
     //------------------------------------INVOICE----------->
     function fetchCompanyProfile(){
 
@@ -1391,7 +1395,6 @@
 
     function openInvoiceModel(invoiceData){
         let jsonInvoice= JSON.stringify(invoiceData);
-        console.log(invoiceData);
 
         document.getElementById("downloadBtn").innerHTML = `
             <button type="button" onclick='printInvoice(${jsonInvoice})' class="btn btn-primary btn-sm" style="width: 10%;margin-bottom: 5px; margin-left: 15px; float: left;">
@@ -1414,8 +1417,8 @@
 
         document.getElementById("bookingNo").innerHTML = invoiceData.bookingNumber;
         document.getElementById("iBookingType").innerHTML = invoiceData.bookingType == 1 ? "Schedule Booking" : "Instant Booking";
-        document.getElementById("iStartDate").innerHTML = invoiceData.startDate;
-        document.getElementById("iEndDate").innerHTML = invoiceData.endDate;
+        document.getElementById("iStartDate").innerHTML = invoiceData.status == 1 ? invoiceData.finalStartDate : invoiceData.startDate;
+        document.getElementById("iEndDate").innerHTML = invoiceData.status == 1 ? invoiceData.finalEndDate : invoiceData.endDate;
         let totalAmount = invoiceData.totalAmount;
         document.getElementById("iTotalAmount").innerHTML = formatCurrency(totalAmount);
 
@@ -1505,7 +1508,7 @@
         document.getElementById("cIsPayNow").checked = false;
         document.getElementById('cPayNow').style.display = 'none';
 
-        let button = `<button type="button" class="btn btn-primary" style="width: 40%;" data-bs-toggle="modal" data-bs-target="#cardPaymentModel" id="cCardPaymentNextBtn"> Next </button>`;
+        let button = `<button type="button" class="btn btn-primary" style="width: 40%;" onclick="openCustomCardPaymentModel()" id="cCardPaymentNextBtn"> Next </button>`;
         document.getElementById("cPaymentTypeBtn").innerHTML = "";
         document.getElementById("cPaymentTypeBtn").insertAdjacentHTML('beforeend', button);
 
@@ -1518,6 +1521,20 @@
         document.getElementById("balanceAmount").value = balanceAmount;
 
         let modal = new bootstrap.Modal(document.getElementById("customPaymentTypeModel"));
+        modal.show();
+    }
+
+    function openCustomCardPaymentModel(){
+
+        document.getElementById("pay_amount_btn").innerHTML = document.getElementById("balanceAmount").value;
+        document.getElementById("pay_amount").innerHTML = document.getElementById("balanceAmount").value;
+
+        document.getElementById("bookingIdForCustomPayCard").value = document.getElementById("bookingIdForCustomPay").value;
+        document.getElementById("customerIdForCustomPayCard").value = document.getElementById("customerIdForCustomPay").value;
+        document.getElementById("totalAmountForCustomPayCard").value = document.getElementById("totalAmountForCustomPay").value;
+        document.getElementById("balanceAmountForCustomPayCard").value = document.getElementById("balanceAmount").value;
+
+        let modal = new bootstrap.Modal(document.getElementById("customCardPaymentModel"));
         modal.show();
     }
 
@@ -1544,7 +1561,7 @@
         }
         if(value == "2"){
             document.getElementById('cPayNow').style.display = 'none';
-            button = `<button type="button" class="btn btn-primary" style="width: 40%;" data-bs-toggle="modal" data-bs-target="#cardPaymentModel" id="cCardPaymentNextBtn"> Next </button>`;
+            button = `<button type="button" class="btn btn-primary" style="width: 40%;" onclick="openCustomCardPaymentModel()" id="cCardPaymentNextBtn"> Next </button>`;
         }
         buttonDiv.insertAdjacentHTML('beforeend', button);
 
@@ -1601,6 +1618,58 @@
             complete: function(){
                 $(":submit").removeAttr("disabled");
                 $('#csb_btn_loading').css('display', 'none');
+            }
+        });
+    });
+
+    //custom card payment
+    $("#cCardPaymentTypeForm").submit(function(event) {
+        event.preventDefault();
+        $(":submit").attr("disabled", true);
+
+        $.ajax({
+            type: "POST",
+            url: "../../booking",
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function(response) {
+                if (response.status === "success") {
+                    $("#success_alert").hide();
+                        $('#success_alert').html(response.message);
+                        $("#success_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#success_alert").slideUp(500);
+                    });
+                    fetchUserBookings();
+                    $("#customPaymentTypeModel").modal("hide");
+                    $("#customCardPaymentModel").modal("hide");
+                }else {
+                    $("#success_alert").hide();
+                        $('#error_alert').html(response.message);
+                        $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error_alert").slideUp(500);
+                    });
+                }
+            },
+            error: function(xhr) {
+                let responseText = xhr.responseText;
+                let errorMsg = '';
+                try {
+                    let errorResponse = JSON.parse(responseText);
+                    errorMsg = errorResponse.message;
+                } catch (e) {
+                    errorMsg = "Unexpected error occurred "+e;
+                }
+
+                $("#success_alert").hide();
+                    $('#error_alert').html(errorMsg);
+                    $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#error_alert").slideUp(500);
+                });
+            },
+            complete: function(){
+                $(":submit").removeAttr("disabled");
+                $('#nb_btn_loading').css('display', 'none');
+                window.scrollTo(0,0);
             }
         });
     });

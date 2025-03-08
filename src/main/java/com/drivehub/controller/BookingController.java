@@ -3,6 +3,7 @@ package com.drivehub.controller;
 import com.drivehub.model.Booking;
 import com.drivehub.model.PaymentInfo;
 import com.drivehub.model.Vehicle;
+import com.drivehub.model.VisaCardDetails;
 import com.drivehub.service.BookingService;
 import com.drivehub.util.Formats;
 import org.json.JSONArray;
@@ -277,7 +278,9 @@ public class BookingController extends HttpServlet {
             }else if ("update_final_amount".equals(action)) {
                 updateFinalAmount(request, response);
             }else if ("custom_cash_payment".equals(action)) {
-                customCashPayment(request, response);
+                customPayment(request, response, action);
+            }else if ("custom_card_payment".equals(action)) {
+                customPayment(request, response, action);
             }
         } catch (ParseException e) {
             throw new RuntimeException(e);
@@ -333,25 +336,45 @@ public class BookingController extends HttpServlet {
         out.flush();
     }
 
-    private void customCashPayment(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+    private void customPayment(HttpServletRequest request, HttpServletResponse response, String action) throws IOException, ParseException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
         JSONObject jsonResponse = new JSONObject();
 
         try{
-            int isPaid = request.getParameter("cIsPayNow") == null ? 0 : 1;
-            PaymentInfo paymentInfo = new PaymentInfo(
-                    Integer.parseInt(request.getParameter("customerIdForCustomPay")),
-                    Integer.parseInt(request.getParameter("paymentTypeForCustomPay")),
-                    Double.parseDouble(request.getParameter("totalAmountForCustomPay")),
-                    Double.parseDouble(request.getParameter("balanceAmount")),
-                    isPaid
-            );
-
             int bookingId = Integer.parseInt(request.getParameter("bookingIdForCustomPay"));
 
-            boolean isAdded= bookingService.customCashPayment(bookingId, paymentInfo);
+            PaymentInfo paymentInfo;
+            VisaCardDetails cardDetails = new VisaCardDetails();
+
+            if("custom_cash_payment".equals(action)){
+                int isPaid = request.getParameter("cIsPayNow") == null ? 0 : 1;
+                paymentInfo = new PaymentInfo(
+                        Integer.parseInt(request.getParameter("customerIdForCustomPay")),
+                        Integer.parseInt(request.getParameter("paymentTypeForCustomPay")),
+                        Double.parseDouble(request.getParameter("totalAmountForCustomPay")),
+                        Double.parseDouble(request.getParameter("balanceAmount")),
+                        isPaid
+                );
+            }else{
+                int i = Integer.parseInt(request.getParameter("customerIdForCustomPay"));
+                int cardNumber = Integer.parseInt(String.format("%04d", i % 10000));
+
+                cardDetails.setCardHolderName(request.getParameter("cardHolderName"));
+                cardDetails.setCardNumber(cardNumber);
+                cardDetails.setBookingId(bookingId);
+
+                paymentInfo = new PaymentInfo(
+                        Integer.parseInt(request.getParameter("customerIdForCustomPay")),
+                        Integer.parseInt(request.getParameter("paymentTypeForCustomPay")),
+                        Double.parseDouble(request.getParameter("totalAmountForCustomPay")),
+                        Double.parseDouble(request.getParameter("balanceAmountForCustomPay")),
+                        1
+                );
+            }
+
+            boolean isAdded= bookingService.customCashPayment(bookingId, paymentInfo, cardDetails);
 
             if (isAdded) {
                 jsonResponse.put("status", "success");

@@ -435,9 +435,7 @@
             url: "../../booking",
             data: { action: "get_invoice_data", bookingId: bId},
             dataType: "json",
-            beforeSend: function() {
-                console.log("Loading");
-            },
+
             success: function(response) {
 
                 if (response.status === "success") {
@@ -474,7 +472,6 @@
 
     function openInvoiceModel(invoiceData){
         let jsonInvoice= JSON.stringify(invoiceData);
-        console.log(invoiceData);
 
         document.getElementById("downloadBtn").innerHTML = `
             <button type="button" onclick='printInvoice(${jsonInvoice})' class="btn btn-primary btn-sm" style="width: 10%;margin-bottom: 5px; margin-left: 15px; float: left;">
@@ -497,8 +494,8 @@
 
         document.getElementById("bookingNo").innerHTML = invoiceData.bookingNumber;
         document.getElementById("iBookingType").innerHTML = invoiceData.bookingType == 1 ? "Schedule Booking" : "Instant Booking";
-        document.getElementById("iStartDate").innerHTML = invoiceData.startDate;
-        document.getElementById("iEndDate").innerHTML = invoiceData.endDate;
+        document.getElementById("iStartDate").innerHTML = invoiceData.status == 1 ? invoiceData.finalStartDate : invoiceData.startDate;
+        document.getElementById("iEndDate").innerHTML = invoiceData.status == 1 ? invoiceData.finalEndDate : invoiceData.endDate;
         let totalAmount = invoiceData.totalAmount;
         document.getElementById("iTotalAmount").innerHTML = formatCurrency(totalAmount);
 
@@ -592,7 +589,6 @@
 
         return { days: diffInDays, hours: diffInHours };
     }
-
 
 
 </script>

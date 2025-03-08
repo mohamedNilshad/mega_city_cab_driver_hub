@@ -3,6 +3,7 @@ import com.drivehub.dao.BookingDAO;
 import com.drivehub.model.Booking;
 import com.drivehub.model.PaymentInfo;
 import com.drivehub.model.Vehicle;
+import com.drivehub.model.VisaCardDetails;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -39,8 +40,8 @@ public class BookingService {
         return bookingDAO.addNewBooking(booking, paymentInfo);
     }
 
-    public Boolean customCashPayment(int bookingId, PaymentInfo paymentInfo) {
-        return bookingDAO.customCashPayment(bookingId, paymentInfo);
+    public Boolean customCashPayment(int bookingId, PaymentInfo paymentInfo, VisaCardDetails cardDetails) {
+        return bookingDAO.customCashPayment(bookingId, paymentInfo, cardDetails);
     }
 
     public Boolean updateBooking(Booking booking, PaymentInfo paymentInfo) {

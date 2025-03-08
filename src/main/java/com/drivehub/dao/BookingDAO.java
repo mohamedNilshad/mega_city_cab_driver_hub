@@ -87,6 +87,8 @@ public class BookingDAO {
                         rs.getString("passenger_name"),
                         rs.getString("passenger_phone"),
                         rs.getDouble("finalTotalAmount"),
+                        rs.getTimestamp("finalStartDate"),
+                        rs.getTimestamp("finalEndDate"),
                         rs.getInt("status")
                 );
 
@@ -141,6 +143,8 @@ public class BookingDAO {
                         rs.getString("passenger_name"),
                         rs.getString("passenger_phone"),
                         rs.getDouble("finalTotalAmount"),
+                        rs.getTimestamp("finalStartDate"),
+                        rs.getTimestamp("finalEndDate"),
                         rs.getInt("status")
                 );
 
@@ -229,6 +233,8 @@ public class BookingDAO {
                         rs.getString("passenger_name"),
                         rs.getString("passenger_phone"),
                         rs.getDouble("finalTotalAmount"),
+                        rs.getTimestamp("finalStartDate"),
+                        rs.getTimestamp("finalEndDate"),
                         rs.getInt("status")
                 );
 
@@ -283,6 +289,8 @@ public class BookingDAO {
                         rs.getString("passenger_name"),
                         rs.getString("passenger_phone"),
                         rs.getDouble("finalTotalAmount"),
+                        rs.getTimestamp("finalStartDate"),
+                        rs.getTimestamp("finalEndDate"),
                         rs.getInt("status")
                 );
 
@@ -343,11 +351,29 @@ public class BookingDAO {
         return false;
     }
 
-    public Boolean customCashPayment(int bookingId, PaymentInfo paymentInfo) {
+    public Boolean customCashPayment(int bookingId, PaymentInfo paymentInfo, VisaCardDetails cardDetails) {
 
         try {
-            return addPaymentInfo(paymentInfo, bookingId);
+            if(paymentInfo.getPaymentType() == 1) {
+                return addPaymentInfo(paymentInfo, bookingId);
+            }
+            int paymentId = addAndGetPaymentInfoId(paymentInfo, bookingId);
+            if(paymentId != -1){
+                Connection conn = DBConnection.getConnection();
 
+                PreparedStatement stmt = conn.prepareStatement(
+                        "INSERT INTO `card_info`(`cardHolderName`, `cardNumber`, `bookingId`, `paymentId`) VALUES (?,?,?,?)"
+                );
+
+                stmt.setString(1,cardDetails.getCardHolderName());
+                stmt.setInt(2, cardDetails.getCardNumber());
+                stmt.setInt(3, bookingId);
+                stmt.setInt(4, paymentId);
+
+                int rs = stmt.executeUpdate();
+                conn.close();
+                return  rs > 0;
+            }
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
@@ -475,6 +501,37 @@ public class BookingDAO {
         int rs = stmt.executeUpdate();
         conn.close();
         return  rs > 0;
+    }
+
+    private int addAndGetPaymentInfoId(PaymentInfo paymentInfo, int bookingId) throws SQLException {
+        Connection conn = DBConnection.getConnection();
+
+        String refNumber = generateReferenceNumber();
+
+        PreparedStatement stmt = conn.prepareStatement(
+                "INSERT INTO `payment_info`(`reference_number`, `booking_id`, `customer_id`, `payment_type`, `total_amount`, `provided_amount`, `is_paid`) VALUES (?,?,?,?,?,?,?)",
+                Statement.RETURN_GENERATED_KEYS
+        );
+
+        stmt.setString(1,refNumber);
+        stmt.setInt(2, bookingId);
+        stmt.setInt(3, paymentInfo.getCustomerId());
+        stmt.setInt(4, paymentInfo.getPaymentType());
+        stmt.setDouble(5, paymentInfo.getTotalAmount());
+        stmt.setDouble(6, paymentInfo.getProvidedAmount());
+        stmt.setInt(7, paymentInfo.getIsPaid());
+
+        int rs = stmt.executeUpdate();
+        if (rs > 0) {
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int insertedId = generatedKeys.getInt(1);
+                    conn.close();
+                    return insertedId;
+                }
+            }
+        }
+        return -1;
     }
 
     private String generateReferenceNumber() throws SQLException {

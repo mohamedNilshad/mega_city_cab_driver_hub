@@ -122,6 +122,9 @@
 
     function getInvoiceBookingInfo(invoiceData){
 
+        let startDate = invoiceData.status == 1 ? invoiceData.finalStartDate : invoiceData.startDate;
+        let endDate = invoiceData.status == 1 ? invoiceData.finalEndDate : invoiceData.endDate;
+
         let totalAmount = formatCurrency(invoiceData.totalAmount);
         let bookingType = invoiceData.bookingType == 1 ? "Schedule Booking" : "Instant Booking";
         return `
@@ -130,8 +133,8 @@
                     <span style="font-weight: 600;">Booking No :</span><strong>${invoiceData.bookingNumber}</strong>
                 </div>
                 <div><span style="font-weight: 600;">Booking Type :</span> ${bookingType}</div>
-                <div><span style="font-weight: 600;">Start Date : ${invoiceData.startDate}</div>
-                <div><span style="font-weight: 600;">End Date : ${invoiceData.endDate}</div>
+                <div><span style="font-weight: 600;">Start Date : ${startDate}</div>
+                <div><span style="font-weight: 600;">End Date : ${endDate}</div>
                 <div><span style="font-weight: 600;">Total Amount : </span> ${totalAmount}</div>
             </div>
         `;
