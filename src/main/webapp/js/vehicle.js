@@ -5,48 +5,49 @@
 
    //fetch vehicle type
     $.ajax({
-               type: "GET",
-               url: "../../vehicle",
-               data: { action: "vehicle_types" },
-               dataType: "json",
-               beforeSend: function() {
-                   $('#nv_btn_loading').css('display', 'inline');
-                   $("#newVehicleBtn").attr("disabled", true);
-               },
-               success: function(response) {
-                   if (response.status === "success") {
-                       vehicleTypes = response.data;
-                       buildVehicleType('v_type', vehicleTypes, -1);
-                   }else {
-                       $("#success_alert").hide();
-                           $('#error_alert').html(response.message);
-                           $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                           $("#error_alert").slideUp(500);
-                       });
-                   }
+       type: "GET",
+       url: "../../vehicle",
+       data: { action: "vehicle_types" },
+       dataType: "json",
+       beforeSend: function() {
+           $('#nv_btn_loading').css('display', 'inline');
+           $("#newVehicleBtn").attr("disabled", true);
+       },
+       success: function(response) {
+           if (response.status === "success") {
+               vehicleTypes = response.data;
+               buildVehicleType('v_type', vehicleTypes, -1);
 
-               },
-               error: function(xhr) {
-                       let responseText = xhr.responseText;
-                       let errorMsg = '';
-                       try {
-                           let errorResponse = JSON.parse(responseText);
-                           errorMsg = errorResponse.message;
-                       } catch (e) {
-                           errorMsg = "Unexpected error occurred: "+e;
-                       }
+           }else {
+               $("#success_alert").hide();
+                   $('#error_alert').html(response.message);
+                   $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+                   $("#error_alert").slideUp(500);
+               });
+           }
+            $('#nv_btn_loading').css('display', 'none');
+       },
+       error: function(xhr) {
+           let responseText = xhr.responseText;
+           let errorMsg = '';
+           try {
+               let errorResponse = JSON.parse(responseText);
+               errorMsg = errorResponse.message;
+           } catch (e) {
+               errorMsg = "Unexpected error occurred: "+e;
+           }
 
-                       $("#success_alert").hide();
-                           $('#error_alert').html(errorMsg);
-                           $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
-                           $("#error_alert").slideUp(500);
-                       });
-               },
-               complete: function(){
-                   $("#newVehicleBtn").removeAttr("disabled");
-                   $('#nv_btn_loading').css('display', 'none');
-               }
+           $("#success_alert").hide();
+               $('#error_alert').html(errorMsg);
+               $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
+               $("#error_alert").slideUp(500);
            });
+       },
+       complete: function(){
+           $("#newVehicleBtn").removeAttr("disabled");
+           $('#nv_btn_loading').css('display', 'none');
+       }
+   });
 
     //fetch available drivers
     function fetchAvailableDrivers(){

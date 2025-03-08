@@ -195,18 +195,33 @@ public class BookingDAO {
         return null;
     }
 
-    public List<Booking> getScheduledBookings() {
+    public List<Booking> getScheduledBookings(String keyword) {
         List<Booking> bookingList = new ArrayList<>();
         try  {
             Connection conn = DBConnection.getConnection();
 
-            PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT b.*, v.vehicleNumber, v.vehicleTypeId, c.userNic FROM bookings b "+
-                            "INNER JOIN vehicles v ON b.vehicle_id = v.id "+
-                            "INNER JOIN users c ON b.customer_id = c.id "+
-                            "WHERE b.status = ? ORDER BY b.start_date"
-            );
+            String query = "SELECT b.*, v.vehicleNumber, v.vehicleTypeId, c.userNic FROM bookings b "+
+                    "INNER JOIN vehicles v ON b.vehicle_id = v.id "+
+                    "INNER JOIN users c ON b.customer_id = c.id "+
+                    "WHERE b.status = ? ";
+
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                query += "AND (v.vehicleNumber LIKE ? OR v.vehicleTypeId LIKE ? OR c.userNic LIKE ? OR b.booking_number LIKE ?) ";
+            }
+
+            query += "ORDER BY b.start_date";
+
+            PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setInt(1, 0);
+
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String searchPattern = "%" + keyword + "%";
+                stmt.setString(2, searchPattern);
+                stmt.setString(3, searchPattern);
+                stmt.setString(4, searchPattern);
+                stmt.setString(5, searchPattern);
+            }
+
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -251,18 +266,35 @@ public class BookingDAO {
         return null;
     }
 
-    public List<Booking> getAllBookings() {
+
+    public List<Booking> getAllBookings(String keyword) {
         List<Booking> bookingList = new ArrayList<>();
         try  {
             Connection conn = DBConnection.getConnection();
 
-            PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT b.*, v.vehicleNumber, v.vehicleTypeId, c.userNic FROM bookings b "+
-                            "INNER JOIN vehicles v ON b.vehicle_id = v.id "+
-                            "INNER JOIN users c ON b.customer_id = c.id "+
-                            "WHERE b.status != 0 ORDER BY b.start_date"
-            );
+            String query = "SELECT b.*, v.vehicleNumber, v.vehicleTypeId, c.userNic FROM bookings b "+
+                    "INNER JOIN vehicles v ON b.vehicle_id = v.id "+
+                    "INNER JOIN users c ON b.customer_id = c.id "+
+                    "WHERE b.status != 0 ";
 
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                query += "AND (v.vehicleNumber LIKE ? OR v.vehicleTypeId LIKE ? OR c.userNic LIKE ? OR b.booking_number LIKE ? "+
+                        "OR b.passenger_name LIKE ? OR b.passenger_phone LIKE ?) ";
+            }
+
+            query += "ORDER BY b.start_date";
+
+
+            PreparedStatement stmt = conn.prepareStatement(query);
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String searchPattern = "%" + keyword + "%";
+                stmt.setString(1, searchPattern);
+                stmt.setString(2, searchPattern);
+                stmt.setString(3, searchPattern);
+                stmt.setString(4, searchPattern);
+                stmt.setString(5, searchPattern);
+                stmt.setString(6, searchPattern);
+            }
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {

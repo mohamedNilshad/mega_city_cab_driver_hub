@@ -5,114 +5,25 @@
         fetchCompanyProfile();
     });
 
-    //db
-    function fetchBookings(){
-
+    //fetch
+    function fetchBookings(value = ""){
         $.ajax({
             type: "GET",
             url: "../../booking",
-            data: { action: "get_all_scheduled_bookings"},
+            data: { action: "get_all_scheduled_bookings", keyword: value},
             dataType: "json",
             beforeSend: function() {
-                let tbody = $("#bookingsTable tbody");
-                tbody.empty();
-
-                tbody.append(`<tr>
-                   <td scope="row" colspan="11" style="text-align: center;">
-                     <i class="fa fa-spinner fa-spin" id="data_loading" style="display:inline; font-size:32px;"></i>
-                   </td>
-                 </tr>`);
+                buildLoadingTable('bookingsTable', 12);
             },
             success: function(response) {
-                let tbody = $("#bookingsTable tbody");
-                tbody.empty();
-
                 if (response.status === "success") {
                      if(response.data.length == 0){
-                        tbody.append(`<tr><td colspan="11" style="text-align:center;">No Data</td></tr>`);
+                        buildEmptyTable("bookingsTable", 12);
                      }else{
-                          let i = 0;
-                          let currentDate = new Date();
-                          currentDate = currentDate.toISOString().split('T')[0];
-                          response.data.forEach((booking) => {
-                              i = i+1;
-                              let bookingType = booking.bookingType == 1 ? "Schedule Booking" : "Instant Booking";
-                              let status = `<td class="status status-completed" style="vertical-align: middle;">Completed</td>`;
-
-                              let jsonVehicle = JSON.stringify(booking);
-                              let editButton = ``;
-
-                              let cancelBtn = ` <button type="button" class="btn btn-danger btn-sm" onclick="changeStatus(${booking.id}, 2, 'Cancellation')">
-                                                    <i class="fa fa-spinner fa-spin" id="cnl_btn_loading" style="display: none; margin-right: 5px;"></i>Cancel
-                                                </button>` ;
-
-                              let startBtn = ` <button type="button" class="btn btn-warning btn-sm" onclick="changeStatus(${booking.id}, 3, 'Start')">
-                                                    <i class="fa fa-spinner fa-spin" id="str_btn_loading" style="display: none; margin-right: 5px;"></i>Start
-                                               </button>` ;
-
-                              let completedBtn = `<br> <button type="button" class="btn btn-success btn-sm" onclick="changeStatus(${booking.id}, 1, 'Complete')">
-                                                    <i class="fa fa-spinner fa-spin" id="cmt_btn_loading" style="display: none; margin-right: 5px;"></i>Complete
-                                                  </button>` ;
-
-                              startBtn = (currentDate >= booking.startDate.split(' ')[0] && booking.status == 0) ? startBtn : ``;
-                              cancelBtn = (booking.status == 0) ? cancelBtn : ``;
-                              completedBtn = (booking.status == 3) ? completedBtn : ``;
-
-
-                              if(booking.status == 0){
-                                status = `<td class="status status-scheduled" style="vertical-align: middle;">
-                                    ${booking.startDate}<br>
-                                    ${cancelBtn} ${startBtn}
-                                </td>`;
-
-                                editButton = `<button type="button" class="icon-btn" onclick='openEditModal(${jsonVehicle})'><i class="zmdi zmdi-edit"></i></button>`;
-
-                              }else if(booking.status == 1){
-                                status = `<td class="status status-completed" style="vertical-align: middle;">Completed</td>`;
-                              }else if(booking.status == 2){
-                                status = `<td class="status status-canceled" style="vertical-align: middle;">Canceled</td>`;
-                              }else if(booking.status == 3){
-                                status = `<td class="status status-ongoing" style="vertical-align: middle;">
-                                    On Going${completedBtn}
-                                </td>`;
-                              }
-
-                               let payment = booking.paymentInfoList;
-                               let isPaid = "Yes";
-
-                               let tempTotalProAmount = 0.0;
-                               for(let i=0; i<payment.length; i++){
-                                   tempTotalProAmount += payment[i].providedAmount;
-                               }
-
-                               if(tempTotalProAmount < booking.totalAmount){
-                                   isPaid = "No";
-                               }
-
-                              let newRow = `
-                                  <tr>
-                                      <td style="vertical-align: middle;">${i}</td>
-                                      <td style="vertical-align: middle;">${booking.bookingNumber}</td>
-                                      <td style="vertical-align: middle;">${bookingType}</td>
-                                      <td style="vertical-align: middle;">${booking.passengerName}</td>
-                                      <td style="vertical-align: middle;">${booking.customer.nic}</td>
-                                      <td style="vertical-align: middle;">${booking.vehicle.vehicleNumber}</td>
-                                      <td style="vertical-align: middle;">${booking.startDate}</td>
-                                      <td style="vertical-align: middle;">${booking.endDate}</td>
-                                      <td style="vertical-align: middle;">${booking.totalAmount}</td>
-                                      <td style="vertical-align: middle;">${isPaid}</td>
-                                      ${status}
-                                      <td style="vertical-align: middle;">
-                                           <button type="button" class="icon-btn" onclick='fetchInvoiceData(${booking.id})'><i class="zmdi zmdi-receipt"></i></button>
-                                      </td>
-                                  </tr>
-                              `;
-                              tbody.append(newRow);
-                          });
+                        buildDataTable("bookingsTable", response.data);
                      }
                 }else {
-                    tbody.empty();
-                    tbody.append(`<tr><td colspan="11" style="text-align:center;">No Data</td></tr>`);
+                    buildEmptyTable("bookingsTable", 12);
                     $("#success_alert").hide();
                         $('#error_alert').html(response.message);
                         $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
@@ -132,9 +43,7 @@
                     errorMsg = "Unexpected error occurred: "+e;
                 }
 
-                let tbody = $("#bookingsTable tbody");
-                tbody.empty();
-                tbody.append(`<tr><td colspan="11" style="text-align:center;">No Data</td></tr>`);
+                buildEmptyTable("bookingsTable", 12);
 
                 $("#success_alert").hide();
                     $('#error_alert').html(errorMsg);
@@ -424,5 +333,118 @@
         }
     }
     //------------------------------------INVOICE----------->
+
+
+    //------------------------------------TABLE----------->
+    function buildLoadingTable(id, column){
+        let tableId = `#${id} tbody`;
+        let tbody = $(tableId);
+
+        tbody.empty();
+
+        tbody.append(`<tr>
+           <td scope="row" colspan="${column}" style="text-align: center;">
+             <i class="fa fa-spinner fa-spin" id="data_loading" style="display:inline; font-size:32px;"></i>
+           </td>
+         </tr>`);
+    }
+
+    function buildEmptyTable(id, column){
+        let tableId = `#${id} tbody`;
+        let tbody = $(tableId);
+
+        tbody.empty();
+        tbody.append(`<tr><td colspan='${column}' style="text-align:center;">No Data</td></tr>`);
+
+    }
+
+    function buildDataTable(id, data){
+        let tableId = `#${id} tbody`;
+        let tbody = $(tableId);
+        tbody.empty();
+
+        let i = 0;
+        let currentDate = new Date();
+        currentDate = currentDate.toISOString().split('T')[0];
+
+        data.forEach((booking) => {
+          i = i+1;
+          let bookingType = booking.bookingType == 1 ? "Schedule Booking" : "Instant Booking";
+          let status = `<td class="status status-completed" style="vertical-align: middle;">Completed</td>`;
+
+          let jsonVehicle = JSON.stringify(booking);
+          let editButton = ``;
+
+          let cancelBtn = ` <button type="button" class="btn btn-danger btn-sm" onclick="changeStatus(${booking.id}, 2, 'Cancellation')">
+                                <i class="fa fa-spinner fa-spin" id="cnl_btn_loading" style="display: none; margin-right: 5px;"></i>Cancel
+                            </button>` ;
+
+          let startBtn = ` <button type="button" class="btn btn-warning btn-sm" onclick="changeStatus(${booking.id}, 3, 'Start')">
+                                <i class="fa fa-spinner fa-spin" id="str_btn_loading" style="display: none; margin-right: 5px;"></i>Start
+                           </button>` ;
+
+          let completedBtn = `<br> <button type="button" class="btn btn-success btn-sm" onclick="changeStatus(${booking.id}, 1, 'Complete')">
+                                <i class="fa fa-spinner fa-spin" id="cmt_btn_loading" style="display: none; margin-right: 5px;"></i>Complete
+                              </button>` ;
+
+          startBtn = (currentDate >= booking.startDate.split(' ')[0] && booking.status == 0) ? startBtn : ``;
+          cancelBtn = (booking.status == 0) ? cancelBtn : ``;
+          completedBtn = (booking.status == 3) ? completedBtn : ``;
+
+
+          if(booking.status == 0){
+            status = `<td class="status status-scheduled" style="vertical-align: middle;">
+                ${booking.startDate}<br>
+                ${cancelBtn} ${startBtn}
+            </td>`;
+
+            editButton = `<button type="button" class="icon-btn" onclick='openEditModal(${jsonVehicle})'><i class="zmdi zmdi-edit"></i></button>`;
+
+          }else if(booking.status == 1){
+            status = `<td class="status status-completed" style="vertical-align: middle;">Completed</td>`;
+          }else if(booking.status == 2){
+            status = `<td class="status status-canceled" style="vertical-align: middle;">Canceled</td>`;
+          }else if(booking.status == 3){
+            status = `<td class="status status-ongoing" style="vertical-align: middle;">
+                On Going${completedBtn}
+            </td>`;
+          }
+
+           let payment = booking.paymentInfoList;
+           let isPaid = "Yes";
+
+           let tempTotalProAmount = 0.0;
+           for(let i=0; i<payment.length; i++){
+               tempTotalProAmount += payment[i].providedAmount;
+           }
+
+           if(tempTotalProAmount < booking.totalAmount){
+               isPaid = "No";
+           }
+
+          let newRow = `
+              <tr>
+                  <td style="vertical-align: middle;">${i}</td>
+                  <td style="vertical-align: middle;">${booking.bookingNumber}</td>
+                  <td style="vertical-align: middle;">${bookingType}</td>
+                  <td style="vertical-align: middle;">${booking.passengerName}</td>
+                  <td style="vertical-align: middle;">${booking.customer.nic}</td>
+                  <td style="vertical-align: middle;">${booking.vehicle.vehicleNumber}</td>
+                  <td style="vertical-align: middle;">${booking.startDate}</td>
+                  <td style="vertical-align: middle;">${booking.endDate}</td>
+                  <td style="vertical-align: middle;">${booking.totalAmount}</td>
+                  <td style="vertical-align: middle;">${isPaid}</td>
+                  ${status}
+                  <td style="vertical-align: middle;">
+                       <button type="button" class="icon-btn" onclick='fetchInvoiceData(${booking.id})'><i class="zmdi zmdi-receipt"></i></button>
+                  </td>
+              </tr>
+          `;
+          tbody.append(newRow);
+      });
+
+    }
+
+    //------------------------------------TABLE----------->
 
 </script>

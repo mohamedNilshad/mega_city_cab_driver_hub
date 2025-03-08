@@ -24,9 +24,12 @@
         <!-- Navigation-->
         <jsp:include page="nav.jsp" />
 
-        <div style="padding-bottom: 5px; padding-right: 10px; float: right;">
+        <div class="d-flex justify-content-between align-items-center" style="padding-bottom: 5px; padding-right: 10px;">
+            <input class="form-control ml-2 border border-primary" type="search" placeholder="Search" aria-label="Search" style="width: 200px;" oninput="fetchBookings(this.value)">
             <a href="customer_booking.jsp" class="btn btn-primary">New Customer Booking</a>
         </div>
+
+
         <div class="alert alert-success custom-alert" role="alert" id="success_alert"></div>
         <div class="alert alert-danger custom-alert" role="alert" id="error_alert"></div>
 

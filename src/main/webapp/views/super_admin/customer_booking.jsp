@@ -31,7 +31,8 @@
 
         <a href="home.jsp" class="btn btn-dark" style="margin-left: 5px;"><i class="zmdi zmdi-arrow-left"></i></a>
 
-        <div style="padding-bottom: 5px; padding-right: 10px; float: right;">
+        <div class="d-flex justify-content-end align-items-center" style="gap: 10px; padding-bottom: 5px; padding-right: 10px;">
+            <input class="form-control ml-2 border border-primary" type="search" placeholder="Search" aria-label="Search" style="width: 200px;" oninput="fetchCustomers(this.value)">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customerForm">Add New Customer</button>
         </div>
 

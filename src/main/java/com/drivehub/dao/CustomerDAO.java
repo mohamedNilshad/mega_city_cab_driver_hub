@@ -85,13 +85,29 @@ public class CustomerDAO {
         return false;
     }
 
-    public List<User> getCustomers() {
+    public List<User> getCustomers(String keyword) {
         List<User> CustomerList = new ArrayList<>();
         try  {
             Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT * FROM users WHERE userType = 2 ORDER BY id DESC"
-            );
+
+            String query = "SELECT * FROM users WHERE userType = 2 ";
+
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                query += "AND (fullName LIKE ? OR userEmail LIKE ? OR userNic LIKE ? OR userAddress LIKE ? "+
+                        "OR userPhone LIKE ?) ";
+            }
+
+            query += "ORDER BY id DESC";
+
+            PreparedStatement stmt = conn.prepareStatement(query);
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String searchPattern = "%" + keyword + "%";
+                stmt.setString(1, searchPattern);
+                stmt.setString(2, searchPattern);
+                stmt.setString(3, searchPattern);
+                stmt.setString(4, searchPattern);
+                stmt.setString(5, searchPattern);
+            }
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {

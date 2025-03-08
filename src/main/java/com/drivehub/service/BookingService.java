@@ -28,12 +28,12 @@ public class BookingService {
         return bookingDAO.getAllReadings(bookingId);
     }
 
-    public List<Booking> getScheduledBookings() {
-        return bookingDAO.getScheduledBookings();
+    public List<Booking> getScheduledBookings(String keyword) {
+        return bookingDAO.getScheduledBookings(keyword);
     }
 
-    public List<Booking> getAllBookings() {
-        return bookingDAO.getAllBookings();
+    public List<Booking> getAllBookings(String keyword) {
+        return bookingDAO.getAllBookings(keyword);
     }
 
     public Boolean addNewBooking(Booking booking, PaymentInfo paymentInfo, VisaCardDetails cardDetails) {

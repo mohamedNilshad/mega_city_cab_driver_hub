@@ -16,8 +16,8 @@ public class CustomerService {
         return customerDAO.updateCustomer(customer);
     }
 
-    public List<User> getCustomers() {
-        return customerDAO.getCustomers();
+    public List<User> getCustomers(String keyword) {
+        return customerDAO.getCustomers(keyword);
     }
 
     public User getCustomerInfo(int customerId) {

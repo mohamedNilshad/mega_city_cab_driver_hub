@@ -34,9 +34,9 @@ public class BookingController extends HttpServlet {
         }else if ("get_customer_bookings".equals(action)) {
             getUserBookings(request, response);
         }else if ("get_all_scheduled_bookings".equals(action)) {
-            getScheduledBookings(response);
+            getScheduledBookings(request, response);
         }else if ("get_all_bookings".equals(action)) {
-            getAllBookings(response);
+            getAllBookings(request, response);
         }else if ("get_invoice_data".equals(action)) {
             getBookingInvoice(request, response);
         }else if ("get_all_readings".equals(action)) {
@@ -190,7 +190,7 @@ public class BookingController extends HttpServlet {
         out.flush();
     }
 
-    private void getScheduledBookings( HttpServletResponse response) throws IOException{
+    private void getScheduledBookings(HttpServletRequest request, HttpServletResponse response) throws IOException{
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -199,8 +199,8 @@ public class BookingController extends HttpServlet {
         JSONObject jsonResponse = new JSONObject();
 
         try {
-
-            List<Booking> bookings = bookingService.getScheduledBookings();
+            String keyword = request.getParameter("keyword");
+            List<Booking> bookings = bookingService.getScheduledBookings(keyword);
 
             if(bookings != null){
 
@@ -228,7 +228,7 @@ public class BookingController extends HttpServlet {
         out.flush();
     }
 
-    private void getAllBookings( HttpServletResponse response) throws IOException{
+    private void getAllBookings(HttpServletRequest request, HttpServletResponse response) throws IOException{
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -237,8 +237,8 @@ public class BookingController extends HttpServlet {
         JSONObject jsonResponse = new JSONObject();
 
         try {
-
-            List<Booking> bookings = bookingService.getAllBookings();
+            String keyword = request.getParameter("keyword");
+            List<Booking> bookings = bookingService.getAllBookings(keyword);
 
             if(bookings != null){
 

@@ -1,55 +1,26 @@
 <script>
     fetchCustomers();
 
-    function fetchCustomers(){
+    function fetchCustomers(value = ""){
         $.ajax({
             type: "GET",
             url: "../../customer",
-            data: { action: "customer_list", user_type: 2},
+            data: { action: "customer_list", user_type: 2, keyword: value},
             dataType: "json",
             beforeSend: function() {
-                let tbody = $("#customersTable tbody");
-                tbody.empty();
-
-                tbody.append(`<tr>
-                   <td scope="row" colspan="9" style="text-align: center;">
-                     <i class="fa fa-spinner fa-spin" id="data_loading" style="display:inline; font-size:32px;"></i>
-                   </td>
-                 </tr>`);
+                buildLoadingTable('customersTable', 9);
             },
             success: function(response) {
-                let tbody = $("#customersTable tbody");
-                tbody.empty();
+
                 if (response.status === "success") {
 
                     if(response.data.length == 0){
-                        tbody.append(`<tr><td colspan="9" style="text-align:center;">No Data</td></tr>`);
+                        buildEmptyTable('customersTable', 9);
                     }else{
-
-                        let i = 0;
-
-                        response.data.forEach((customer) => {
-                            i = i+1;
-                            let jsonCustomer = JSON.stringify(customer);
-
-                            let newRow = `
-                                <tr>
-                                    <td>${i}</td>
-                                    <td>${customer.name}</td>
-                                    <td>${customer.address}</td>
-                                    <td>${customer.nic}</td>
-                                    <td>${customer.email}</td>
-                                    <td>${customer.phone}</td>
-                                    <td>${customer.userName}</td>
-                                    <td><button type="button" class="icon-btn" onclick='openEditModal(${jsonCustomer})'><i class="zmdi zmdi-edit"></i></button></td>
-                                    <td><a href="booking.jsp?cid=${customer.id}" class="btn btn-warning" >Book</a></td>
-                                </tr>
-                            `;
-                            tbody.append(newRow);
-                        });
+                        buildCustomerDataTable('customersTable', response.data);
                     }
                 }else {
-                    tbody.append(`<tr><td colspan="9" style="text-align:center;">No Data</td></tr>`);
+                    buildEmptyTable('customersTable', 9);
                     $("#success_alert").hide();
                         $('#error_alert').html(response.message);
                         $("#error_alert").fadeTo(2000, 500).slideUp(500, function() {
@@ -68,9 +39,7 @@
                         errorMsg = "Unexpected error occurred: "+e;
                     }
 
-                    let tbody = $("#customersTable tbody");
-                    tbody.empty();
-                    tbody.append(`<tr><td colspan="9" style="text-align:center;">No Data</td></tr>`);
+                    buildEmptyTable('customersTable', 9);
 
                     $("#success_alert").hide();
                         $('#error_alert').html(errorMsg);
@@ -269,4 +238,60 @@
         }
     }
     //---------------------VALIDATE SUBMIT BUTTON----------------------------------->
+
+
+
+    //------------------------------------TABLE----------->
+    function buildLoadingTable(id, column){
+        let tableId = `#${id} tbody`;
+        let tbody = $(tableId);
+
+        tbody.empty();
+
+        tbody.append(`<tr>
+           <td scope="row" colspan="${column}" style="text-align: center;">
+             <i class="fa fa-spinner fa-spin" id="data_loading" style="display:inline; font-size:32px;"></i>
+           </td>
+         </tr>`);
+    }
+
+    function buildEmptyTable(id, column){
+        let tableId = `#${id} tbody`;
+        let tbody = $(tableId);
+
+        tbody.empty();
+        tbody.append(`<tr><td colspan='${column}' style="text-align:center;">No Data</td></tr>`);
+
+    }
+
+    function buildCustomerDataTable(id, data){
+        let tableId = `#${id} tbody`;
+        let tbody = $(tableId);
+        tbody.empty();
+
+        let i = 0;
+
+        data.forEach((customer) => {
+            i = i+1;
+            let jsonCustomer = JSON.stringify(customer);
+
+            let newRow = `
+                <tr>
+                    <td>${i}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.address}</td>
+                    <td>${customer.nic}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td>${customer.userName}</td>
+                    <td><button type="button" class="icon-btn" onclick='openEditModal(${jsonCustomer})'><i class="zmdi zmdi-edit"></i></button></td>
+                    <td><a href="booking.jsp?cid=${customer.id}" class="btn btn-warning" >Book</a></td>
+                </tr>
+            `;
+            tbody.append(newRow);
+        });
+
+    }
+
+    //------------------------------------TABLE----------->
 </script>

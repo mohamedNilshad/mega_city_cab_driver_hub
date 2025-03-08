@@ -107,6 +107,9 @@
             <i class="fa fa-spinner fa-spin" style="font-size:35px;"></i>
         </div>
 
+        <div class="d-flex justify-content-between align-items-center" style="padding-bottom: 5px; padding-right: 10px;">
+            <input class="form-control ml-2 border border-primary" type="search" placeholder="Search" aria-label="Search" style="width: 200px;" oninput="fetchAllBookings(this.value)">
+        </div>
         <table id="bookingHistoryTable" class="ctable table" style="text-align: center;">
             <thead class="thead-dark">
             <tr>

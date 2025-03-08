@@ -23,7 +23,7 @@ public class CustomerController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String action = request.getParameter("action");
         if ("customer_list".equals(action)) {
-            getCustomerList(response);
+            getCustomerList(request, response);
         }else if ("customer_info".equals(action)) {
             getCustomerInfo(request, response);
         }
@@ -52,7 +52,7 @@ public class CustomerController extends HttpServlet {
         out.flush();
     }
 
-    private void getCustomerList(HttpServletResponse response) throws IOException{
+    private void getCustomerList(HttpServletRequest request, HttpServletResponse response) throws IOException{
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -60,7 +60,8 @@ public class CustomerController extends HttpServlet {
 
         JSONObject jsonResponse = new JSONObject();
         try {
-            List<User> customers = customerService.getCustomers();
+            String keyword = request.getParameter("keyword");
+            List<User> customers = customerService.getCustomers(keyword);
 
             if(customers != null){
 
