@@ -253,11 +253,19 @@
         document.getElementById("enable").value = 1;
         document.getElementById("selected_vehicle").value = vehicle.id;
         document.getElementById("v_type").value = vehicle.vehicleTypeId;
-        document.getElementById("from_date").value = document.getElementById("d_from_date").value;
-        document.getElementById("to_date").value = document.getElementById("d_to_date").value;
+
+
+        let dFromDate = document.getElementById("d_from_date").value;
+        let dToDate = document.getElementById("d_to_date").value;
+         setDate("from_date", dFromDate);
+         setToDate("to_date", dToDate);
+//        document.getElementById("from_date").value = ;
+//        document.getElementById("to_date").value = document.getElementById("d_to_date").value;
+
         validateVehicle(vehicle.id);
         document.getElementById("total_distance").value = "";
         document.getElementById("total_amount").value = "";
+
 
 
         document.getElementById("customerId").value = customerInfo.id;
@@ -876,6 +884,7 @@
                               }else if(booking.status == 1){
                                 status = `<td class="status status-completed" style="vertical-align: middle;">Completed</td>`;
                               }else if(booking.status == 2){
+                                payBtn = ``;
                                 status = `<td class="status status-canceled" style="vertical-align: middle;">Canceled</td>`;
                               }else if(booking.status == 3){
                                 status = `<td class="status status-ongoing" style="vertical-align: middle;">

@@ -139,39 +139,49 @@
                             <div class="mb-3">
                                 <label for="new_customer_name" class="form-label">Customer Name</label>
                                 <input type="text" class="form-control" id="new_customer_name" name="new_customer_name" placeholder="Enter your name">
+                                <span class="error_text" id="admin_new_customer_error_0"></span>
                             </div>
 
                             <div class="mb-3">
                                 <label for="new_customer_nic" class="form-label">NIC  Number</label>
                                 <input type="text" class="form-control" id="new_customer_nic" name="new_customer_nic" placeholder="Enter your NIC">
+                                <span class="error_text" id="admin_new_customer_error_1"></span>
                             </div>
 
                             <div class="mb-3">
                                 <label for="phone" class="form-label">Phone</label>
                                 <input type="text" class="form-control" id="new_phone" name="new_phone" placeholder="Enter your phone number">
+                                <span class="error_text" id="admin_new_customer_error_2"></span>
                             </div>
 
                             <div class="mb-3">
                                 <label for="address" class="form-label">Address</label>
                                 <input type="text" class="form-control" id="new_address" name="new_address" placeholder="Enter your Address">
+                                <span class="error_text" id="admin_new_customer_error_3"></span>
                             </div>
 
                             <div class="mb-3">
                                 <label for="new_email" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="new_email" name="new_email" placeholder="Enter your Email">
+                                <span class="error_text" id="admin_new_customer_error_4"></span>
                             </div>
 
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your Username">
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    <input type="text" class="form-control" id="username" name="username" placeholder="Enter your Username">
+                                    <i class="fa fa-refresh fa-spin" id="check_username" style="color: blue; visibility: hidden;"></i>
+                                </div>
+                                <span class="error_text" id="admin_new_customer_error_5"></span>
                             </div>
 
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" class="form-control" id="password" name="password" placeholder="Enter your Password">
+                                <span class="error_text" id="admin_new_customer_error_6"></span>
                             </div>
 
-                            <button type="submit" class="btn btn-success">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="fa fa-spinner fa-spin" id="submit_loading" style="display: none;"></i> Submit
                             </button>
                         </form>
@@ -193,41 +203,47 @@
                             <input type="hidden" name="action" value="customer_update" required>
                             <input type="hidden" name="customer_id" id="customer_id" required>
                             <div class="mb-3">
-                                <label for="new_customer_name" class="form-label">Customer Name</label>
-                                <input type="text" class="form-control" id="update_customer_name" name="update_customer_name" placeholder="Enter your name">
+                                <label for="update_customer_name" class="form-label">Customer Name</label>
+                                <input type="text" class="form-control" id="update_customer_name" name="update_customer_name" placeholder="Enter your name" oninput="enableSubmitButton()">
+                                <span class="error_text" id="admin_update_customer_error_0"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="new_customer_nic" class="form-label">NIC  Number</label>
-                                <input type="text" class="form-control" id="update_customer_nic" name="update_customer_nic" placeholder="Enter your NIC">
+                                <label for="update_customer_nic" class="form-label">NIC  Number</label>
+                                <input type="text" class="form-control" id="update_customer_nic" name="update_customer_nic" placeholder="Enter your NIC" oninput="enableSubmitButton()">
+                                <span class="error_text" id="admin_update_customer_error_1"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="phone" class="form-label">Phone</label>
-                                <input type="text" class="form-control" id="update_phone" name="update_phone" placeholder="Enter your phone number">
+                                <label for="update_phone" class="form-label">Phone</label>
+                                <input type="text" class="form-control" id="update_phone" name="update_phone" placeholder="Enter your phone number" oninput="enableSubmitButton()">
+                                <span class="error_text" id="admin_update_customer_error_2"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="address" class="form-label">Address</label>
-                                <input type="text" class="form-control" id="update_address" name="update_address" placeholder="Enter your Address">
+                                <label for="update_address" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="update_address" name="update_address" placeholder="Enter your Address" oninput="enableSubmitButton()">
+                                <span class="error_text" id="admin_update_customer_error_3"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="new_email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="update_email" name="update_email" placeholder="Enter your Email">
+                                <label for="update_email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="update_email" name="update_email" placeholder="Enter your Email" oninput="enableSubmitButton()">
+                                <span class="error_text" id="admin_update_customer_error_4"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label for="username" class="form-label">Username</label>
+                                <label for="update_username" class="form-label">Username</label>
                                 <input type="text" class="form-control" id="update_username" name="update_username" placeholder="Enter your Username" readonly>
                             </div>
 
                             <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="update_password" name="update_password" placeholder="Enter your Password">
+                                <label for="update_password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="update_password" name="update_password" placeholder="Enter your Password" oninput="enableSubmitButton()">
+                                <span class="error_text" id="admin_update_customer_error_5"></span>
                             </div>
 
-                            <button type="submit" class="btn btn-success">
+                            <button type="submit" class="btn btn-success" id="updateCustomerBtn">
                                 <i class="fa fa-spinner fa-spin" id="uc_btn_loading" style="display: none;"></i> Update
                             </button>
                         </form>
@@ -240,6 +256,7 @@
         <jsp:include page="../../WEB-INF/includes/footer.jsp" />
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <jsp:include page="../../js/customer.js" />
+        <jsp:include page="../../js/validations/validation.js" />
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {

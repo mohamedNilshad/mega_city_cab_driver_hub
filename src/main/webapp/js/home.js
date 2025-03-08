@@ -403,6 +403,7 @@
           }else if(booking.status == 1){
             status = `<td class="status status-completed" style="vertical-align: middle;">Completed</td>`;
           }else if(booking.status == 2){
+            payBtn = ``;
             status = `<td class="status status-canceled" style="vertical-align: middle;">Canceled</td>`;
           }else if(booking.status == 3){
             status = `<td class="status status-ongoing" style="vertical-align: middle;">

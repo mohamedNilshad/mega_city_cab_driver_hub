@@ -284,7 +284,6 @@
         </div>
 
 
-
         <!-- Custom payment-->
         <div class="modal fade" id="customPaymentTypeModel" tabindex="-1" aria-labelledby="popupFormLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
@@ -411,8 +410,6 @@
                 </div>
             </div>
         </div>
-
-
 
 
 

@@ -56,7 +56,7 @@
 
                     <div class="mb-3">
                         <label for="seat_count" class="form-label">Seat Count</label>
-                        <input type="number" min="2" max="100" class="form-control" id="seat_count" name="seat_count" placeholder="Enter Seat Count">
+                        <input type="number" min="2" max="20" class="form-control" id="seat_count" name="seat_count" placeholder="Enter Seat Count">
                         <span class="error_text" id="admin_new_vehicle_error_3"></span>
                     </div>
 
@@ -78,7 +78,7 @@
                         <span class="error_text" id="admin_new_vehicle_error_5"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn btn-primary">
                         <i class="fa fa-spinner fa-spin" id="snv_btn_loading" style="display: none; margin-right: 5px;"></i>Submit
                     </button>
                 </form>

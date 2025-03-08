@@ -104,7 +104,7 @@
 
                             <div class="mb-3">
                                 <label for="seat_count" class="form-label">Seat Count</label>
-                                <input type="number" min="2" max="100" class="form-control" id="seat_count" name="seat_count" placeholder="Enter Seat Count">
+                                <input type="number" min="2" max="20" class="form-control" id="seat_count" name="seat_count" placeholder="Enter Seat Count">
                                 <span class="error_text" id="admin_new_vehicle_error_3"></span>
                             </div>
 
